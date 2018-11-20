@@ -3,6 +3,8 @@
 body {
   font-family: "Benton Sans", "Helvetica Neue", helvetica, arial, sans-serif;
   margin: 2em;
+  
+  --width: 48px;
 }
 
 h1 {
@@ -12,134 +14,44 @@ h1 {
 
 #piano {
   margin-top: 200px;
-  min-width: 350px;
-  width: fit-content;
+  height: 200px;
+  position: relative;
 }
 
-.piano-group {
+.octave {
   position: relative;
   display: inline-block;
-  cursor: pointer;
-  user-select: none;
+  height: 100%;
+  width: calc(100%/7);
 }
 
-/* black keys */
-.piano-group .black {
+.white, .black {
   position: absolute;
-  top: -60px;
-  left: 50px;
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+.black {
+  height: 60%;
   z-index: 1;
 }
-/* front */
-.piano-group .black .key {
-  height: 20px;
-  width: 15px;
-  display: inline-block;
-  border: solid 1px black;
-  position: relative;
-  background-color: black;
-}
-/* top */
-.piano-group .black .key:before {
-  content: '';
-  border: solid 1px black;
-  height: 10px;
-  width: 50px;
-  display: block;
-  position: absolute;
-  background-color: black;
-  top: -13px;
-  left: 15px;
-  transform: rotate(-50deg) skew(40deg);
-  transform-origin: bottom left;
-}
-/* side */
-.piano-group .black .key:after {
-  content: '';
-  border-top: solid 1px white;
-  height: 12px;
-  width: 50px;
-  display: block;
-  position: absolute;
-  background-color: black;
-  top: -16px;
-  left: 5px;
-  transform: rotate(-50deg) skew(-50deg);
+
+.white .key {
+  width: var(--width);
+  border: 1px solid #cccccc;
+  background-color: white;
 }
 
-.piano-group .black .key.space {
-  margin-right: 10px;
+.black .key {
+  width: 
+  background-color: black;
+  border: 0px solid black;
+  margin-left: 25px;
 }
-.piano-group .black .key:hover {
-  height: 12px;
+.black .key:first-child{
+  margin-left: 37px;
 }
-.piano-group .black .key:hover:after {
-  height: 7px;
-  top: -17px;
-}
-.piano-group .white .key {
-  margin-right: 0;
-  height: 20px;
-  width: 18px;
-  display: inline-block;
-  border: dashed 1px cornflowerblue;
-  position: relative;
-  background-color: white;
-  transition: height 0.5s cubic-bezier(0.39, 0.58, 0.57, 1), background-color 0.5s ease-out;
-}
-.piano-group .white .key:before {
-  content: '';
-  border: dashed 1px cornflowerblue;
-  height: 12px;
-  width: 100px;
-  display: block;
-  position: absolute;
-  background-color: white;
-  top: -15px;
-  left: 17px;
-  transform: rotate(-50deg) skew(40deg);
-  transform-origin: bottom left;
-  transition: background 1s ease;
-}
-.piano-group .white .key:after {
-  content: '';
-  border: dashed 1px cornflowerblue;
-  height: 13px;
-  width: 98px;
-  display: block;
-  position: absolute;
-  background-color: white;
-  top: -37px;
-  left: 1px;
-  transform: rotate(-50deg) skew(-50deg);
-  transition: height 0.6s cubic-bezier(0.39, 0.58, 0.57, 1), background 1s ease;
-}
-.piano-group .white .key:hover {
-  height: 12px;
-  background: rgba(100, 149, 237, 0.7);
-}
-.piano-group .white .key:hover:before {
-  background: radial-gradient(circle at 0%, rgba(100, 149, 237, 0.7), white);
-}
-.piano-group .white .key:hover:after {
-  background: radial-gradient(circle at 0%, rgba(100, 149, 237, 0.7), white);
-  height: 7px;
-  top: -38px;
-}
-
-article {
-  margin: 0 auto;
-  padding: 100px;
-  width: fit-content;
-  font-family: 'Yanone Kaffeesatz', sans-serif;
-}
-article h1, article h2 {
-  font-weight: normal;
-  font-size: 1.5rem;
-}
-article h1 a, article h2 a {
-  color: black;
-}
-article p {
-  margin: 0;
+.black .key:nth-child(3){
+  visibility: hidden;
 }
