@@ -10,6 +10,10 @@ body {
   background: linear-gradient(to bottom, #243B55, #141E30);
   color: white;
   font-family: 'Poppins', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 * { box-sizing: border-box; }
@@ -53,6 +57,9 @@ h1 {
   text-transform: uppercase;
 }
 
+.splash a:link, a:visited {
+  color: #CDF352;
+}
 .controls {
   display: flex;
   position: absolute;
@@ -65,6 +72,10 @@ h1 {
   z-index: 2;
 }
 
+button { 
+  transition: all 0.2s linear;
+}
+
 .controls button {
   border: none;
   box-shadow: none;
@@ -73,7 +84,6 @@ h1 {
   flex-grow: 1;
   height: 100%;
   width: 100%;
-  transition: all 0.2s linear;
 }
 
 .controls button[active] {
@@ -87,20 +97,30 @@ h1 {
   } 
 }
 
-button.splash {
+.splash {
+  font-size: 14px;
+  padding: 20px;
+  line-height: 1.5;
+}
+
+button.splash-button {
   cursor: pointer;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 40px;
+  margin: 40px auto;
+  padding: 14px;
+  font-family: inherit;
   font-size: 22px;
   display: block;
-  box-sizing: border-box;
-  width: 205px;
-  height: 65px;
-  border: 2px solid #94EDEE;
+  border: 2px solid #CDF352;
   background-color: transparent;
   text-transform: uppercase;
-  color: #94EDEE;
+  letter-spacing: 1px;
+  color: #CDF352;
   text-align: center;
-  transition: background-color 300ms ease-in-out;
+}
+
+.splash-button.loading span {
+  animation: pulsing-fade 1.2s ease-in-out infinite;
+}
+@keyframes pulsing-fade { 
+  50% { opacity: 0.3; }
 }
