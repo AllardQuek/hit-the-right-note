@@ -14,23 +14,32 @@
   </head>  
   <body>
     <div class="piano">
-      <svg height="120" width="140" viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
-        <rect class="white" x="0" y="0" width="20" height="120"/>
-        <rect class="white" x="20" y="0" width="20" height="120"/>
-        <rect class="white" x="40" y="0" width="20" height="120"/>
-        <rect class="white" x="60" y="0" width="20" height="120"/>
-        <rect class="white" x="80" y="0" width="20" height="120"/>
-        <rect class="white" x="100" y="0" width="20" height="120"/>
-        <rect class="white" x="120" y="0" width="20" height="120"/>
+      <svg width="100%" xmlns="http://www.w3.org/2000/svg">
+        <g id="octave">
+          <rect class="white" x="0" y="0" width="20" height="120"/>
+          <rect class="white" x="20" y="0" width="20" height="120"/>
+          <rect class="white" x="40" y="0" width="20" height="120"/>
+          <rect class="white" x="60" y="0" width="20" height="120"/>
+          <rect class="white" x="80" y="0" width="20" height="120"/>
+          <rect class="white" x="100" y="0" width="20" height="120"/>
+          <rect class="white" x="120" y="0" width="20" height="120"/>
 
-        <!-- 20 - 14/2 -->
-        <rect class="black" x="13" y="0" width="14" height="80"/>
-        <rect class="black" x="33" y="0" width="14" height="80"/>
-        <!-- skip a note -->
-        <rect class="black" x="73" y="0" width="14" height="80"/>
-        <rect class="black" x="93" y="0" width="14" height="80"/>
-        <rect class="black" x="113" y="0" width="14" height="80"/>
+          <!-- 20 - 14/2 -->
+          <rect class="black" x="13" y="0" width="14" height="80"/>
+          <rect class="black" x="33" y="0" width="14" height="80"/>
+          <!-- skip a note -->
+          <rect class="black" x="73" y="0" width="14" height="80"/>
+          <rect class="black" x="93" y="0" width="14" height="80"/>
+          <rect class="black" x="113" y="0" width="14" height="80"/>
+        </g>
+        <use xlink:href="#octave" x="140" y="0"/>
+        <use xlink:href="#octave" x="280" y="0"/>
+        <use xlink:href="#octave" x="420" y="0"/>
+        <use xlink:href="#octave" x="560" y="0"/>
+        <use xlink:href="#octave" x="700" y="0"/>
+        <use xlink:href="#octave" x="840" y="0"/>
       </svg>
+      
 
     <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
     <script src="https://button.glitch.me/button.js"></script>

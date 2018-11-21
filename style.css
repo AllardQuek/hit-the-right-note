@@ -1,20 +1,17 @@
-/* CSS files add styling rules to your content */
-
 body {
-  font-family: "Benton Sans", "Helvetica Neue", helvetica, arial, sans-serif;
-  margin: 2em;
+  padding-top: 100px;
 }
 
-* { box-sizing:border-box;}
-
-h1 {
-  font-style: italic;
-  color: #373fff;
-}
+* { box-sizing: border-box; }
 
 .piano {
   display: flex;
   flex-direction: row;
+}
+
+svg.big {
+  height: 1px;
+  overflow: visible;
 }
 
 .white {
