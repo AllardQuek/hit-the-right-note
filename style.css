@@ -4,9 +4,11 @@ body {
   font-family: "Benton Sans", "Helvetica Neue", helvetica, arial, sans-serif;
   margin: 2em;
   
-  --width: 48px;
+  --width: 10px;
+  --small-width: calc(var(--width) / 2);
 }
 
+* { box-sizing:border-box;}
 h1 {
   font-style: italic;
   color: #373fff;
@@ -14,7 +16,7 @@ h1 {
 
 #piano {
   margin-top: 200px;
-  height: 200px;
+  height: 50px;
   position: relative;
 }
 
@@ -22,7 +24,7 @@ h1 {
   position: relative;
   display: inline-block;
   height: 100%;
-  width: calc(100%/7);
+  width: calc(100% / 7.5);
 }
 
 .white, .black {
@@ -30,6 +32,8 @@ h1 {
   display: flex;
   height: 100%;
   width: 100%;
+  
+  --note: calc(100% / 7);
 }
 
 .black {
@@ -38,19 +42,19 @@ h1 {
 }
 
 .white .key {
-  width: var(--width);
+  width: var(--note);
   border: 1px solid #cccccc;
   background-color: white;
 }
 
 .black .key {
-  width: 
+  width: calc(var(--note) / 2);
   background-color: black;
-  border: 0px solid black;
-  margin-left: 25px;
+  margin-left: var(--note);
 }
-.black .key:first-child{
-  margin-left: 37px;
+
+.black .key:first-child {
+  margin-left: calc(var(--width) - var(--small-width) / 2);
 }
 .black .key:nth-child(3){
   visibility: hidden;
