@@ -8,7 +8,8 @@ const config = {
   whiteNoteHeight: 70,
   blackNoteHeight: 2 * 70 / 3
 }
-const floatingNotes = new p5(sketch);
+const context = canvas.getContext('2d');
+let notesToPaint = [];
 
 onWindowResize();
 
@@ -53,6 +54,15 @@ function onWindowResize() {
   svg.setAttribute('width', window.innerWidth);
   svg.setAttribute('height', config.whiteNoteHeight);
   
+  // Do the canvas dance.
+  const dpr = window.devicePixelRatio;
+  canvas.width = window.innerWidth;
+  canvas.height = (window.innerHeight - config.whiteNoteHeight - 20);
+  context.scale(dpr, dpr);
+
+  context.lineWidth = 4;
+  context.lineCap = 'round';
+  
   drawPiano();
 }
 
@@ -86,6 +96,8 @@ function update(button) {
   const rect = svg.querySelector(`rect[data-index="${note}"]`);
   rect.setAttribute('active', true);
   rect.setAttribute('class', `color-${button}`);
+  
+  notesToPaint.push({x: parseFloat(rect.getAttribute('x')), y: p.height, width: parseFloat(rect.getAttribute('width'))});
   return rect;
 }
 
@@ -105,45 +117,4 @@ function makeRect(index, x, y, w, h, fill, stroke) {
   }
   svg.appendChild(rect);
   return rect;
-}
-
-/*************************
- * P5.js floaty notes bit
- ************************/
-
-function sketch(p) {
-  const notes = [];
-  
-  p.setup = function() {
-    p.windowResized();
-    p.noStroke();
-    p.frameRate(30);
-    console.log('setup');
-  };
-  
-  p.windowResized = function () {
-    p.createCanvas(p.windowWidth, p.windowHeight - config.whiteNoteHeight - 20);
-  }
-  
-  p.addNote = function(x) {
-    notes.push({x: x, y: p.height});
-  }
-  
-  p.draw = function() { 
-    p.clear();
-    
-    // Advance all the notes.
-    for (let i = 0; i < notes.length; i++) {
-      notes[i].y -= 1;
-      // If the note is off the page, remove it.
-      if (notes[i] <= 0) {
-      }
-    }
-    
-    x = x - 1; 
-    if (x < 0) { 
-      x = p.width; 
-    } 
-    p.line(x, 0, x, p.height);  
-  } 
 }
