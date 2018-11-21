@@ -2,13 +2,13 @@ const COLORS = ['#D5281B','#F6530D','#F69217','#FECD34','#CDF352','#8ED734','#4C
 const NUM_BUTTONS = 8;
 const NOTES_PER_OCTAVE = 7;
 const OCTAVES = 7;
-
 const config = {
   whiteNoteWidth: 20,
   blackNoteWidth: 20,
   whiteNoteHeight: 70,
   blackNoteHeight: 2 * 70 / 3
 }
+const floatingNotes = new p5(sketch);
 
 onWindowResize();
 
@@ -17,14 +17,16 @@ window.addEventListener('resize', onWindowResize);
 document.addEventListener('keydown',onKeyDown);
 document.addEventListener('keyup', onKeyUp);
 
-                          
+let rectDown;   
 function onKeyDown(event) {
+  // TODO: note, this keeps on firing. should it?
+  console.log('keydown')
   const button = event.keyCode - 49;
   if (button < 0 || button >= NUM_BUTTONS) {
     return;
   } 
   document.getElementById(`btn${button}`).setAttribute('active', true);
-  update(button);
+  rectDown = update(button);
 }
 
 function onKeyUp(event) {
@@ -33,6 +35,9 @@ function onKeyUp(event) {
     return;
   } 
   document.getElementById(`btn${button}`).removeAttribute('active');
+  
+  rectDown.removeAttribute('active');
+  rectDown.removeAttribute('class');
 }
 
 function onWindowResize() {
@@ -45,6 +50,9 @@ function onWindowResize() {
   drawPiano();
 }
 
+/*************************
+ * Draws a piano roll
+ ************************/
 function drawPiano() {
   const halfABlackNote = config.blackNoteWidth / 2;
   let x = 0;
@@ -72,11 +80,7 @@ function update(button) {
   const rect = svg.querySelector(`rect[data-index="${note}"]`);
   rect.setAttribute('active', true);
   rect.setAttribute('class', `color-${button}`);
-  
-  setTimeout(() => {
-    rect.removeAttribute('active', true);
-    rect.removeAttribute('class', `color-${button}`);
-  }, 500); 
+  return rect;
 }
 
 function makeRect(index, x, y, w, h, fill, stroke) {
@@ -95,4 +99,20 @@ function makeRect(index, x, y, w, h, fill, stroke) {
   }
   svg.appendChild(rect);
   return rect;
+}
+
+/*************************
+ * P5.js floaty notes bit
+ ************************/
+
+function sketch(p) {
+  p.setup = function() {
+    p.windowResized();
+    p.noStroke();
+    console.log('setup');
+  };
+  
+  p.windowResized = function () {
+    p.createCanvas(p.windowWidth, p.windowHeight - config.whiteNoteHeight - 20);
+  }
 }
