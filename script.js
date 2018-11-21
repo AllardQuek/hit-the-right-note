@@ -6,12 +6,12 @@ function sketch(p) {
   
   let whiteNoteWidth;
   let blackNoteWidth;
-  let whiteNoteHeight = 120;
-  let blackNoteHeight = 2 * 120 / 3;
+  let whiteNoteHeight = 100;
+  let blackNoteHeight = 2 * whiteNoteHeight / 3;
   
   p.setup = function() {
-    p.windowResized();
     console.log('setup');
+    p.windowResized();
   };
   
   p.windowResized = function () {
@@ -22,35 +22,30 @@ function sketch(p) {
     whiteNoteWidth = Math.floor(p.windowWidth / totalWhiteNotes);
     blackNoteWidth = Math.floor(whiteNoteWidth * 2 / 3);
     
-    p.createCanvas(p.windowWidth, whiteNoteHeight + 100);
+    p.createCanvas(p.windowWidth, p.windowHeight);
+    drawPiano();
   }
   
   function drawPiano() {
     let x = 0;
-    let y = 0;
-    for (let i = 0; i < NOTES_PER_OCTAVE; i++) {
-      p.rect(x, y, whiteNoteWidth, whiteNoteHeight);
-      p.rect((x -  , y, blackNoteWidth, blackNoteHeight);
+    let y = p.height - whiteNoteHeight;
+    const halfABlackNote = blackNoteWidth / 2;
+    
+    for (let o = 0; o < OCTAVES; o++) {
+      for (let i = 0; i < NOTES_PER_OCTAVE; i++) {
+        p.stroke('black');
+        p.fill('white');
+        p.rect(x, y, whiteNoteWidth, whiteNoteHeight);
+
+        // No black notes for 0, 3
+        if (i % NOTES_PER_OCTAVE !== 0 && i % NOTES_PER_OCTAVE !== 3) {
+          p.fill('black');
+          p.noStroke();
+          p.rect(x - halfABlackNote, y, blackNoteWidth, blackNoteHeight);
+        }
+        x += whiteNoteWidth;
+      }
     }
   }
-    
-  /*
-  <rect class="white" x="0" y="0" width="20" height="120"/>
-          <rect class="white" x="20" y="0" width="20" height="120"/>
-          <rect class="white" x="40" y="0" width="20" height="120"/>
-          <rect class="white" x="60" y="0" width="20" height="120"/>
-          <rect class="white" x="80" y="0" width="20" height="120"/>
-          <rect class="white" x="100" y="0" width="20" height="120"/>
-          <rect class="white" x="120" y="0" width="20" height="120"/>
-
-          <!-- 20 - 14/2 -->
-          <rect class="black" x="13" y="0" width="14" height="80"/>
-          <rect class="black" x="33" y="0" width="14" height="80"/>
-          <!-- skip a note -->
-          <rect class="black" x="73" y="0" width="14" height="80"/>
-          <rect class="black" x="93" y="0" width="14" height="80"/>
-          <rect class="black" x="113" y="0" width="14" height="80"/>
-          */
-
 }
 
