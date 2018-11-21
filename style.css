@@ -14,3 +14,23 @@ body {
   background: #141E30;
   background: linear-gradient(to bottom, #243B55, #141E30);
 }
+
+.color-0 { background: #D5281B; } 
+.color-1 { background: #F6530D; } 
+.color-2 { background: #F69217; } 
+.color-3 { background: #FECD34; } 
+.color-4 { background: #CDF352; } 
+.color-5 { background: #8ED734; } 
+.color-6 { background: #4CB928; } 
+.color-7 { background: #1A9322; }
+
+.controls {
+  position: absolute;
+  top: 100px;
+  left: 100px;
+  display: flex;
+}
+.controls .button {
+  height: 120px;
+  width: 40px;
+}

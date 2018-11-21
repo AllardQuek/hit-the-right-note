@@ -1,5 +1,5 @@
 const p5Canvas = new p5(sketch, 'container');
-
+const colours = ['#D5281B','#F6530D','#F69217','#FECD34','#CDF352','#8ED734','#4CB928','#1A9322'];
 
 /****************
  * p5 canvas, draws:
