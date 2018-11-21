@@ -65,5 +65,5 @@ rect {
   transition: all 0.2s linear;
 }
 .controls button[active] {
-  transform:scale(0.9, 0.9)
+  transform: scale(0.9, 0.9)
 }

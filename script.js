@@ -123,11 +123,13 @@ function paintNotes() {
   context.clearRect(0, 0, window.innerWidth, contextHeight);
   
   // Remove all the notes that will be off the page;
-  notesToPaint = notesToPaint.filter((note) => note.y > dy);
+  notesToPaint = notesToPaint.filter((note) => note.y > 100);
     
   // Advance all the notes.
   for (let i = 0; i < notesToPaint.length; i++) {
     notesToPaint[i].y -= dy;
+    
+    context.globalAlpha = notesToPaint[i].y / contextHeight;
     context.fillStyle = notesToPaint[i].color;
     context.fillRect(notesToPaint[i].x, notesToPaint[i].y - 20, notesToPaint[i].width, 20);
   }
