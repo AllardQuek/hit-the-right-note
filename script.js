@@ -18,6 +18,7 @@ const heldButtonToVisualData = new Map();
 let floatyNotesToPaint = [];  // the notes floating on the screen.
 const synth = new mm.Player.tone.PolySynth(NUM_BUTTONS, mm.Player.tone.FMSynth).toMaster();
 
+//const sampler = new Piano({ velocities: 4 }).toMaster();
 
 initEverything();
 
@@ -41,6 +42,7 @@ function initEverything() {
     playBtn.removeAttribute('disabled');
     playBtn.classList.remove('loading');
   }, 1500);
+  
 }
 
 
@@ -98,6 +100,8 @@ function buttonUp(button) {
     
     // Floaty notes.
     thing.noteToPaint.on = false;
+    
+    synth.triggerRelease(mm.Player.tone.Frequency(thing.note, 'midi'));
   }
   heldButtonToVisualData.delete(button);
 }
