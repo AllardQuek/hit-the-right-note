@@ -1,29 +1,41 @@
+const COLORS = ['#D5281B','#F6530D','#F69217','#FECD34','#CDF352','#8ED734','#4CB928','#1A9322'];
+const NUM_BUTTONS = 8;
+const NOTES_PER_OCTAVE = 7;
+const OCTAVES = 7;
+
+const piano = {
+  whiteNoteWidth: 20,
+  blackNoteWidth: 20,
+  whiteNoteHeight: 70,
+  blackNoteHeight: 2 * 70 / 3
+}
+
 const p5Canvas = new p5(sketch, 'container');
-const colours = ['#D5281B','#F6530D','#F69217','#FECD34','#CDF352','#8ED734','#4CB928','#1A9322'];
 
 document.addEventListener('keydown', (event) => {
-  const key = evt.keyCode;
-  const button = key - 49;
+  const button = event.keyCode - 49;
+  if (button < 0 || button >= NUM_BUTTONS) {
+    return;
+  } 
+  document.getElementById(`btn${button}`).setAttribute('active', true);
   
+  p5Canvas.update(button);
+});
+
+document.addEventListener('keyup', (event) => {
+  const button = event.keyCode - 49;
+  if (button < 0 || button >= NUM_BUTTONS) {
+    return;
+  } 
+  document.getElementById(`btn${button}`).removeAttribute('active');
+});
+
+function windowResized() {
+
 }
-onkeydown = (evt: KeyboardEvent) => {
-    if (Tone.context.state !== 'running') {
-      Tone.context.resume();
-    }
-    
-    if (button >= 0 && button < NUM_BUTTONS) {
-      if (heldButtonToMidiNote.has(button)) {
-        return;
-      }
+function drawPiano() {
 
-      const output = genie.next(button, 0.25);
-      const note = output + LOWEST_PIANO_KEY_MIDI_NOTE;
-
-      synth.triggerAttack(Tone.Frequency(note, 'midi'));
-      heldButtonToMidiNote.set(button, note);
-    }
-  };
-
+}
 
 /****************
  * p5 canvas, draws:
@@ -31,9 +43,6 @@ onkeydown = (evt: KeyboardEvent) => {
  ****************/
 
 function sketch(p) {
-  const NOTES_PER_OCTAVE = 7;
-  const OCTAVES = 7;
-  
   let whiteNoteWidth;
   let blackNoteWidth;
   let whiteNoteHeight = 70;
@@ -53,7 +62,13 @@ function sketch(p) {
     drawPiano();
   }
   
+  p.update = function(button) {
+    // Pick a note at random for now.
+    const note = Math.floor(Math.random() * NOTES_PER_OCTAVE * OCTAVES);
+  }
+  
   function drawPiano() {
+    p.clear();
     let x = 0;
     let y = p.height - whiteNoteHeight - 20;
     const halfABlackNote = blackNoteWidth / 2;

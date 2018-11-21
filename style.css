@@ -3,7 +3,7 @@ body {
   margin: 0;
   padding: 0;
   text-align: center;
-  overflow: hidden;
+  xoverflow: hidden;
 }
 
 * { box-sizing: border-box; }
@@ -27,12 +27,12 @@ body {
 .controls {
   display: flex;
   position: absolute;
-  align-items: stretch;
+  /* center hack */
+  width: 80vw;
   left: 50%;
   transform: translate(-50%, -50%);
-  top: 200px;
+  top: 100px;
   height: 100px;
-  width: 80vw;
   z-index: 2;
 }
 .controls button {
@@ -44,7 +44,7 @@ body {
   height: 100%;
   width: 100%;
 }
-.controls button:hover {
+.controls button:hover, .controls button[active] {
   animation: bounce 0.4s ease-out;
 }
 
