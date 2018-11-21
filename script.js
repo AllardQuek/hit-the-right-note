@@ -62,14 +62,16 @@ function buttonDown(button, fromKeyDown) {
   rect.setAttribute('active', true);
   rect.setAttribute('class', `color-${button}`);
   
-  const newLength = notesToPaint.push({
+  const noteToPaint = {
       x: parseFloat(rect.getAttribute('x')), 
       y: contextHeight, 
       width: parseFloat(rect.getAttribute('width')),
+      height: 0,
       color: COLORS[button],
       on: true
-  });
-  heldButtonToMidiNote.set(button, {rect:rect, note:note, noteIndex: newLength - 1});
+  };
+  notesToPaint.push(noteToPaint);
+  heldButtonToMidiNote.set(button, {rect:rect, note:note, noteToPaint:noteToPaint});
   
   if (!fromKeyDown) {
     setTimeout(() => buttonUp(button), 200);
@@ -85,6 +87,7 @@ function buttonUp(button) {
     thing.rect.removeAttribute('class');
     
     // Floaty notes.
+    thing.noteToPaint.on = false;
   }
   heldButtonToMidiNote.delete(button);
 }
@@ -157,16 +160,20 @@ function paintNotes() {
   context.clearRect(0, 0, window.innerWidth, contextHeight);
   
   // Remove all the notes that will be off the page;
-  notesToPaint = notesToPaint.filter((note) => note.y > 100);
+  notesToPaint = notesToPaint.filter((note) => note.on || note.y > 100);
     
   // Advance all the notes.
   for (let i = 0; i < notesToPaint.length; i++) {
-    notesToPaint[i].y -= dy;
+    const note = notesToPaint[i];
+    note.y -= dy;
     
-    // If the note is still on, then 
-    context.globalAlpha = notesToPaint[i].y / contextHeight;
-    context.fillStyle = notesToPaint[i].color;
-    context.fillRect(notesToPaint[i].x, notesToPaint[i].y - 20, notesToPaint[i].width, 20);
+    // If the note is still on, then its height goes up too.
+    if (note.on) {
+      note.height += dy;
+    }
+    context.globalAlpha = note.y / contextHeight;
+    context.fillStyle = note.color;
+    context.fillRect(note.x, note.y, note.width, note.height);
   }
   window.requestAnimationFrame(paintNotes);
 };
