@@ -1,6 +1,6 @@
 const COLORS = ['#D5281B','#F6530D','#F69217','#FECD34','#CDF352','#8ED734','#4CB928','#1A9322'];
 const NUM_BUTTONS = 8;
-const NOTES_PER_OCTAVE = 7;
+const NOTES_PER_OCTAVE = window.innerWidth > 700 ? 7 : 3;
 const OCTAVES = 7;
 const config = {
   whiteNoteWidth: 20,
@@ -20,8 +20,8 @@ window.requestAnimationFrame(paintNotes);
 // Event listeners.
 window.addEventListener('resize', onWindowResize);
 document.addEventListener('keydown',onKeyDown);
-document.addEventListener('touchstart', onKeyDown);
-document.addEventListener('touchend', onKeyUp);
+document.addEventListener('touchstart', onTouchStart);
+document.addEventListener('touchend', onTouchEnd);
 document.addEventListener('keyup', onKeyUp);
 
 function onKeyDown(event) {
@@ -47,10 +47,12 @@ function buttonDown(button, fromKeyDown) {
   }, 1000);
   
   if (!fromKeyDown) {
-    setTimeout(() => {
-      document.getElementById(`btn${button}`).removeAttribute('active');
-    }, 200);
+    setTimeout(() => buttonUp(button), 200);
   }
+}
+
+function buttonUp(button) {
+  document.getElementById(`btn${button}`).removeAttribute('active');
 }
 
 function onKeyUp(event) {
@@ -58,7 +60,15 @@ function onKeyUp(event) {
   if (button < 0 || button >= NUM_BUTTONS) {
     return;
   } 
-  document.getElementById(`btn${button}`).removeAttribute('active');
+  buttonUp(button);
+}
+
+function onTouchStart(event) {
+  buttonDown(event.target.dataset.id, true);
+}
+
+function onTouchEnd(event) {
+  buttonUp(event.target.dataset.id);
 }
 
 function onWindowResize() {
