@@ -5,6 +5,7 @@ const COLORS = ['#EE2B29','#ff9800','#ffff00','#c6ff00','#00e5ff','#2979ff','#65
 const NUM_BUTTONS = 8;
 const NOTES_PER_OCTAVE = 10;
 const WHITE_NOTES_PER_OCTAVE = 6;
+const LOWEST_PIANO_KEY_MIDI_NOTE = 21;
 let OCTAVES = 7;
 const config = {
   whiteNoteWidth: 20,
@@ -18,12 +19,16 @@ const heldButtonToVisualData = new Map();
 let floatyNotesToPaint = [];  // the notes floating on the screen.
 
 const player = new mm.SoundFontPlayer('https://storage.googleapis.com/magentadata/js/soundfonts/sgm_plus');
-
-//const sampler = new Piano({ velocities: 4 }).toMaster();
-
 initEverything();
 
 function initEverything() {
+  // Before we resize, generate all the possible notes so we can load the samples.
+  const seq = {notes:[]};
+  for (let i = 0; i < NOTES_PER_OCTAVE * OCTAVES; i++) {
+    seq.notes.push({pitch: LOWEST_PIANO_KEY_MIDI_NOTE + i});
+  }
+  player.loadSamples(seq);
+  
   // Start the drawing loop.
   onWindowResize();
   window.requestAnimationFrame(paintNotes);
@@ -43,9 +48,7 @@ function initEverything() {
     playBtn.removeAttribute('disabled');
     playBtn.classList.remove('loading');
   }, 1500);
-  
 }
-
 
 function showMainScreen() {
   document.querySelector('.splash').hidden = true;
@@ -68,7 +71,7 @@ function buttonDown(button, fromKeyDown) {
   const note = fakeModelSample();
   
   mm.Player.tone.context.resume();
-  synth.triggerAttack(mm.Player.tone.Frequency(note, 'midi'));
+  player.playNoteDown({pitch:LOWEST_PIANO_KEY_MIDI_NOTE + note});
   
   // Show the note on the piano roll.
   const rect = svg.querySelector(`rect[data-index="${note}"]`);
@@ -102,7 +105,7 @@ function buttonUp(button) {
     // Floaty notes.
     thing.noteToPaint.on = false;
     
-    synth.triggerRelease(mm.Player.tone.Frequency(thing.note, 'midi'));
+    player.playNoteUp({pitch:LOWEST_PIANO_KEY_MIDI_NOTE + thing.note});
   }
   heldButtonToVisualData.delete(button);
 }
