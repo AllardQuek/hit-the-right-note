@@ -11,7 +11,10 @@
     <script src="https://cdn.jsdelivr.net/npm/@magenta/music@1.2.3"></script>
     <script>
       window.Tone = window._tone = mm.Player.tone;
-      window.Buffer, Master, Part, Transport } from 'tone'
+      window.Buffer = mm.Player.tone.Buffer;
+      window.Master = mm.Player.tone.Master;
+      window.Part = mm.Player.tone.Part;
+      window.Transport = mm.Player.tone.Transport;
     </script>
     <script src="https://cdn.jsdelivr.net/npm/tone-piano@0.0.12/build/Piano.js"></script>
     <script src="/script.js" defer></script>
