@@ -14,27 +14,8 @@ let notesToPaint = [];
 
 onWindowResize();
 
-//window.requestAnimationFrame(draw);
+window.requestAnimationFrame(paintNotes);
 
-draw();
-
-function draw() {
-  context.fillStyle = 'red';
-  context.fillRect(0, contextHeight, 100, 100);
-  
-  return;
-  context.clearRect(0, 0, window.innerWidth, contextHeight);
-  
-  // Remove all the notes that will be off the page;
-  notesToPaint = notesToPaint.filter((note) => note.y > 2);
-    
-  // Advance all the notes.
-  for (let i = 0; i < notesToPaint.length; i++) {
-    notesToPaint[i].y -= 1;
-    context.rect(notesToPaint[i].x, notesToPaint[i].y, notesToPaint[i].width, 20);
-  }
-  //window.requestAnimationFrame(draw);
-};
 
 // Event listeners.
 window.addEventListener('resize', onWindowResize);
@@ -50,16 +31,24 @@ function onKeyDown(event) {
   if (button < 0 || button >= NUM_BUTTONS) {
     return;
   } 
-  event.preventDefault();
+  buttonDown(button, true);
+}
+
+function buttonDown(button, fromKeyDown) {
   document.getElementById(`btn${button}`).setAttribute('active', true);
   const rectDown = update(button);
   
   // Start drawing a note column.
-  
   setTimeout(() => {
     rectDown.removeAttribute('active');
     rectDown.removeAttribute('class');
   }, 1000);
+  
+  if (!fromKeyDown) {
+    setTimeout(() => {
+      document.getElementById(`btn${button}`).removeAttribute('active');
+    }, 500);
+  }
 }
 
 function onKeyUp(event) {
@@ -80,8 +69,7 @@ function onWindowResize() {
   // Do the canvas dance.
   ///const dpr = window.devicePixelRatio;
   canvas.width = window.innerWidth;
-  canvas.height = (window.innerHeight - config.whiteNoteHeight - 20);
-  contextHeight = window.innerHeight;
+  canvas.height = contextHeight = window.innerHeight - config.whiteNoteHeight - 20;
   //context.scale(dpr, dpr);
 
   context.lineWidth = 4;
@@ -121,9 +109,30 @@ function update(button) {
   rect.setAttribute('active', true);
   rect.setAttribute('class', `color-${button}`);
   
-  notesToPaint.push({x: parseFloat(rect.getAttribute('x')), y: contextHeight, width: parseFloat(rect.getAttribute('width'))});
+  notesToPaint.push({
+      x: parseFloat(rect.getAttribute('x')), 
+      y: contextHeight, 
+      width: parseFloat(rect.getAttribute('width')),
+      color: COLORS[button]
+  });
   return rect;
 }
+
+function paintNotes() {
+  const dy = 3;
+  context.clearRect(0, 0, window.innerWidth, contextHeight);
+  
+  // Remove all the notes that will be off the page;
+  notesToPaint = notesToPaint.filter((note) => note.y > dy);
+    
+  // Advance all the notes.
+  for (let i = 0; i < notesToPaint.length; i++) {
+    notesToPaint[i].y -= dy;
+    context.fillStyle = notesToPaint[i].color;
+    context.fillRect(notesToPaint[i].x, notesToPaint[i].y - 20, notesToPaint[i].width, 20);
+  }
+  window.requestAnimationFrame(paintNotes);
+};
 
 function makeRect(index, x, y, w, h, fill, stroke) {
   const svgNS = 'http://www.w3.org/2000/svg';
