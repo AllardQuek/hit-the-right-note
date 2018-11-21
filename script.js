@@ -1,7 +1,8 @@
 const COLORS = ['#D5281B','#F6530D','#F69217','#FECD34','#CDF352','#8ED734','#4CB928','#1A9322'];
 const NUM_BUTTONS = 8;
-const NOTES_PER_OCTAVE = window.innerWidth > 700 ? 7 : 3;
-const OCTAVES = 7;
+const NOTES_PER_OCTAVE = 10;
+const WHITE_NOTES_PER_OCTAVE = 6;
+let OCTAVES = 7;
 const config = {
   whiteNoteWidth: 20,
   blackNoteWidth: 20,
@@ -20,8 +21,8 @@ window.requestAnimationFrame(paintNotes);
 // Event listeners.
 window.addEventListener('resize', onWindowResize);
 document.addEventListener('keydown',onKeyDown);
-document.addEventListener('touchstart', onTouchStart);
-document.addEventListener('touchend', onTouchEnd);
+controls.addEventListener('touchstart', onTouchStart);
+controls.addEventListener('touchend', onTouchEnd);
 document.addEventListener('keyup', onKeyUp);
 
 function onKeyDown(event) {
@@ -72,18 +73,16 @@ function onTouchEnd(event) {
 }
 
 function onWindowResize() {
-  const totalWhiteNotes = NOTES_PER_OCTAVE * OCTAVES;
+  OCTAVES = window.innerWidth > 700 ? 7 : 3;
+  const totalWhiteNotes = WHITE_NOTES_PER_OCTAVE * OCTAVES;
   config.whiteNoteWidth = window.innerWidth / totalWhiteNotes;
   config.blackNoteWidth = config.whiteNoteWidth * 2 / 3;
   svg.setAttribute('width', window.innerWidth);
   svg.setAttribute('height', config.whiteNoteHeight);
   
   // Do the canvas dance.
-  ///const dpr = window.devicePixelRatio;
   canvas.width = window.innerWidth;
   canvas.height = contextHeight = window.innerHeight - config.whiteNoteHeight - 20;
-  //context.scale(dpr, dpr);
-
   context.lineWidth = 4;
   context.lineCap = 'round';
   
@@ -99,12 +98,12 @@ function drawPiano() {
   let y = 0;
   let index = 0;
   for (let o = 0; o < OCTAVES; o++) {
-    for (let i = 0; i < NOTES_PER_OCTAVE; i++) {
+    for (let i = 0; i < WHITE_NOTES_PER_OCTAVE; i++) {
       makeRect(index, x, y, config.whiteNoteWidth, config.whiteNoteHeight, 'white', '#141E30');
       index++;
       
       // No black notes for 0, 3.
-      if (i % NOTES_PER_OCTAVE !== 0 && i % NOTES_PER_OCTAVE !== 3) {
+      if (i % WHITE_NOTES_PER_OCTAVE !== 0 && i % WHITE_NOTES_PER_OCTAVE !== 3) {
         makeRect(index, x - halfABlackNote, y, config.blackNoteWidth, config.blackNoteHeight, 'black');
         index++;
       }
@@ -115,7 +114,7 @@ function drawPiano() {
 
 function update(button) {
   // For now, pick a note at random to highlight it.
-  const totalNotes = 84;
+  const totalNotes = NOTES_PER_OCTAVE * OCTAVES;
   const note = Math.floor(Math.random() * totalNotes);
   const rect = svg.querySelector(`rect[data-index="${note}"]`);
   rect.setAttribute('active', true);
