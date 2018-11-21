@@ -30,30 +30,68 @@ window.addEventListener('resize', onWindowResize);
 document.addEventListener('keydown',onKeyDown);
 controls.addEventListener('touchstart', () => buttonDown(event.target.dataset.id, true));
 controls.addEventListener('touchend', () => buttonUp(event.target.dataset.id));
+controls.addEventListener('mousedown', () => buttonDown(event.target.dataset.id, true));
+controls.addEventListener('mouseup', () => buttonUp(event.target.dataset.id));
 document.addEventListener('keyup', onKeyUp);
+
+
+
 
 function showMainScreen() {
   document.querySelector('.splash').hidden = true;
   document.querySelector('.loaded').hidden = false;
 }
 
+function fakeModelSample() {
+  // For now, pick a note at random to highlight it.
+  const totalNotes = NOTES_PER_OCTAVE * OCTAVES;
+  return Math.floor(Math.random() * totalNotes);
+}
+
 function buttonDown(button, fromKeyDown) {
+  if (heldButtonToMidiNote.has(button)) {
+    return;
+  }
   document.getElementById(`btn${button}`).setAttribute('active', true);
-  const rect = updateButtons(button);
-  if (!fromKeyDown) {
-    setTimeout(() => buttonUp(button, rect), 200);
-  }
-}
-
-function buttonUp(button, rect) {
-  document.getElementById(`btn${button}`).removeAttribute('active');
   
-  if (rect) {
-    rectDown.removeAttribute('active');
-    rectDown.removeAttribute('class');
+  // Get a note from the model.
+  const note = fakeModelSample();
+  
+  // Show the note on the piano roll.
+  const rect = svg.querySelector(`rect[data-index="${note}"]`);
+  rect.setAttribute('active', true);
+  rect.setAttribute('class', `color-${button}`);
+  
+  const newLength = notesToPaint.push({
+      x: parseFloat(rect.getAttribute('x')), 
+      y: contextHeight, 
+      width: parseFloat(rect.getAttribute('width')),
+      color: COLORS[button],
+      on: true
+  });
+  heldButtonToMidiNote.set(button, {rect:rect, note:note, noteIndex: newLength - 1});
+  
+  if (!fromKeyDown) {
+    setTimeout(() => buttonUp(button), 200);
   }
 }
 
+function buttonUp(button) {
+  document.getElementById(`btn${button}`).removeAttribute('active');
+  const thing = heldButtonToMidiNote.get(button);
+  if (thing) {
+    // Piano roll.
+    thing.rect.removeAttribute('active');
+    thing.rect.removeAttribute('class');
+    
+    // Floaty notes.
+  }
+  heldButtonToMidiNote.delete(button);
+}
+
+/*************************
+ * Events
+ ************************/
 function onKeyDown(event) {
   // Keydown fires continuously and we don't want that.
   if (event.repeat) {
@@ -114,23 +152,6 @@ function drawPiano() {
   }
 }
 
-function updateButtons(button) {
-  // For now, pick a note at random to highlight it.
-  const totalNotes = NOTES_PER_OCTAVE * OCTAVES;
-  const note = Math.floor(Math.random() * totalNotes);
-  const rect = svg.querySelector(`rect[data-index="${note}"]`);
-  rect.setAttribute('active', true);
-  rect.setAttribute('class', `color-${button}`);
-  
-  notesToPaint.push({
-      x: parseFloat(rect.getAttribute('x')), 
-      y: contextHeight, 
-      width: parseFloat(rect.getAttribute('width')),
-      color: COLORS[button]
-  });
-  return rect;
-}
-
 function paintNotes() {
   const dy = 3;
   context.clearRect(0, 0, window.innerWidth, contextHeight);
@@ -142,6 +163,7 @@ function paintNotes() {
   for (let i = 0; i < notesToPaint.length; i++) {
     notesToPaint[i].y -= dy;
     
+    // If the note is still on, then 
     context.globalAlpha = notesToPaint[i].y / contextHeight;
     context.fillStyle = notesToPaint[i].color;
     context.fillRect(notesToPaint[i].x, notesToPaint[i].y - 20, notesToPaint[i].width, 20);
