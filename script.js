@@ -17,16 +17,25 @@ window.addEventListener('resize', onWindowResize);
 document.addEventListener('keydown',onKeyDown);
 document.addEventListener('keyup', onKeyUp);
 
-let rectDown;   
 function onKeyDown(event) {
-  // TODO: note, this keeps on firing. should it?
-  console.log('keydown')
+  // Keydown fires continuously and we don't want that.
+  if (event.repeat) {
+    return;
+  }
   const button = event.keyCode - 49;
   if (button < 0 || button >= NUM_BUTTONS) {
     return;
   } 
+  event.preventDefault();
   document.getElementById(`btn${button}`).setAttribute('active', true);
-  rectDown = update(button);
+  const rectDown = update(button);
+  
+  // Start drawing a note column.
+  
+  setTimeout(() => {
+    rectDown.removeAttribute('active');
+    rectDown.removeAttribute('class');
+  }, 1000);
 }
 
 function onKeyUp(event) {
@@ -35,9 +44,6 @@ function onKeyUp(event) {
     return;
   } 
   document.getElementById(`btn${button}`).removeAttribute('active');
-  
-  rectDown.removeAttribute('active');
-  rectDown.removeAttribute('class');
 }
 
 function onWindowResize() {
@@ -106,13 +112,38 @@ function makeRect(index, x, y, w, h, fill, stroke) {
  ************************/
 
 function sketch(p) {
+  const notes = [];
+  
   p.setup = function() {
     p.windowResized();
     p.noStroke();
+    p.frameRate(30);
     console.log('setup');
   };
   
   p.windowResized = function () {
     p.createCanvas(p.windowWidth, p.windowHeight - config.whiteNoteHeight - 20);
   }
+  
+  p.addNote = function(x) {
+    notes.push({x: x, y: p.height});
+  }
+  
+  p.draw = function() { 
+    p.clear();
+    
+    // Advance all the notes.
+    for (let i = 0; i < notes.length; i++) {
+      notes[i].y -= 1;
+      // If the note is off the page, remove it.
+      if (notes[i] <= 0) {
+      }
+    }
+    
+    x = x - 1; 
+    if (x < 0) { 
+      x = p.width; 
+    } 
+    p.line(x, 0, x, p.height);  
+  } 
 }
