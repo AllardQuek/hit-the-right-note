@@ -10,29 +10,32 @@ const config = {
   blackNoteHeight: 2 * 70 / 3
 }
 
-windowResized();
+onWindowResize();
 
+// Event listeners.
+window.addEventListener('resize', onWindowResize);
+document.addEventListener('keydown',onKeyDown);
+document.addEventListener('keyup', onKeyUp);
 
-window.addEventListener('resize', windowResized);
-document.addEventListener('keydown', (event) => {
+                          
+function onKeyDown(event) {
   const button = event.keyCode - 49;
   if (button < 0 || button >= NUM_BUTTONS) {
     return;
   } 
   document.getElementById(`btn${button}`).setAttribute('active', true);
-  
-  p5Canvas.update(button);
-});
+  update(button);
+}
 
-document.addEventListener('keyup', (event) => {
+function onKeyUp(event) {
   const button = event.keyCode - 49;
   if (button < 0 || button >= NUM_BUTTONS) {
     return;
   } 
   document.getElementById(`btn${button}`).removeAttribute('active');
-});
+}
 
-function windowResized() {
+function onWindowResize() {
   const totalWhiteNotes = NOTES_PER_OCTAVE * OCTAVES;
   config.whiteNoteWidth = window.innerWidth / totalWhiteNotes;
   config.blackNoteWidth = config.whiteNoteWidth * 2 / 3;
@@ -41,28 +44,46 @@ function windowResized() {
   
   drawPiano();
 }
+
 function drawPiano() {
-  let x = 0;
-  let y = 0; //p.height - whiteNoteHeight - 20;
   const halfABlackNote = config.blackNoteWidth / 2;
-  const index = 0;
+  let x = 0;
+  let y = 0;
+  let index = 0;
   for (let o = 0; o < OCTAVES; o++) {
     for (let i = 0; i < NOTES_PER_OCTAVE; i++) {
-      makeRect(i, x, y, config.whiteNoteWidth, config.whiteNoteHeight, 'white', '#141E30');
+      makeRect(index, x, y, config.whiteNoteWidth, config.whiteNoteHeight, 'white', '#141E30');
+      index++;
       
       // No black notes for 0, 3.
       if (i % NOTES_PER_OCTAVE !== 0 && i % NOTES_PER_OCTAVE !== 3) {
-        makeRect(x - halfABlackNote, y, config.blackNoteWidth, config.blackNoteHeight, 'black');
+        makeRect(index, x - halfABlackNote, y, config.blackNoteWidth, config.blackNoteHeight, 'black');
+        index++;
       }
       x += config.whiteNoteWidth;
     }
   }
 }
 
-function makeRect(x, y, w, h, fill, stroke) {
+function update(button) {
+  // For now, pick a note at random to highlight it.
+  const totalNotes = 84;
+  const note = Math.floor(Math.random() * totalNotes);
+  const rect = svg.querySelector(`rect[data-index="${note}"]`);
+  rect.setAttribute('active', true);
+  rect.setAttribute('class', `color-${button}`);
+  
+  setTimeout(() => {
+    rect.removeAttribute('active', true);
+    rect.removeAttribute('class', `color-${button}`);
+  }, 500); 
+}
+
+function makeRect(index, x, y, w, h, fill, stroke) {
   const svgNS = 'http://www.w3.org/2000/svg';
   
   const rect = document.createElementNS(svgNS, 'rect');
+  rect.setAttribute('data-index', index);
   rect.setAttribute('x', x);
   rect.setAttribute('y', y);
   rect.setAttribute('width', w);
