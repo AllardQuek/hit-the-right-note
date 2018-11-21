@@ -20,6 +20,8 @@ window.requestAnimationFrame(paintNotes);
 // Event listeners.
 window.addEventListener('resize', onWindowResize);
 document.addEventListener('keydown',onKeyDown);
+document.addEventListener('touchstart', onKeyDown);
+document.addEventListener('touchend', onKeyUp);
 document.addEventListener('keyup', onKeyUp);
 
 function onKeyDown(event) {
@@ -47,7 +49,7 @@ function buttonDown(button, fromKeyDown) {
   if (!fromKeyDown) {
     setTimeout(() => {
       document.getElementById(`btn${button}`).removeAttribute('active');
-    }, 500);
+    }, 200);
   }
 }
 
