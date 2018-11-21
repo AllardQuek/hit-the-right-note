@@ -17,6 +17,8 @@ svg.big {
 .white {
   fill: white;
   stroke: black;
+  border-bottom: 5px solid #89A1EE;
+  border-radius: 5px;
 }
 
 .black {
