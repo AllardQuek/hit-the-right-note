@@ -58,10 +58,11 @@ function showMainScreen() {
   document.querySelector('.loaded').hidden = false;
 }
 
-function fakeModelSample() {
+function fakeModelSample(button) {
   // For now, pick a note at random to highlight it.
-  const totalNotes = NOTES_PER_OCTAVE * OCTAVES;
-  return Math.floor(Math.random() * totalNotes);
+  //const totalNotes = NOTES_PER_OCTAVE * OCTAVES + 3;
+  //return Math.floor(Math.random() * totalNotes);
+  return button + 3;
 }
 
 function buttonDown(button, fromKeyDown) {
@@ -71,7 +72,7 @@ function buttonDown(button, fromKeyDown) {
   document.getElementById(`btn${button}`).setAttribute('active', true);
   
   // Get a note from the model.
-  const note = fakeModelSample();
+  const note = fakeModelSample(button);
   
   mm.Player.tone.context.resume();
   player.playNoteDown({pitch:LOWEST_PIANO_KEY_MIDI_NOTE + note});
@@ -137,7 +138,7 @@ function onKeyUp(event) {
 
 function onWindowResize() {
   OCTAVES = window.innerWidth > 700 ? 7 : 3;
-  const totalWhiteNotes = WHITE_NOTES_PER_OCTAVE * OCTAVES;
+  const totalWhiteNotes = 2 + WHITE_NOTES_PER_OCTAVE * OCTAVES;
   config.whiteNoteWidth = window.innerWidth / totalWhiteNotes;
   config.blackNoteWidth = config.whiteNoteWidth * 2 / 3;
   svg.setAttribute('width', window.innerWidth);
@@ -160,6 +161,17 @@ function drawPiano() {
   let x = 0;
   let y = 0;
   let index = 0;
+  
+  // Pianos start on an A:
+  makeRect(index, x, y, config.whiteNoteWidth, config.whiteNoteHeight, 'white', '#141E30');
+  index++;
+  x += config.whiteNoteWidth;
+  makeRect(index, x, y, config.whiteNoteWidth, config.whiteNoteHeight, 'white', '#141E30');
+  index++;
+  makeRect(index, x - halfABlackNote, y, config.blackNoteWidth, config.blackNoteHeight, 'black');
+  index++;
+  x += config.whiteNoteWidth;
+  
   for (let o = 0; o < OCTAVES; o++) {
     for (let i = 0; i < WHITE_NOTES_PER_OCTAVE; i++) {
       makeRect(index, x, y, config.whiteNoteWidth, config.whiteNoteHeight, 'white', '#141E30');
