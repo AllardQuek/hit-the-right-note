@@ -3,9 +3,6 @@
 body {
   font-family: "Benton Sans", "Helvetica Neue", helvetica, arial, sans-serif;
   margin: 2em;
-  
-  --width: 10px;
-  --small-width: calc(var(--width) / 2);
 }
 
 * { box-sizing:border-box;}
@@ -15,10 +12,9 @@ h1 {
   color: #373fff;
 }
 
-#piano {
-  margin-top: 200px;
-  height: 50px;
-  position: relative;
+.piano {
+  display: flex;
+  flex-direction: row;
 }
 
 .white {
