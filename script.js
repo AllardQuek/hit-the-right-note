@@ -16,7 +16,8 @@ const context = canvas.getContext('2d');
 let contextHeight;
 const heldButtonToVisualData = new Map();
 let floatyNotesToPaint = [];  // the notes floating on the screen.
-const synth = new mm.Player.tone.PolySynth(NUM_BUTTONS, mm.Player.tone.FMSynth).toMaster();
+
+const player = new mm.SoundFontPlayer('https://storage.googleapis.com/magentadata/js/soundfonts/sgm_plus');
 
 //const sampler = new Piano({ velocities: 4 }).toMaster();
 
