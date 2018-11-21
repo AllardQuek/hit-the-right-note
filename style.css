@@ -36,14 +36,14 @@ body {
 .color-6 { background: #4CB928; fill: #4CB928; } 
 .color-7 { background: #1A9322; fill: #1A9322; }
  */
-.color-0 { background: #D5281B; fill: #D5281B; } 
-.color-1 { background: #F6530D; fill: #F6530D; } 
-.color-2 { background: #F69217; fill: #F69217; } 
-.color-3 { background: #FECD34; fill: #FECD34; } 
-.color-4 { background: #CDF352; fill: #CDF352; } 
-.color-5 { background: #8ED734; fill: #8ED734; } 
-.color-6 { background: #4CB928; fill: #4CB928; } 
-.color-7 { background: #1A9322; fill: #1A9322; }
+.color-0 { background: #EE2B29; fill: #EE2B29; } 
+.color-1 { background: #ff9800; fill: #ff9800; } 
+.color-2 { background: #ffff00; fill: #ffff00; } 
+.color-3 { background: #c6ff00; fill: #c6ff00; } 
+.color-4 { background: #00e5ff; fill: #00e5ff; } 
+.color-5 { background: #2979ff; fill: #2979ff; } 
+.color-6 { background: #651fff; fill: #651fff; } 
+.color-7 { background: #d500f9; fill: #d500f9; }
 
 canvas {
   position: absolute;

@@ -1,4 +1,7 @@
-const COLORS = ['#D5281B','#F6530D','#F69217','#FECD34','#CDF352','#8ED734','#4CB928','#1A9322'];
+/*************************
+ * Consts for everyone!
+ ************************/
+const COLORS = ['#EE2B29','#ff9800','#ffff00','#c6ff00','#00e5ff','#2979ff','#651fff','#d500f9'];
 const NUM_BUTTONS = 8;
 const NOTES_PER_OCTAVE = 10;
 const WHITE_NOTES_PER_OCTAVE = 6;
@@ -11,30 +14,34 @@ const config = {
 }
 const context = canvas.getContext('2d');
 let contextHeight;
-const heldButtonToMidiNote = new Map();
-let notesToPaint = [];
-
-// Start the drawing loop.
-onWindowResize();
-window.requestAnimationFrame(paintNotes);
-
-// Fake the UI for now. This is where you would load the model instead.
-setTimeout(() => {
-  playBtn.textContent = 'Play';
-  playBtn.removeAttribute('disabled');
-  playBtn.classList.remove('loading');
-}, 1500);
-
-// Event listeners.
-window.addEventListener('resize', onWindowResize);
-document.addEventListener('keydown',onKeyDown);
-controls.addEventListener('touchstart', () => buttonDown(event.target.dataset.id, true));
-controls.addEventListener('touchend', () => buttonUp(event.target.dataset.id));
-controls.addEventListener('mousedown', () => buttonDown(event.target.dataset.id, true));
-controls.addEventListener('mouseup', () => buttonUp(event.target.dataset.id));
-document.addEventListener('keyup', onKeyUp);
+const heldButtonToVisualData = new Map();
+let floatyNotesToPaint = [];  // the notes floating on the screen.
+const synth = new mm.Player.tone.PolySynth(NUM_BUTTONS, mm.Player.tone.FMSynth).toMaster();
 
 
+initEverything();
+
+function initEverything() {
+  // Start the drawing loop.
+  onWindowResize();
+  window.requestAnimationFrame(paintNotes);
+  
+  // Event listeners.
+  window.addEventListener('resize', onWindowResize);
+  document.addEventListener('keydown',onKeyDown);
+  controls.addEventListener('touchstart', () => buttonDown(event.target.dataset.id, true), {passive: true});
+  controls.addEventListener('touchend', () => buttonUp(event.target.dataset.id), {passive: true});
+  controls.addEventListener('mousedown', () => buttonDown(event.target.dataset.id, true));
+  controls.addEventListener('mouseup', () => buttonUp(event.target.dataset.id));
+  document.addEventListener('keyup', onKeyUp);
+  
+  // Fake the UI for now. This is where you would load the model instead.
+  setTimeout(() => {
+    playBtn.textContent = 'Play';
+    playBtn.removeAttribute('disabled');
+    playBtn.classList.remove('loading');
+  }, 1500);
+}
 
 
 function showMainScreen() {
@@ -49,13 +56,16 @@ function fakeModelSample() {
 }
 
 function buttonDown(button, fromKeyDown) {
-  if (heldButtonToMidiNote.has(button)) {
+  if (heldButtonToVisualData.has(button)) {
     return;
   }
   document.getElementById(`btn${button}`).setAttribute('active', true);
   
   // Get a note from the model.
   const note = fakeModelSample();
+  
+  mm.Player.tone.context.resume();
+  synth.triggerAttack(mm.Player.tone.Frequency(note, 'midi'));
   
   // Show the note on the piano roll.
   const rect = svg.querySelector(`rect[data-index="${note}"]`);
@@ -70,8 +80,8 @@ function buttonDown(button, fromKeyDown) {
       color: COLORS[button],
       on: true
   };
-  notesToPaint.push(noteToPaint);
-  heldButtonToMidiNote.set(button, {rect:rect, note:note, noteToPaint:noteToPaint});
+  floatyNotesToPaint.push(noteToPaint);
+  heldButtonToVisualData.set(button, {rect:rect, note:note, noteToPaint:noteToPaint});
   
   if (!fromKeyDown) {
     setTimeout(() => buttonUp(button), 200);
@@ -80,7 +90,7 @@ function buttonDown(button, fromKeyDown) {
 
 function buttonUp(button) {
   document.getElementById(`btn${button}`).removeAttribute('active');
-  const thing = heldButtonToMidiNote.get(button);
+  const thing = heldButtonToVisualData.get(button);
   if (thing) {
     // Piano roll.
     thing.rect.removeAttribute('active');
@@ -89,7 +99,7 @@ function buttonUp(button) {
     // Floaty notes.
     thing.noteToPaint.on = false;
   }
-  heldButtonToMidiNote.delete(button);
+  heldButtonToVisualData.delete(button);
 }
 
 /*************************
@@ -160,11 +170,11 @@ function paintNotes() {
   context.clearRect(0, 0, window.innerWidth, contextHeight);
   
   // Remove all the notes that will be off the page;
-  notesToPaint = notesToPaint.filter((note) => note.on || note.y > 100);
+  floatyNotesToPaint = floatyNotesToPaint.filter((note) => note.on || note.y > 100);
     
   // Advance all the notes.
-  for (let i = 0; i < notesToPaint.length; i++) {
-    const note = notesToPaint[i];
+  for (let i = 0; i < floatyNotesToPaint.length; i++) {
+    const note = floatyNotesToPaint[i];
     note.y -= dy;
     
     // If the note is still on, then its height goes up too.
