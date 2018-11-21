@@ -18,6 +18,7 @@ body {
 
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
+[disabled] { pointer-events: none; }
 
 .background {
   width: 100vw;
@@ -55,6 +56,7 @@ rect {
 
 h1 {
   text-transform: uppercase;
+  font-size: 40px;
 }
 
 .splash a:link, a:visited {
@@ -72,10 +74,6 @@ h1 {
   z-index: 2;
 }
 
-button { 
-  transition: all 0.2s linear;
-}
-
 .controls button {
   border: none;
   box-shadow: none;
@@ -84,6 +82,7 @@ button {
   flex-grow: 1;
   height: 100%;
   width: 100%;
+  transition: transform 0.2s linear;
 }
 
 .controls button[active] {
@@ -98,9 +97,11 @@ button {
 }
 
 .splash {
-  font-size: 14px;
+  font-size: 16px;
   padding: 20px;
   line-height: 1.5;
+  width: 100%;
+  max-width: 700px;
 }
 
 button.splash-button {
@@ -116,6 +117,13 @@ button.splash-button {
   letter-spacing: 1px;
   color: #CDF352;
   text-align: center;
+  transition: background-color 0.2s linear;
+  width: 200px;
+}
+
+button.splash-button:hover {
+  background-color: #CDF352;
+  color: white;
 }
 
 .splash-button.loading span {

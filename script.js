@@ -13,33 +13,32 @@ const context = canvas.getContext('2d');
 let contextHeight;
 let notesToPaint = [];
 
+// Start the drawing loop.
 onWindowResize();
-
 window.requestAnimationFrame(paintNotes);
 
+// Fake the UI for now. This is where you would load the model instead.
+setTimeout(() => {
+  playBtn.textContent = 'Play';
+  playBtn.removeAttribute('disabled');
+  playBtn.classList.remove('loading');
+}, 1500);
 
 // Event listeners.
 window.addEventListener('resize', onWindowResize);
 document.addEventListener('keydown',onKeyDown);
-controls.addEventListener('touchstart', onTouchStart);
-controls.addEventListener('touchend', onTouchEnd);
+controls.addEventListener('touchstart', () => buttonDown(event.target.dataset.id, true));
+controls.addEventListener('touchend', () => buttonUp(event.target.dataset.id));
 document.addEventListener('keyup', onKeyUp);
 
-function onKeyDown(event) {
-  // Keydown fires continuously and we don't want that.
-  if (event.repeat) {
-    return;
-  }
-  const button = event.keyCode - 49;
-  if (button < 0 || button >= NUM_BUTTONS) {
-    return;
-  } 
-  buttonDown(button, true);
+function showMainScreen() {
+  document.querySelector('.splash').hidden = true;
+  document.querySelector('.loaded').hidden = false;
 }
 
 function buttonDown(button, fromKeyDown) {
   document.getElementById(`btn${button}`).setAttribute('active', true);
-  const rectDown = update(button);
+  const rectDown = updateButtons(button);
   
   // Start drawing a note column.
   setTimeout(() => {
@@ -56,20 +55,24 @@ function buttonUp(button) {
   document.getElementById(`btn${button}`).removeAttribute('active');
 }
 
+function onKeyDown(event) {
+  // Keydown fires continuously and we don't want that.
+  if (event.repeat) {
+    return;
+  }
+  const button = event.keyCode - 49;
+  if (button < 0 || button >= NUM_BUTTONS) {
+    return;
+  } 
+  buttonDown(button, true);
+}
+
 function onKeyUp(event) {
   const button = event.keyCode - 49;
   if (button < 0 || button >= NUM_BUTTONS) {
     return;
   } 
   buttonUp(button);
-}
-
-function onTouchStart(event) {
-  buttonDown(event.target.dataset.id, true);
-}
-
-function onTouchEnd(event) {
-  buttonUp(event.target.dataset.id);
 }
 
 function onWindowResize() {
@@ -112,7 +115,7 @@ function drawPiano() {
   }
 }
 
-function update(button) {
+function updateButtons(button) {
   // For now, pick a note at random to highlight it.
   const totalNotes = NOTES_PER_OCTAVE * OCTAVES;
   const note = Math.floor(Math.random() * totalNotes);
