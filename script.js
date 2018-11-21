@@ -1,6 +1,30 @@
 const p5Canvas = new p5(sketch, 'container');
 const colours = ['#D5281B','#F6530D','#F69217','#FECD34','#CDF352','#8ED734','#4CB928','#1A9322'];
 
+document.addEventListener('keydown', (event) => {
+  const key = evt.keyCode;
+  const button = key - 49;
+  
+}
+onkeydown = (evt: KeyboardEvent) => {
+    if (Tone.context.state !== 'running') {
+      Tone.context.resume();
+    }
+    
+    if (button >= 0 && button < NUM_BUTTONS) {
+      if (heldButtonToMidiNote.has(button)) {
+        return;
+      }
+
+      const output = genie.next(button, 0.25);
+      const note = output + LOWEST_PIANO_KEY_MIDI_NOTE;
+
+      synth.triggerAttack(Tone.Frequency(note, 'midi'));
+      heldButtonToMidiNote.set(button, note);
+    }
+  };
+
+
 /****************
  * p5 canvas, draws:
  * - a pianoroll.
