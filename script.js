@@ -4,9 +4,12 @@
 const COLORS = ['#EE2B29','#ff9800','#ffff00','#c6ff00','#00e5ff','#2979ff','#651fff','#d500f9'];
 const NUM_BUTTONS = 8;
 const NOTES_PER_OCTAVE = 10;
-const WHITE_NOTES_PER_OCTAVE = 6;
-const LOWEST_PIANO_KEY_MIDI_NOTE = 21;
+const WHITE_NOTES_PER_OCTAVE = 7;
 let OCTAVES = 7;
+const LOWEST_PIANO_KEY_MIDI_NOTE = 21;
+const GENIE_CHECKPOINT = 'https://storage.googleapis.com/magentadata/js/checkpoints/piano_genie/model/epiano/stp_iq_auto_contour_dt_166006';
+const TEMPERATURE = 0.25;
+
 const config = {
   whiteNoteWidth: 20,
   blackNoteWidth: 20,
@@ -103,8 +106,7 @@ function buttonUp(button) {
     thing.rect.removeAttribute('class');
     
     // Floaty notes.
-    thing.noteToPaint.on = false;
-    
+    thing.noteToPaint.on = false; 
     player.playNoteUp({pitch:LOWEST_PIANO_KEY_MIDI_NOTE + thing.note});
   }
   heldButtonToVisualData.delete(button);
