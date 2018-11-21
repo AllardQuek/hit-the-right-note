@@ -3,6 +3,7 @@ body {
   margin: 0;
   padding: 0;
   text-align: center;
+  overflow: hidden;
 }
 
 * { box-sizing: border-box; }
@@ -11,27 +12,5 @@ body {
   width: 100%;
   height: 100vh; 
   background: #141E30;
-  background: linear-gradient(to right, #243B55, #141E30);
+  background: linear-gradient(to bottom, #243B55, #141E30);
 }
-/* 
-.piano {
-  display: flex;
-  flex-direction: row;
-}
-
-svg.big {
-  height: 1px;
-  overflow: visible;
-}
-
-.white {
-  fill: white;
-  stroke: black;
-  border-bottom: 5px solid #89A1EE;
-  border-radius: 5px;
-}
-
-.black {
-  fill:black;
-  stroke:black;
-} */
