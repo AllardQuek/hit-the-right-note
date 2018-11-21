@@ -5,23 +5,43 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet">
     <link rel="stylesheet" href="/style.css">
     <script src="/script.js" defer></script>
   </head>  
   <body>
-    <div id="container" class="container"></div>
-    <canvas id="canvas"></canvas>
-    <svg id="svg"></svg>
     
-    <div class="controls" id="controls">
-      <button class="color-0" id="btn0" data-id="0" ></button>
-      <button class="color-1" id="btn1" data-id="1" ></button>
-      <button class="color-2" id="btn2" data-id="2" ></button>
-      <button class="color-3" id="btn3" data-id="3" ></button>
-      <button class="color-4" id="btn4" data-id="4" ></button>
-      <button class="color-5" id="btn5" data-id="5" ></button>
-      <button class="color-6" id="btn6" data-id="6"></button>
-      <button class="color-7" id="btn7" data-id="7"></button>
+    
+    <div class="splash">
+      <h1>Piano Genie</h1>
+      <p class="splash-description">A fun way to pretend you're a piano virtuoso using machine learning.
+      <br>Use the 1-8 keys on your keyboard, or touch the coloured blocks to play the piano. The more
+        you pretend you're a real player, the better the melody sounds!
+      </p>
+            
+      <button class="splash" id="playBtn">Loading...</button>
+     
+      <p class="built-with">
+        Built with magenta.js.
+        <br> Learn more about <a target="_blank" href="https://magenta.tensorflow.org/pianogenie">how it works.</a>
+      </p>
+    </div>
+    
+    <div class="loaded" hidden>
+      <div class="background"></div>
+      <canvas id="canvas"></canvas>
+      <svg id="svg"></svg>
+    
+      <div class="controls" id="controls">
+        <button class="color-0" id="btn0" data-id="0" ></button>
+        <button class="color-1" id="btn1" data-id="1" ></button>
+        <button class="color-2" id="btn2" data-id="2" ></button>
+        <button class="color-3" id="btn3" data-id="3" ></button>
+        <button class="color-4" id="btn4" data-id="4" ></button>
+        <button class="color-5" id="btn5" data-id="5" ></button>
+        <button class="color-6" id="btn6" data-id="6"></button>
+        <button class="color-7" id="btn7" data-id="7"></button>
+      </div>
     </div>
     
     <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
