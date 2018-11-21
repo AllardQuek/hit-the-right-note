@@ -9,6 +9,7 @@ body {
 }
 
 * { box-sizing:border-box;}
+
 h1 {
   font-style: italic;
   color: #373fff;
@@ -20,42 +21,12 @@ h1 {
   position: relative;
 }
 
-.octave {
-  position: relative;
-  display: inline-block;
-  height: 100%;
-  width: calc(100% / 7.5);
-}
-
-.white, .black {
-  position: absolute;
-  display: flex;
-  height: 100%;
-  width: 100%;
-  
-  --note: calc(100% / 7);
+.white {
+  fill: white;
+  stroke: black;
 }
 
 .black {
-  height: 60%;
-  z-index: 1;
-}
-
-.white .key {
-  width: var(--note);
-  border: 1px solid #cccccc;
-  background-color: white;
-}
-
-.black .key {
-  width: calc(var(--note) / 2);
-  background-color: black;
-  margin-left: var(--note);
-}
-
-.black .key:first-child {
-  margin-left: calc(var(--width) - var(--small-width) / 2);
-}
-.black .key:nth-child(3){
-  visibility: hidden;
+  fill:black;
+  stroke:black;
 }
