@@ -11,6 +11,7 @@ const config = {
 }
 const context = canvas.getContext('2d');
 let contextHeight;
+const heldButtonToMidiNote = new Map();
 let notesToPaint = [];
 
 // Start the drawing loop.
@@ -38,21 +39,19 @@ function showMainScreen() {
 
 function buttonDown(button, fromKeyDown) {
   document.getElementById(`btn${button}`).setAttribute('active', true);
-  const rectDown = updateButtons(button);
-  
-  // Start drawing a note column.
-  setTimeout(() => {
-    rectDown.removeAttribute('active');
-    rectDown.removeAttribute('class');
-  }, 1000);
-  
+  const rect = updateButtons(button);
   if (!fromKeyDown) {
-    setTimeout(() => buttonUp(button), 200);
+    setTimeout(() => buttonUp(button, rect), 200);
   }
 }
 
-function buttonUp(button) {
+function buttonUp(button, rect) {
   document.getElementById(`btn${button}`).removeAttribute('active');
+  
+  if (rect) {
+    rectDown.removeAttribute('active');
+    rectDown.removeAttribute('class');
+  }
 }
 
 function onKeyDown(event) {
