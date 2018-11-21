@@ -9,9 +9,32 @@ const config = {
   blackNoteHeight: 2 * 70 / 3
 }
 const context = canvas.getContext('2d');
+let contextHeight;
 let notesToPaint = [];
 
 onWindowResize();
+
+//window.requestAnimationFrame(draw);
+
+draw();
+
+function draw() {
+  context.fillStyle = 'red';
+  context.fillRect(0, contextHeight, 100, 100);
+  
+  return;
+  context.clearRect(0, 0, window.innerWidth, contextHeight);
+  
+  // Remove all the notes that will be off the page;
+  notesToPaint = notesToPaint.filter((note) => note.y > 2);
+    
+  // Advance all the notes.
+  for (let i = 0; i < notesToPaint.length; i++) {
+    notesToPaint[i].y -= 1;
+    context.rect(notesToPaint[i].x, notesToPaint[i].y, notesToPaint[i].width, 20);
+  }
+  //window.requestAnimationFrame(draw);
+};
 
 // Event listeners.
 window.addEventListener('resize', onWindowResize);
@@ -55,10 +78,11 @@ function onWindowResize() {
   svg.setAttribute('height', config.whiteNoteHeight);
   
   // Do the canvas dance.
-  const dpr = window.devicePixelRatio;
+  ///const dpr = window.devicePixelRatio;
   canvas.width = window.innerWidth;
   canvas.height = (window.innerHeight - config.whiteNoteHeight - 20);
-  context.scale(dpr, dpr);
+  contextHeight = window.innerHeight;
+  //context.scale(dpr, dpr);
 
   context.lineWidth = 4;
   context.lineCap = 'round';
@@ -97,7 +121,7 @@ function update(button) {
   rect.setAttribute('active', true);
   rect.setAttribute('class', `color-${button}`);
   
-  notesToPaint.push({x: parseFloat(rect.getAttribute('x')), y: p.height, width: parseFloat(rect.getAttribute('width'))});
+  notesToPaint.push({x: parseFloat(rect.getAttribute('x')), y: contextHeight, width: parseFloat(rect.getAttribute('width'))});
   return rect;
 }
 
