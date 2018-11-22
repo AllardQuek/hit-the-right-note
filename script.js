@@ -8,7 +8,7 @@ const WHITE_NOTES_PER_OCTAVE = 7;
 let OCTAVES = 7;
 const LOWEST_PIANO_KEY_MIDI_NOTE = 21;
 const GENIE_CHECKPOINT = 'https://storage.googleapis.com/magentadata/js/checkpoints/piano_genie/model/epiano/stp_iq_auto_contour_dt_166006';
-let TEMPERATURE = parseInt(parseHashParameters()['temperature']) || 0;
+let TEMPERATURE = getTemperature();
 
 const config = {
   whiteNoteWidth: 20,
@@ -28,7 +28,7 @@ initEverything();
 
 function initEverything() {
   genie.initialize().then(() => {
-    console.log('initialized 🧞‍♀️');
+    console.log('🧞‍♀️ready!');
     playBtn.textContent = 'Play';
     playBtn.removeAttribute('disabled');
     playBtn.classList.remove('loading');
@@ -47,7 +47,7 @@ function initEverything() {
   
   // Event listeners.
   window.addEventListener('resize', onWindowResize);
-  window.addEventListener('hashchange", funcRef, false);
+  window.addEventListener('hashchange', () => TEMPERATURE = getTemperature());
   document.addEventListener('keydown',onKeyDown);
   controls.addEventListener('touchstart', () => buttonDown(event.target.dataset.id, true), {passive: true});
   controls.addEventListener('touchend', () => buttonUp(event.target.dataset.id), {passive: true});
@@ -59,6 +59,8 @@ function initEverything() {
 function showMainScreen() {
   document.querySelector('.splash').hidden = true;
   document.querySelector('.loaded').hidden = false;
+  mm.Player.tone.context.resume();
+  const note = genie.next(0, TEMPERATURE);
 }
 
 function buttonDown(button, fromKeyDown) {
@@ -235,6 +237,12 @@ function makeRect(index, x, y, w, h, fill, stroke) {
   }
   svg.appendChild(rect);
   return rect;
+}
+
+function getTemperature() {
+  const hash = parseFloat(parseHashParameters()['temperature']) || 0;
+  const newTemp = Math.min(1, hash);
+  console.log('🧞‍♀️ changed to ', newTemp);
 }
 
 function parseHashParameters() {
