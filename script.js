@@ -76,6 +76,7 @@ function showMainScreen() {
  * Button actions
  ************************/
 function buttonDown(button, fromKeyDown) {
+  debugger
   if (heldButtonToVisualData.has(button)) {
     return;
   }
@@ -106,7 +107,7 @@ function buttonDown(button, fromKeyDown) {
   heldButtonToVisualData.set(button, {rect:rect, note:note, noteToPaint:noteToPaint});
   
   if (!fromKeyDown) {
-    setTimeout(() => buttonUp(button), 200);
+    setTimeout(() => buttonUp(button), 600);
   }
 }
 
@@ -148,13 +149,9 @@ function onKeyDown(event) {
 
 function onKeyUp(event) {
   if (event.keyCode === 32) {  // sustain pedal
-    sustaining = true;
-    debugger
+    sustaining = false;
     // Release everything.
-    const heldButtons = heldButtonToVisualData.keys()
-    for (let i = 0; i < heldButtons; i++) {
-      buttonUp(heldButtons[i]);
-    }
+    heldButtonToVisualData.forEach((data, button) => buttonUp(button));
   } else {
     const button = getButtonFromKeyCode(event.keyCode);
     if (button != null) {
