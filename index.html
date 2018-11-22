@@ -12,7 +12,7 @@
     <script src="/script.js" defer></script>
   </head>  
   <body>  
-    <div class="splash" hidden>
+    <div class="splash">
       <h1>Piano Genie</h1>
       <p class="splash-description">A fun way to pretend you're a piano virtuoso using machine learning.
         <br>Use the 1-8 <b>numbered keys</b> on your keyboard, or <b>touch</b> the coloured blocks to play the piano. The more
@@ -27,20 +27,20 @@
       </p>
     </div>
     
-    <div class="loaded">
+    <div class="loaded" hidden>
       <div class="background"></div>
       <canvas id="canvas"></canvas>
       <svg id="svg"></svg>
     
       <div class="controls" id="controls">
-        <button class="color-0" id="btn0" data-id="0" ></button>
-        <button class="color-1" id="btn1" data-id="1" ></button>
-        <button class="color-2" id="btn2" data-id="2" ></button>
-        <button class="color-3" id="btn3" data-id="3" ></button>
-        <button class="color-4" id="btn4" data-id="4" ></button>
-        <button class="color-5" id="btn5" data-id="5" ></button>
-        <button class="color-6" id="btn6" data-id="6"></button>
-        <button class="color-7" id="btn7" data-id="7"></button>
+        <button class="color-0" id="btn0" data-id="0">1</button>
+        <button class="color-1" id="btn1" data-id="1">2</button>
+        <button class="color-2" id="btn2" data-id="2">3</button>
+        <button class="color-3" id="btn3" data-id="3">4</button>
+        <button class="color-4" id="btn4" data-id="4">5</button>
+        <button class="color-5" id="btn5" data-id="5">6</button>
+        <button class="color-6" id="btn6" data-id="6">7</button>
+        <button class="color-7" id="btn7" data-id="7">8</button>
       </div>
     </div>
   </body>

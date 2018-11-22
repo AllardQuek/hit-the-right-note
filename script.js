@@ -8,7 +8,7 @@ const WHITE_NOTES_PER_OCTAVE = 7;
 let OCTAVES = 7;
 const LOWEST_PIANO_KEY_MIDI_NOTE = 21;
 const GENIE_CHECKPOINT = 'https://storage.googleapis.com/magentadata/js/checkpoints/piano_genie/model/epiano/stp_iq_auto_contour_dt_166006';
-const TEMPERATURE = 0.25;
+let TEMPERATURE = parseInt(parseHashParameters()['temperature']) || 0;
 
 const config = {
   whiteNoteWidth: 20,
@@ -47,6 +47,7 @@ function initEverything() {
   
   // Event listeners.
   window.addEventListener('resize', onWindowResize);
+  window.addEventListener('hashchange", funcRef, false);
   document.addEventListener('keydown',onKeyDown);
   controls.addEventListener('touchstart', () => buttonDown(event.target.dataset.id, true), {passive: true});
   controls.addEventListener('touchend', () => buttonUp(event.target.dataset.id), {passive: true});
@@ -60,7 +61,6 @@ function showMainScreen() {
   document.querySelector('.loaded').hidden = false;
 }
 
-
 function buttonDown(button, fromKeyDown) {
   if (heldButtonToVisualData.has(button)) {
     return;
@@ -68,7 +68,7 @@ function buttonDown(button, fromKeyDown) {
   document.getElementById(`btn${button}`).setAttribute('active', true);
   
   // Get a note from the model.
-  const note = fakeModelSample(button);
+  const note = genie.next(button, TEMPERATURE);
   
   mm.Player.tone.context.resume();
   player.playNoteDown({pitch:LOWEST_PIANO_KEY_MIDI_NOTE + note});
@@ -235,4 +235,14 @@ function makeRect(index, x, y, w, h, fill, stroke) {
   }
   svg.appendChild(rect);
   return rect;
+}
+
+function parseHashParameters() {
+  const hash = window.location.hash.substring(1);
+  const params = {}
+  hash.split('&').map(hk => { 
+    let temp = hk.split('='); 
+    params[temp[0]] = temp[1] 
+  });
+  return params;
 }
