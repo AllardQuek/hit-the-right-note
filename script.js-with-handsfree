@@ -10,6 +10,8 @@ const LOWEST_PIANO_KEY_MIDI_NOTE = 21;
 const GENIE_CHECKPOINT = 'https://storage.googleapis.com/magentadata/js/checkpoints/piano_genie/model/epiano/stp_iq_auto_contour_dt_166006';
 let TEMPERATURE = getTemperature();
 
+const handsfree = new Handsfree();
+
 const config = {
   whiteNoteWidth: 20,
   blackNoteWidth: 20,

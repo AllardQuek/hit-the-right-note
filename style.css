@@ -135,3 +135,9 @@ button.splash-button:hover {
 @keyframes pulsing-fade { 
   50% { opacity: 0.3; }
 }
+/*
+* handsfree.js
+*/
+video {
+  display: none;
+}
