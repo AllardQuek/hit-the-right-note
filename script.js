@@ -10,6 +10,8 @@ const LOWEST_PIANO_KEY_MIDI_NOTE = 21;
 const GENIE_CHECKPOINT = 'https://storage.googleapis.com/magentadata/js/checkpoints/piano_genie/model/epiano/stp_iq_auto_contour_dt_166006';
 let TEMPERATURE = getTemperature();
 
+const handsfree = new Handsfree();
+
 const config = {
   whiteNoteWidth: 20,
   blackNoteWidth: 20,
@@ -54,6 +56,31 @@ function initEverything() {
   controls.addEventListener('mousedown', () => buttonDown(event.target.dataset.id, true));
   controls.addEventListener('mouseup', () => buttonUp(event.target.dataset.id));
   document.addEventListener('keyup', onKeyUp);
+  
+  
+  handsfree.start({debug: true});
+  handsfree.use({
+  name: 'PianoGenie',
+
+  onFrame (faces) {
+    faces.forEach(face => {
+      // Only catch events when the cursor is over the $canvas
+      if (face.cursor.$target.localName === 'button') {
+        if (face.cursor.state.mouseDown) {
+          if (face.cursor.$target.id === 'playBtn') {
+            showMainScreen();
+          }
+        }
+        if (face.cursor.state.mouseDrag) {
+          buttonDown(face.cursor.$target.id , true);
+        }
+        if (face.cursor.state.mouseUp) {
+          buttoUp(face.cursor.$target.id);
+        }
+      }
+    })
+  }
+})
 }
 
 function showMainScreen() {
