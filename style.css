@@ -62,14 +62,15 @@ h1 {
 .splash a:link, a:visited {
   color: #CDF352;
 }
+
 .controls {
   display: flex;
   position: absolute;
   /* center hack */
   width: 80vw;
   left: 50%;
-  transform: translate(-50%, -50%);
-  bottom: 60px;
+  transform: translateX(-50%);
+  bottom: 20px;
   height: 100px;
   z-index: 2;
 }
@@ -86,6 +87,10 @@ h1 {
   font-family: inherit;
   font-size: 20px;
   font-weight: bold;
+  -webkit-user-select: none; /* Safari 3.1+ */
+  -moz-user-select: none; /* Firefox 2+ */
+  -ms-user-select: none; /* IE 10+ */
+  user-select: none; /* Standard syntax */
 }
 
 .controls button[active] {
@@ -99,6 +104,7 @@ h1 {
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
+    bottom: 100px;
   } 
   
   .controls button {

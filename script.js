@@ -28,7 +28,6 @@ const player = new mm.SoundFontPlayer('https://storage.googleapis.com/magentadat
 const genie = new mm.PianoGenie(GENIE_CHECKPOINT);
 
 initEverything();
-showMainScreen();
 
 /*************************
  * Basic UI bits
@@ -234,11 +233,8 @@ function paintNotes() {
   context.clearRect(0, 0, window.innerWidth, window.innerHeight);
   
   // Remove all the notes that will be off the page;
-  floatyNotesToPaint = floatyNotesToPaint.filter((note) => note.on || note.y < 0);
-  
-  if (floatyNotesToPaint[0])
-    console.log(floatyNotesToPaint[0].y);
-  
+  floatyNotesToPaint = floatyNotesToPaint.filter((note) => note.on || note.y < (contextHeight - 100));
+ 
   // Advance all the notes.
   for (let i = 0; i < floatyNotesToPaint.length; i++) {
     const note = floatyNotesToPaint[i];
@@ -248,7 +244,7 @@ function paintNotes() {
     if (note.on) {
       note.height += dy;
     }
-    //context.globalAlpha = 1 - note.y / contextHeight;
+    context.globalAlpha = 1 - note.y / contextHeight;
     context.fillStyle = note.color;
     context.fillRect(note.x, note.y, note.width, note.height);
   }
@@ -277,7 +273,6 @@ function makeRect(index, x, y, w, h, fill, stroke) {
 }
 
 const keyToButtonMap = [65,83,68,70,74,75,76,186];
-
 function getButtonFromKeyCode(keyCode) {
   let button = keyCode - 49;
   if (button >= 0 && button < NUM_BUTTONS) {
