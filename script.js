@@ -28,6 +28,7 @@ const player = new mm.SoundFontPlayer('https://storage.googleapis.com/magentadat
 const genie = new mm.PianoGenie(GENIE_CHECKPOINT);
 
 initEverything();
+showMainScreen();
 
 /*************************
  * Basic UI bits
@@ -76,7 +77,6 @@ function showMainScreen() {
  * Button actions
  ************************/
 function buttonDown(button, fromKeyDown) {
-  debugger
   if (heldButtonToVisualData.has(button)) {
     return;
   }
@@ -97,7 +97,7 @@ function buttonDown(button, fromKeyDown) {
   
   const noteToPaint = {
       x: parseFloat(rect.getAttribute('x')), 
-      y: contextHeight, 
+      y: 0, 
       width: parseFloat(rect.getAttribute('width')),
       height: 0,
       color: COLORS[button],
@@ -107,7 +107,7 @@ function buttonDown(button, fromKeyDown) {
   heldButtonToVisualData.set(button, {rect:rect, note:note, noteToPaint:noteToPaint});
   
   if (!fromKeyDown) {
-    setTimeout(() => buttonUp(button), 600);
+    setTimeout(() => buttonUp(button), 300);
   }
 }
 
@@ -231,21 +231,24 @@ function drawPiano() {
  ************************/
 function paintNotes() {
   const dy = 3;
-  context.clearRect(0, 0, window.innerWidth, contextHeight);
+  context.clearRect(0, 0, window.innerWidth, window.innerHeight);
   
   // Remove all the notes that will be off the page;
-  floatyNotesToPaint = floatyNotesToPaint.filter((note) => note.on || note.y > 100);
-    
+  floatyNotesToPaint = floatyNotesToPaint.filter((note) => note.on || note.y < 0);
+  
+  if (floatyNotesToPaint[0])
+    console.log(floatyNotesToPaint[0].y);
+  
   // Advance all the notes.
   for (let i = 0; i < floatyNotesToPaint.length; i++) {
     const note = floatyNotesToPaint[i];
-    note.y -= dy;
+    note.y += dy;
     
     // If the note is still on, then its height goes up too.
     if (note.on) {
       note.height += dy;
     }
-    context.globalAlpha = note.y / contextHeight;
+    //context.globalAlpha = 1 - note.y / contextHeight;
     context.fillStyle = note.color;
     context.fillRect(note.x, note.y, note.width, note.height);
   }
