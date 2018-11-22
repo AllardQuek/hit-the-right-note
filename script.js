@@ -17,16 +17,21 @@ const config = {
   whiteNoteHeight: 70,
   blackNoteHeight: 2 * 70 / 3
 }
+
+const heldButtonToVisualData = new Map();
 const context = canvas.getContext('2d');
 let contextHeight;
-const heldButtonToVisualData = new Map();
 let floatyNotesToPaint = [];  // the notes floating on the screen.
+let sustaining = false
 
 const player = new mm.SoundFontPlayer('https://storage.googleapis.com/magentadata/js/soundfonts/sgm_plus');
 const genie = new mm.PianoGenie(GENIE_CHECKPOINT);
 
 initEverything();
 
+/*************************
+ * Basic UI bits
+ ************************/
 function initEverything() {
   genie.initialize().then(() => {
     console.log('🧞‍♀️ready!');
@@ -49,23 +54,27 @@ function initEverything() {
   // Event listeners.
   window.addEventListener('resize', onWindowResize);
   window.addEventListener('hashchange', () => TEMPERATURE = getTemperature());
+}
+
+function showMainScreen() {
+  document.querySelector('.splash').hidden = true;
+  document.querySelector('.loaded').hidden = false;
+  
   document.addEventListener('keydown',onKeyDown);
   controls.addEventListener('touchstart', () => buttonDown(event.target.dataset.id, true), {passive: true});
   controls.addEventListener('touchend', () => buttonUp(event.target.dataset.id), {passive: true});
   controls.addEventListener('mousedown', () => buttonDown(event.target.dataset.id, true));
   controls.addEventListener('mouseup', () => buttonUp(event.target.dataset.id));
   document.addEventListener('keyup', onKeyUp);
-}
-
-function showMainScreen() {
-  document.querySelector('.splash').hidden = true;
-  document.querySelector('.loaded').hidden = false;
-  mm.Player.tone.context.resume();
+  
   // Slow to start up, so do a fake prediction to warm up the model.
   const note = genie.nextFromKeyWhitelist(0, keyWhitelist, TEMPERATURE);
   genie.resetState();
 }
 
+/*************************
+ * Button actions
+ ************************/
 function buttonDown(button, fromKeyDown) {
   if (heldButtonToVisualData.has(button)) {
     return;
@@ -102,6 +111,9 @@ function buttonDown(button, fromKeyDown) {
 }
 
 function buttonUp(button) {
+  if (sustaining) {
+    return;
+  }
   document.getElementById(`btn${button}`).removeAttribute('active');
   const thing = heldButtonToVisualData.get(button);
   if (thing) {
@@ -124,17 +136,31 @@ function onKeyDown(event) {
   if (event.repeat) {
     return;
   }
-  const button = getButtonFromKeyCode(event.keyCode);
-  if (button) {
-    buttonDown(button, true);
-  } 
+  if (event.keyCode === 32) {  // sustain pedal
+    sustaining = true;
+  } else { 
+    const button = getButtonFromKeyCode(event.keyCode);
+    if (button != null) {
+      buttonDown(button, true);
+    } 
+  }
 }
 
 function onKeyUp(event) {
-  const button = getButtonFromKeyCode(event.keyCode);
-  if (button) {
-    buttonUp(button);
-  } 
+  if (event.keyCode === 32) {  // sustain pedal
+    sustaining = true;
+    debugger
+    // Release everything.
+    const heldButtons = heldButtonToVisualData.keys()
+    for (let i = 0; i < heldButtons; i++) {
+      buttonUp(heldButtons[i]);
+    }
+  } else {
+    const button = getButtonFromKeyCode(event.keyCode);
+    if (button != null) {
+      buttonUp(button);
+    } 
+  }
 }
 
 function onWindowResize() {
@@ -203,6 +229,9 @@ function drawPiano() {
   }
 }
 
+/*************************
+ * Floaty notes
+ ************************/
 function paintNotes() {
   const dy = 3;
   context.clearRect(0, 0, window.innerWidth, contextHeight);
@@ -226,6 +255,9 @@ function paintNotes() {
   window.requestAnimationFrame(paintNotes);
 };
 
+/*************************
+ * Utils and helpers
+ ************************/
 function makeRect(index, x, y, w, h, fill, stroke) {
   const svgNS = 'http://www.w3.org/2000/svg';
   
@@ -248,7 +280,6 @@ const keyToButtonMap = [65,83,68,70,74,75,76,186];
 
 function getButtonFromKeyCode(keyCode) {
   let button = keyCode - 49;
-  debugger
   if (button >= 0 && button < NUM_BUTTONS) {
     return button;
   } else {
