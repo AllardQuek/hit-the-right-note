@@ -3,7 +3,7 @@
  ************************/
 const COLORS = ['#EE2B29','#ff9800','#ffff00','#c6ff00','#00e5ff','#2979ff','#651fff','#d500f9'];
 const NUM_BUTTONS = 8;
-const NOTES_PER_OCTAVE = 10;
+const NOTES_PER_OCTAVE = 12;
 const WHITE_NOTES_PER_OCTAVE = 7;
 let OCTAVES = 7;
 const LOWEST_PIANO_KEY_MIDI_NOTE = 21;
@@ -22,9 +22,18 @@ const heldButtonToVisualData = new Map();
 let floatyNotesToPaint = [];  // the notes floating on the screen.
 
 const player = new mm.SoundFontPlayer('https://storage.googleapis.com/magentadata/js/soundfonts/sgm_plus');
+const genie = new mm.PianoGenie(GENIE_CHECKPOINT);
+
 initEverything();
 
 function initEverything() {
+  genie.initialize().then(() => {
+    console.log('initialized 🧞‍♀️');
+    playBtn.textContent = 'Play';
+    playBtn.removeAttribute('disabled');
+    playBtn.classList.remove('loading');
+  });
+  
   // Before we resize, generate all the possible notes so we can load the samples.
   const seq = {notes:[]};
   for (let i = 0; i < NOTES_PER_OCTAVE * OCTAVES; i++) {
@@ -44,13 +53,6 @@ function initEverything() {
   controls.addEventListener('mousedown', () => buttonDown(event.target.dataset.id, true));
   controls.addEventListener('mouseup', () => buttonUp(event.target.dataset.id));
   document.addEventListener('keyup', onKeyUp);
-  
-  // Fake the UI for now. This is where you would load the model instead.
-  setTimeout(() => {
-    playBtn.textContent = 'Play';
-    playBtn.removeAttribute('disabled');
-    playBtn.classList.remove('loading');
-  }, 1500);
 }
 
 function showMainScreen() {
@@ -58,12 +60,6 @@ function showMainScreen() {
   document.querySelector('.loaded').hidden = false;
 }
 
-function fakeModelSample(button) {
-  // For now, pick a note at random to highlight it.
-  //const totalNotes = NOTES_PER_OCTAVE * OCTAVES + 3;
-  //return Math.floor(Math.random() * totalNotes);
-  return button + 3;
-}
 
 function buttonDown(button, fromKeyDown) {
   if (heldButtonToVisualData.has(button)) {
@@ -138,7 +134,7 @@ function onKeyUp(event) {
 
 function onWindowResize() {
   OCTAVES = window.innerWidth > 700 ? 7 : 3;
-  const totalWhiteNotes = 2 + WHITE_NOTES_PER_OCTAVE * OCTAVES;
+  const totalWhiteNotes = 2 + WHITE_NOTES_PER_OCTAVE * OCTAVES + 1; // starts on an A, ends on a C
   config.whiteNoteWidth = window.innerWidth / totalWhiteNotes;
   config.blackNoteWidth = config.whiteNoteWidth * 2 / 3;
   svg.setAttribute('width', window.innerWidth);
@@ -162,27 +158,40 @@ function drawPiano() {
   let y = 0;
   let index = 0;
   
+  const blackNoteIndexes = [1, 3, 6, 8, 10];
+  
+  // First draw all the white notes.
   // Pianos start on an A:
+  makeRect(0, x, y, config.whiteNoteWidth, config.whiteNoteHeight, 'white', '#141E30');
+  makeRect(2, config.whiteNoteWidth, y, config.whiteNoteWidth, config.whiteNoteHeight, 'white', '#141E30');
+  index = 3;
+  x = 2 * config.whiteNoteWidth;
+  for (let o = 0; o < OCTAVES; o++) {
+    for (let i = 0; i < NOTES_PER_OCTAVE; i++) {
+      if (blackNoteIndexes.indexOf(i) === -1) {
+        makeRect(index, x, y, config.whiteNoteWidth, config.whiteNoteHeight, 'white', '#141E30');
+        x += config.whiteNoteWidth;
+      }
+      index++;
+    }
+  }
+  // And an extra C at the end
   makeRect(index, x, y, config.whiteNoteWidth, config.whiteNoteHeight, 'white', '#141E30');
-  index++;
-  x += config.whiteNoteWidth;
-  makeRect(index, x, y, config.whiteNoteWidth, config.whiteNoteHeight, 'white', '#141E30');
-  index++;
-  makeRect(index, x - halfABlackNote, y, config.blackNoteWidth, config.blackNoteHeight, 'black');
-  index++;
-  x += config.whiteNoteWidth;
+  
+  // Now draw all the black notes, so that they sit on top.
+  // Pianos start on an A:
+  makeRect(1, config.whiteNoteWidth - halfABlackNote, y, config.blackNoteWidth, config.blackNoteHeight, 'black');
+  index = 3;
+  x = config.whiteNoteWidth;
   
   for (let o = 0; o < OCTAVES; o++) {
-    for (let i = 0; i < WHITE_NOTES_PER_OCTAVE; i++) {
-      makeRect(index, x, y, config.whiteNoteWidth, config.whiteNoteHeight, 'white', '#141E30');
-      index++;
-      
-      // No black notes for 0, 3.
-      if (i % WHITE_NOTES_PER_OCTAVE !== 0 && i % WHITE_NOTES_PER_OCTAVE !== 3) {
-        makeRect(index, x - halfABlackNote, y, config.blackNoteWidth, config.blackNoteHeight, 'black');
-        index++;
+    for (let i = 0; i < NOTES_PER_OCTAVE; i++) {
+      if (blackNoteIndexes.indexOf(i) !== -1) {
+        makeRect(index, x + config.whiteNoteWidth - halfABlackNote, y, config.blackNoteWidth, config.blackNoteHeight, 'black');
+      } else {
+        x += config.whiteNoteWidth;
       }
-      x += config.whiteNoteWidth;
+      index++;
     }
   }
 }
