@@ -124,21 +124,17 @@ function onKeyDown(event) {
   if (event.repeat) {
     return;
   }
-  const button = event.keyCode - 49;
-  //console.log(event.keyCode);
-  
-  if (button < 0 || button >= NUM_BUTTONS) {
-    return;
+  const button = getButtonFromKeyCode(event.keyCode);
+  if (button) {
+    buttonDown(button, true);
   } 
-  buttonDown(button, true);
 }
 
 function onKeyUp(event) {
-  const button = event.keyCode - 49;
-  if (button < 0 || button >= NUM_BUTTONS) {
-    return;
+  const button = getButtonFromKeyCode(event.keyCode);
+  if (button) {
+    buttonUp(button);
   } 
-  buttonUp(button);
 }
 
 function onWindowResize() {
@@ -248,6 +244,21 @@ function makeRect(index, x, y, w, h, fill, stroke) {
   return rect;
 }
 
+const keyToButtonMap = [65,83,68,70,74,75,76,186];
+
+function getButtonFromKeyCode(keyCode) {
+  let button = keyCode - 49;
+  debugger
+  if (button >= 0 && button < NUM_BUTTONS) {
+    return button;
+  } else {
+    button = keyToButtonMap.indexOf(keyCode);
+    if (button >= 0 && button < NUM_BUTTONS) {
+      return button;
+    }
+  }
+  return null;
+}
 function getTemperature() {
   const hash = parseFloat(parseHashParameters()['temperature']) || 0;
   const newTemp = Math.min(1, hash);
