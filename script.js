@@ -6,6 +6,7 @@ const NUM_BUTTONS = 8;
 const NOTES_PER_OCTAVE = 12;
 const WHITE_NOTES_PER_OCTAVE = 7;
 let OCTAVES = 7;
+let keyWhitelist;
 const LOWEST_PIANO_KEY_MIDI_NOTE = 21;
 const GENIE_CHECKPOINT = 'https://storage.googleapis.com/magentadata/js/checkpoints/piano_genie/model/epiano/stp_iq_auto_contour_dt_166006';
 let TEMPERATURE = getTemperature();
@@ -54,33 +55,6 @@ function initEverything() {
   controls.addEventListener('mousedown', () => buttonDown(event.target.dataset.id, true));
   controls.addEventListener('mouseup', () => buttonUp(event.target.dataset.id));
   document.addEventListener('keyup', onKeyUp);
-  
-  
-  handsfree.start();
-  handsfree.use({
-  name: 'PianoGenie',
-
-  onFrame (faces) {
-    faces.forEach(face => {
-      // Only catch events when the cursor is over the $canvas
-      if (!face.cursor.$target)
-        return;
-      if (face.cursor.$target.localName === 'button') {
-        if (face.cursor.state.mouseDown) {
-          if (face.cursor.$target.id === 'playBtn') {
-            showMainScreen();
-          }
-        }
-        if (face.cursor.state.mouseDrag) {
-          buttonDown(face.cursor.$target.dataset.id , true);
-        }
-        if (face.cursor.state.mouseUp) {
-          buttonUp(face.cursor.$target.dataset.id);
-        }
-      }
-    })
-  }
-})
 }
 
 function showMainScreen() {
@@ -165,7 +139,10 @@ function onKeyUp(event) {
 
 function onWindowResize() {
   OCTAVES = window.innerWidth > 700 ? 7 : 3;
-  const totalWhiteNotes = 2 + WHITE_NOTES_PER_OCTAVE * OCTAVES + 1; // starts on an A, ends on a C
+  const totalNotes = NOTES_PER_OCTAVE * OCTAVES + 3 + 1; // starts on an A, ends on a C.
+  const totalWhiteNotes = 2 + WHITE_NOTES_PER_OCTAVE * OCTAVES + 1; // starts on an A, ends on a C.
+  keyWhitelist = Array(totalNotes).fill().map((x,i) => i);
+  console.log(keyWhitelist);
   config.whiteNoteWidth = window.innerWidth / totalWhiteNotes;
   config.blackNoteWidth = config.whiteNoteWidth * 2 / 3;
   svg.setAttribute('width', window.innerWidth);

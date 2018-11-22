@@ -94,9 +94,16 @@ h1 {
 
 @media screen and (max-width: 700px) {
   .controls {
-    height: 60px;
+    height: 70px;
     width: 95vw;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
   } 
+  
+  .controls button {
+    width: 25%;
+  }
 }
 
 .splash {
