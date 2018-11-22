@@ -23,7 +23,7 @@ const context = canvas.getContext('2d');
 let contextHeight;
 let floatyNotesToPaint = [];  // the notes floating on the screen.
 let sustaining = false
-const sustainingNotes = [];
+let sustainingNotes = [];
 
 const player = new mm.SoundFontPlayer('https://storage.googleapis.com/magentadata/js/soundfonts/sgm_plus');
 const genie = new mm.PianoGenie(GENIE_CHECKPOINT);
@@ -152,8 +152,8 @@ function onKeyUp(event) {
   if (event.keyCode === 32) {  // sustain pedal
     sustaining = false;
     // Release everything.
-    debugger
-    sustainingNotes.forEach((note) => player.playNoteUp({pitch:LOWEST_PIANO_KEY_MIDI_NOTE + thing.note}););
+    sustainingNotes.forEach((note) => player.playNoteUp({pitch:note}));
+    sustainingNotes = [];
   } else {
     const button = getButtonFromKeyCode(event.keyCode);
     if (button != null) {
