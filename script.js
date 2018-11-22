@@ -23,6 +23,7 @@ const context = canvas.getContext('2d');
 let contextHeight;
 let floatyNotesToPaint = [];  // the notes floating on the screen.
 let sustaining = false
+const sustainingNotes = [];
 
 const player = new mm.SoundFontPlayer('https://storage.googleapis.com/magentadata/js/soundfonts/sgm_plus');
 const genie = new mm.PianoGenie(GENIE_CHECKPOINT);
@@ -111,9 +112,6 @@ function buttonDown(button, fromKeyDown) {
 }
 
 function buttonUp(button) {
-  if (sustaining) {
-    return;
-  }
   document.getElementById(`btn${button}`).removeAttribute('active');
   const thing = heldButtonToVisualData.get(button);
   if (thing) {
@@ -123,7 +121,11 @@ function buttonUp(button) {
     
     // Floaty notes.
     thing.noteToPaint.on = false; 
-    player.playNoteUp({pitch:LOWEST_PIANO_KEY_MIDI_NOTE + thing.note});
+    if (!sustaining) {
+      player.playNoteUp({pitch:LOWEST_PIANO_KEY_MIDI_NOTE + thing.note});
+    } else {
+      sustainingNotes.push(LOWEST_PIANO_KEY_MIDI_NOTE + thing.note);
+    }
   }
   heldButtonToVisualData.delete(button);
 }
@@ -150,7 +152,8 @@ function onKeyUp(event) {
   if (event.keyCode === 32) {  // sustain pedal
     sustaining = false;
     // Release everything.
-    heldButtonToVisualData.forEach((data, button) => buttonUp(button));
+    debugger
+    sustainingNotes.forEach((note) => player.playNoteUp({pitch:LOWEST_PIANO_KEY_MIDI_NOTE + thing.note}););
   } else {
     const button = getButtonFromKeyCode(event.keyCode);
     if (button != null) {
