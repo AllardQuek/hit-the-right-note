@@ -62,7 +62,7 @@ function showMainScreen() {
   document.querySelector('.loaded').hidden = false;
   mm.Player.tone.context.resume();
   // Slow to start up, so do a fake prediction to warm up the model.
-  const note = genie.next(0, TEMPERATURE);
+  const note = genie.nextFromKeyWhitelist(0, keyWhitelist, TEMPERATURE);
   genie.resetState();
 }
 
@@ -71,15 +71,17 @@ function buttonDown(button, fromKeyDown) {
     return;
   }
   document.getElementById(`btn${button}`).setAttribute('active', true);
-  
-  // Get a note from the model.
-  const note = genie.next(button, TEMPERATURE);
+  const note = genie.nextFromKeyWhitelist(button, keyWhitelist, TEMPERATURE);
   
   mm.Player.tone.context.resume();
   player.playNoteDown({pitch:LOWEST_PIANO_KEY_MIDI_NOTE + note});
   
   // Show the note on the piano roll.
   const rect = svg.querySelector(`rect[data-index="${note}"]`);
+  if (!rect) {
+    console.log('couldnt find a rect for note', note);
+    return;
+  }
   rect.setAttribute('active', true);
   rect.setAttribute('class', `color-${button}`);
   
@@ -123,6 +125,8 @@ function onKeyDown(event) {
     return;
   }
   const button = event.keyCode - 49;
+  //console.log(event.keyCode);
+  
   if (button < 0 || button >= NUM_BUTTONS) {
     return;
   } 
@@ -142,7 +146,6 @@ function onWindowResize() {
   const totalNotes = NOTES_PER_OCTAVE * OCTAVES + 3 + 1; // starts on an A, ends on a C.
   const totalWhiteNotes = 2 + WHITE_NOTES_PER_OCTAVE * OCTAVES + 1; // starts on an A, ends on a C.
   keyWhitelist = Array(totalNotes).fill().map((x,i) => i);
-  console.log(keyWhitelist);
   config.whiteNoteWidth = window.innerWidth / totalWhiteNotes;
   config.blackNoteWidth = config.whiteNoteWidth * 2 / 3;
   svg.setAttribute('width', window.innerWidth);
