@@ -88,7 +88,11 @@ function buttonDown(button, fromKeyDown) {
   if (heldButtonToVisualData.has(button)) {
     return;
   }
-  document.getElementById(`btn${button}`).setAttribute('active', true);
+  const el = document.getElementById(`btn${button}`);
+  if (!el)
+    return;
+  
+  el.setAttribute('active', true);
   const note = genie.nextFromKeyWhitelist(button, keyWhitelist, TEMPERATURE);
   const pitch = LOWEST_PIANO_KEY_MIDI_NOTE + note;
   
@@ -126,7 +130,11 @@ function buttonDown(button, fromKeyDown) {
 }
 
 function buttonUp(button) {
-  document.getElementById(`btn${button}`).removeAttribute('active');
+  const el = document.getElementById(`btn${button}`);
+  if (!el)
+    return;
+  
+  el.removeAttribute('active');
   const thing = heldButtonToVisualData.get(button);
   if (thing) {
     // Piano roll.
