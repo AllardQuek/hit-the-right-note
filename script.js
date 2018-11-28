@@ -54,6 +54,7 @@ function initEverything() {
   
   // Event listeners.
   window.addEventListener('resize', onWindowResize);
+  window.addEventListener
   window.addEventListener('hashchange', () => TEMPERATURE = getTemperature());
 }
 
@@ -97,7 +98,7 @@ function buttonDown(button, fromKeyDown) {
   
   const noteToPaint = {
       x: parseFloat(rect.getAttribute('x')), 
-      y: -3, // so that the first time it's drawn it's at 0.
+      y: 0,
       width: parseFloat(rect.getAttribute('width')),
       height: 0,
       color: COLORS[button],
@@ -241,12 +242,15 @@ function paintNotes() {
   // Advance all the notes.
   for (let i = 0; i < floatyNotesToPaint.length; i++) {
     const note = floatyNotesToPaint[i];
-    note.y += dy;
     
-    // If the note is still on, then its height goes up too.
+    // If the note is still on, then its height goes up but it 
+    // doesn't start sliding down yet.
     if (note.on) {
       note.height += dy;
+    } else {
+      note.y += dy;
     }
+    
     context.globalAlpha = 1 - note.y / contextHeight;
     context.fillStyle = note.color;
     context.fillRect(note.x, note.y, note.width, note.height);
