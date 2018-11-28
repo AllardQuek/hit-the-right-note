@@ -56,6 +56,12 @@ function initEverything() {
   window.addEventListener('resize', onWindowResize);
   window.addEventListener('orientationchange', onWindowResize);
   window.addEventListener('hashchange', () => TEMPERATURE = getTemperature());
+  
+  // Start up WebMidi.
+  navigator.requestMIDIAccess()
+  .then(
+      (midi) => midiReady(midi),
+      (err) => console.log('Something went wrong', err));
 }
 
 function showMainScreen() {
@@ -74,6 +80,11 @@ function showMainScreen() {
   genie.resetState();
 }
 
+function midiReady(midi) {
+  const inputs = midi.inputs.values();
+  const outputs = midi.outputs.values();
+  debugger
+}
 /*************************
  * Button actions
  ************************/
