@@ -58,16 +58,24 @@
     <div class="dialog" id="settings">
       <h2>Settings</h2>
       <p>
-        <label class="form-control checkbox">
-          <span>Use MIDI Output</span>
-          <input type="checkbox">
+        Use MIDI Output: 
+        <label class="radio">
+          <input name="yes" type="radio" id="radioMidiYes">
           <span class="control-indicator"></span>
+          Yes
+        </label>
+        <label class="radio">
+          <input name="no" type="radio" id="radioMidiNo" checked>
+          <span class="control-indicator"></span>
+          No
         </label>
 
-        <br>
-        <label>MIDI Instruments: 
-          <select id="selectOut"></select>
-        </label>
+        <div id="midiOutBox" hidden>
+          <label>MIDI Instruments: 
+            <select id="selectOut"></select>
+          </label>
+        </div>
+        
         
       </p>
       <button class="splash-button small">Close</button>

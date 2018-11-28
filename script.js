@@ -74,6 +74,15 @@ function showMainScreen() {
   controls.addEventListener('touchend', () => buttonUp(event.target.dataset.id), {passive: true});
   controls.addEventListener('mousedown', () => buttonDown(event.target.dataset.id, true));
   controls.addEventListener('mouseup', () => buttonUp(event.target.dataset.id));
+  radioMidiYes.addEventListener('click', () => {
+    radioMidiNo.click();
+    midiOutBox.hidden = false;
+  });
+  radioMidiNo.addEventListener('click', () => {
+    radioMidiYes.click();
+    midiOutBox.hidden = true;
+  });
+  
   document.addEventListener('keyup', onKeyUp);
   
   // Slow to start up, so do a fake prediction to warm up the model.
