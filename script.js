@@ -24,7 +24,7 @@ let contextHeight;
 let floatyNotesToPaint = [];  // the notes floating on the screen.
 let sustaining = false
 let sustainingNotes = [];
-
+let using_midi_out = false;
 const player = new mm.SoundFontPlayer('https://storage.googleapis.com/magentadata/js/soundfonts/sgm_plus');
 const genie = new mm.PianoGenie(GENIE_CHECKPOINT);
 const midiOut = [];
@@ -58,11 +58,15 @@ function initEverything() {
   window.addEventListener('orientationchange', onWindowResize);
   window.addEventListener('hashchange', () => TEMPERATURE = getTemperature());
   
-  // Start up WebMidi.
-  navigator.requestMIDIAccess()
-  .then(
-      (midi) => midiReady(midi),
-      (err) => console.log('Something went wrong', err));
+  // Figure out if WebMidi works.
+  if (navigator.requestMIDIAccess) {
+    navigator.requestMIDIAccess()
+      .then(
+          (midi) => midiReady(midi),
+          (err) => console.log('Something went wrong', err));
+  } else {
+  
+  }
 }
 
 function showMainScreen() {
@@ -75,11 +79,10 @@ function showMainScreen() {
   controls.addEventListener('mousedown', () => buttonDown(event.target.dataset.id, true));
   controls.addEventListener('mouseup', () => buttonUp(event.target.dataset.id));
   radioMidiYes.addEventListener('click', () => {
-    radioMidiNo.click();
     midiOutBox.hidden = false;
   });
+  
   radioMidiNo.addEventListener('click', () => {
-    radioMidiYes.click();
     midiOutBox.hidden = true;
   });
   

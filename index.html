@@ -56,16 +56,21 @@
     </div>
     
     <div class="dialog" id="settings">
-      <h2>Settings</h2>
+      <h2>MIDI Settings</h2>
+      
+      <div id="midiNotSupported">
+        Unfortunatelty, this browser does not support WebMIDI. WebMIDI is only
+        supported in 
+      </div>
       <p>
         Use MIDI Output: 
         <label class="radio">
-          <input name="yes" type="radio" id="radioMidiYes">
+          <input name="midi" type="radio" id="radioMidiYes">
           <span class="control-indicator"></span>
           Yes
         </label>
         <label class="radio">
-          <input name="no" type="radio" id="radioMidiNo" checked>
+          <input name="midi" type="radio" id="radioMidiNo" checked>
           <span class="control-indicator"></span>
           No
         </label>
