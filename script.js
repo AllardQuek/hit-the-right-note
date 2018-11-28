@@ -90,9 +90,15 @@ function buttonDown(button, fromKeyDown) {
   }
   document.getElementById(`btn${button}`).setAttribute('active', true);
   const note = genie.nextFromKeyWhitelist(button, keyWhitelist, TEMPERATURE);
+  const pitch = LOWEST_PIANO_KEY_MIDI_NOTE + note;
   
-  mm.Player.tone.context.resume();
-  player.playNoteDown({pitch:LOWEST_PIANO_KEY_MIDI_NOTE + note});
+  // Send to MIDI out or play with the Magenta player.
+  if (midiOut.length > 0) {
+    sendMidiNoteOn(pitch);
+  } else {
+    mm.Player.tone.context.resume();
+    player.playNoteDown({pitch:pitch});
+  }
   
   // Show the note on the piano roll.
   const rect = svg.querySelector(`rect[data-index="${note}"]`);
@@ -129,8 +135,14 @@ function buttonUp(button) {
     
     // Floaty notes.
     thing.noteToPaint.on = false; 
+    const pitch = LOWEST_PIANO_KEY_MIDI_NOTE + thing.note;
     if (!sustaining) {
-      player.playNoteUp({pitch:LOWEST_PIANO_KEY_MIDI_NOTE + thing.note});
+      // Send to MIDI out or play with the Magenta player.
+      if (midiOut.length > 0) {
+        sendMidiNoteOff(pitch);
+      } else {
+        player.playNoteUp({pitch:pitch});
+      }
     } else {
       sustainingNotes.push(LOWEST_PIANO_KEY_MIDI_NOTE + thing.note);
     }
@@ -160,7 +172,15 @@ function onKeyUp(event) {
   if (event.keyCode === 32) {  // sustain pedal
     sustaining = false;
     // Release everything.
-    sustainingNotes.forEach((note) => player.playNoteUp({pitch:note}));
+    
+    sustainingNotes.forEach((note) => {
+      // Send to MIDI out or play with the Magenta player.
+      if (midiOut.length > 0) {
+        sendMidiNoteOff(note);
+      } else {
+        player.playNoteUp({pitch:note});
+      } 
+    });
     sustainingNotes = [];
   } else {
     const button = getButtonFromKeyCode(event.keyCode);
@@ -199,16 +219,20 @@ function midiReady(midi) {
   }
 }
 
-function sendMidiNoteOn() {
-  const noteOnMessage = [0x90, 60, 0x7f];    // note on, middle C, full velocity.
+function sendMidiNoteOn(pitch) {
+  const msg = [0x90, pitch, 0x7f];    // note on, middle C, full velocity.
   
   for (let i = 0; i < midiOut.length; i++) {
-    debugger
-   // var output = midiAccess.outputs.get(portID);
-  //output.send( noteOnMessage );  //omitting the timestamp means send immediately.
-  //output.send( [0x80, 60, 0x40], window.performance.now() + 1000.0 ); // Inlined array creation- note off, middle C,
+    midiOut[i].send(msg);  // Omitting the timestamp means send immediately.
   }
+}
+
+function sendMidiNoteOff(pitch) {
+  const msg = [0x80, pitch, 0x7f];    // note on, middle C, full velocity.
   
+  for (let i = 0; i < midiOut.length; i++) {
+    midiOut[i].send(msg);  // Omitting the timestamp means send immediately.
+  }
 }
 
 /*************************
