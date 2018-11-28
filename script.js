@@ -97,7 +97,7 @@ function buttonDown(button, fromKeyDown) {
   
   const noteToPaint = {
       x: parseFloat(rect.getAttribute('x')), 
-      y: 0, 
+      y: -3, // so that the first time it's drawn it's at 0.
       width: parseFloat(rect.getAttribute('width')),
       height: 0,
       color: COLORS[button],

@@ -38,7 +38,7 @@ body {
 
 canvas {
   position: absolute;
-  top: 90px;
+  top: 70px;
   left: 0;
   right: 0;
   bottom: 0;
@@ -97,6 +97,22 @@ h1 {
   transform: scale(0.9, 0.9)
 }
 
+.rotate-phone {
+  position: relative;
+  height: 60px;
+  width: 60px;
+  margin: 0 auto;
+  fill: white;
+  animation: rotate 4s infinite ease-in-out;
+}
+
+@keyframes rotate {
+  0%, 10% { transform: rotate(0deg) }
+  40%, 60% { transform: rotate(90deg) }
+  95%, 100% { transform: rotate(0deg) }
+}
+
+
 @media screen and (max-width: 700px) {
   .controls {
     height: 70px;
@@ -106,6 +122,10 @@ h1 {
     flex-direction: row;
     bottom: 100px;
   } 
+  
+  canvas {
+    top: 70px;
+  }
   
   .controls button {
     width: 25%;
