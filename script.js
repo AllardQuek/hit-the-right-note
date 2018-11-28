@@ -27,6 +27,7 @@ let sustainingNotes = [];
 
 const player = new mm.SoundFontPlayer('https://storage.googleapis.com/magentadata/js/soundfonts/sgm_plus');
 const genie = new mm.PianoGenie(GENIE_CHECKPOINT);
+const midiOut = [];
 
 initEverything();
 
@@ -80,11 +81,6 @@ function showMainScreen() {
   genie.resetState();
 }
 
-function midiReady(midi) {
-  const inputs = midi.inputs.values();
-  const outputs = midi.outputs.values();
-  debugger
-}
 /*************************
  * Button actions
  ************************/
@@ -191,6 +187,28 @@ function onWindowResize() {
   context.lineCap = 'round';
   
   drawPiano();
+}
+
+/*************************
+ * Handle MIDI out
+ ************************/
+function midiReady(midi) {
+  const outputs = midi.outputs.values();
+  for (let output = outputs.next(); output && !output.done; output = outputs.next()) {
+    midiOut.push(output.value);
+  }
+}
+
+function sendMidiNoteOn() {
+  const noteOnMessage = [0x90, 60, 0x7f];    // note on, middle C, full velocity.
+  
+  for (let i = 0; i < midiOut.length; i++) {
+    debugger
+   // var output = midiAccess.outputs.get(portID);
+  //output.send( noteOnMessage );  //omitting the timestamp means send immediately.
+  //output.send( [0x80, 60, 0x40], window.performance.now() + 1000.0 ); // Inlined array creation- note off, middle C,
+  }
+  
 }
 
 /*************************
