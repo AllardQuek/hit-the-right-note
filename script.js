@@ -54,7 +54,7 @@ function initEverything() {
   
   // Event listeners.
   window.addEventListener('resize', onWindowResize);
-  window.addEventListener
+  window.addEventListener('orientationchange', onWindowResize);
   window.addEventListener('hashchange', () => TEMPERATURE = getTemperature());
 }
 
