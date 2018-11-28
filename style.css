@@ -118,24 +118,25 @@ h1 {
   .controls {
     height: 70px;
     width: 95vw;
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
-    bottom: 100px;
   } 
   
   canvas {
     top: 70px;
   }
-  
-  .controls button {
-    width: 25%;
-  }
 }
-@media screen and (max-width: 700px) {
+
+@media screen and (max-width: 500px) {
+  .splash {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100vh;
+  }
+  
   .rotate-phone {
     display: block;
   }
+}
 
 .splash {
   font-size: 16px;
