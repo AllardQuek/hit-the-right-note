@@ -7,6 +7,9 @@ const CONSTANTS = {
   GENIE_CHECKPOINT : 'https://storage.googleapis.com/magentadata/js/checkpoints/piano_genie/model/epiano/stp_iq_auto_contour_dt_166006',  
 }
 
+/*************************
+ * MIDI or Magenta player
+ ************************/
 class Player {
   constructor() {
     this.player = new mm.SoundFontPlayer('https://storage.googleapis.com/magentadata/js/soundfonts/sgm_plus');
@@ -76,13 +79,29 @@ class Player {
   }
 }
 
+/*************************
+ * Floaty notes
+ ************************/
 class FloatyNotes {
   constructor() {
     this.notes = [];  // the notes floating on the screen.
   }
   
-  addNote(note) {
-    this.notes.push(note);
+  addNote(button, x, width) {
+    const noteToPaint = {
+        x: parseFloat(x),
+        y: 0,
+        width: parseFloat(width),
+        height: 0,
+        color: CONSTANTS.COLORS[button],
+        on: true
+    };
+    this.notes.push(noteToPaint);
+    return noteToPaint;
+  }
+  
+  stopNote(noteToPaint) {
+    noteToPaint.on = false;
   }
   
   drawLoop() {
@@ -108,6 +127,63 @@ class FloatyNotes {
       context.fillStyle = note.color;
       context.fillRect(note.x, note.y, note.width, note.height);
     }
-    window.requestAnimationFrame(this.drawLoop);
+    window.requestAnimationFrame(() => this.drawLoop());
+  }
+}
+
+class Piano {
+  constructor() {
+    this.config = {
+      whiteNoteWidth: 20,
+      blackNoteWidth: 20,
+      whiteNoteHeight: 70,
+      blackNoteHeight: 2 * 70 / 3
+    }
+    this.context = document.getElementById('canvas').getContext('2d');
+    this.contextHeight = 0;;
+  }
+  
+  drawPiano() {
+    const halfABlackNote = this.this.config.blackNoteWidth / 2;
+    let x = 0;
+    let y = 0;
+    let index = 0;
+
+    const blackNoteIndexes = [1, 3, 6, 8, 10];
+
+    // First draw all the white notes.
+    // Pianos start on an A:
+    this.makeRect(0, x, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
+    this.makeRect(2, this.config.whiteNoteWidth, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
+    index = 3;
+    x = 2 * this.config.whiteNoteWidth;
+    for (let o = 0; o < OCTAVES; o++) {
+      for (let i = 0; i < CONSTANTS.NOTES_PER_OCTAVE; i++) {
+        if (blackNoteIndexes.indexOf(i) === -1) {
+          this.makeRect(index, x, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
+          x += this.config.whiteNoteWidth;
+        }
+        index++;
+      }
+    }
+    // And an extra C at the end
+    this.makeRect(index, x, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
+
+    // Now draw all the black notes, so that they sit on top.
+    // Pianos start on an A:
+    this.makeRect(1, this.config.whiteNoteWidth - halfABlackNote, y, this.config.blackNoteWidth, this.config.blackNoteHeight, 'black');
+    index = 3;
+    x = this.config.whiteNoteWidth;
+
+    for (let o = 0; o < OCTAVES; o++) {
+      for (let i = 0; i < CONSTANTS.NOTES_PER_OCTAVE; i++) {
+        if (blackNoteIndexes.indexOf(i) !== -1) {
+          this.makeRect(index, x + this.config.whiteNoteWidth - halfABlackNote, y, this.config.blackNoteWidth, this.config.blackNoteHeight, 'black');
+        } else {
+          x += this.config.whiteNoteWidth;
+        }
+        index++;
+      }
+    }
   }
 }

@@ -5,16 +5,8 @@ let OCTAVES = 7;
 let keyWhitelist;
 let TEMPERATURE = getTemperature();
 
-const config = {
-  whiteNoteWidth: 20,
-  blackNoteWidth: 20,
-  whiteNoteHeight: 70,
-  blackNoteHeight: 2 * 70 / 3
-}
-
 const heldButtonToVisualData = new Map();
-const context = canvas.getContext('2d');
-let contextHeight;
+
 
 let sustaining = false
 let sustainingNotes = [];
@@ -22,6 +14,7 @@ let sustainingNotes = [];
 const player = new Player();
 const genie = new mm.PianoGenie(CONSTANTS.GENIE_CHECKPOINT);
 const painter = new FloatyNotes();
+const piano = new Piano();
 
 initEverything();
 
@@ -38,25 +31,12 @@ function initEverything() {
 
   // Start the drawing loop.
   onWindowResize();
-  window.requestAnimationFrame(painter.drawLoop);
+  window.requestAnimationFrame(() => painter.drawLoop());
 
   // Event listeners.
   window.addEventListener('resize', onWindowResize);
   window.addEventListener('orientationchange', onWindowResize);
   window.addEventListener('hashchange', () => TEMPERATURE = getTemperature());
-
-  // Figure out if WebMidi works.
-  if (navigator.requestMIDIAccess) {
-    midiNotSupported.hidden = true;
-    midiSupported.hidden = false;
-    navigator.requestMIDIAccess()
-      .then(
-          (midi) => player.midiReady(midi),
-          (err) => console.log('Something went wrong', err));
-  } else {
-    midiNotSupported.hidden = false;
-    midiSupported.hidden = true;
-  }
 }
 
 function showMainScreen() {
@@ -100,7 +80,7 @@ function buttonDown(button, fromKeyDown) {
   const pitch = CONSTANTS.LOWEST_PIANO_KEY_MIDI_NOTE + note;
 
   player.playNoteDown(pitch);
-
+  
   // Show the note on the piano roll.
   const rect = svg.querySelector(`rect[data-index="${note}"]`);
   if (!rect) {
@@ -110,15 +90,7 @@ function buttonDown(button, fromKeyDown) {
   rect.setAttribute('active', true);
   rect.setAttribute('class', `color-${button}`);
 
-  const noteToPaint = {
-      x: parseFloat(rect.getAttribute('x')),
-      y: 0,
-      width: parseFloat(rect.getAttribute('width')),
-      height: 0,
-      color: CONSTANTS.COLORS[button],
-      on: true
-  };
-  painter.addNote(noteToPaint);
+  const noteToPaint = painter.addNote(button, rect.getAttribute('x'), rect.getAttribute('width'));
   heldButtonToVisualData.set(button, {rect:rect, note:note, noteToPaint:noteToPaint});
 
   if (!fromKeyDown) {
@@ -138,8 +110,7 @@ function buttonUp(button) {
     thing.rect.removeAttribute('active');
     thing.rect.removeAttribute('class');
 
-    // Floaty notes.
-    thing.noteToPaint.on = false;
+    painter.stopNote(thing.noteToPaint);
     const pitch = CONSTANTS.LOWEST_PIANO_KEY_MIDI_NOTE + thing.note;
     if (!sustaining) {
       player.playNoteUp(pitch);
@@ -201,82 +172,13 @@ function onWindowResize() {
   context.lineWidth = 4;
   context.lineCap = 'round';
 
-  drawPiano();
+  piano.draw();
 }
-
-/*************************
- * Draws a piano roll
- ************************/
-function drawPiano() {
-  const halfABlackNote = config.blackNoteWidth / 2;
-  let x = 0;
-  let y = 0;
-  let index = 0;
-
-  const blackNoteIndexes = [1, 3, 6, 8, 10];
-
-  // First draw all the white notes.
-  // Pianos start on an A:
-  makeRect(0, x, y, config.whiteNoteWidth, config.whiteNoteHeight, 'white', '#141E30');
-  makeRect(2, config.whiteNoteWidth, y, config.whiteNoteWidth, config.whiteNoteHeight, 'white', '#141E30');
-  index = 3;
-  x = 2 * config.whiteNoteWidth;
-  for (let o = 0; o < OCTAVES; o++) {
-    for (let i = 0; i < CONSTANTS.NOTES_PER_OCTAVE; i++) {
-      if (blackNoteIndexes.indexOf(i) === -1) {
-        makeRect(index, x, y, config.whiteNoteWidth, config.whiteNoteHeight, 'white', '#141E30');
-        x += config.whiteNoteWidth;
-      }
-      index++;
-    }
-  }
-  // And an extra C at the end
-  makeRect(index, x, y, config.whiteNoteWidth, config.whiteNoteHeight, 'white', '#141E30');
-
-  // Now draw all the black notes, so that they sit on top.
-  // Pianos start on an A:
-  makeRect(1, config.whiteNoteWidth - halfABlackNote, y, config.blackNoteWidth, config.blackNoteHeight, 'black');
-  index = 3;
-  x = config.whiteNoteWidth;
-
-  for (let o = 0; o < OCTAVES; o++) {
-    for (let i = 0; i < CONSTANTS.NOTES_PER_OCTAVE; i++) {
-      if (blackNoteIndexes.indexOf(i) !== -1) {
-        makeRect(index, x + config.whiteNoteWidth - halfABlackNote, y, config.blackNoteWidth, config.blackNoteHeight, 'black');
-      } else {
-        x += config.whiteNoteWidth;
-      }
-      index++;
-    }
-  }
-}
-
-/*************************
- * Floaty notes
- ************************/
 
 
 /*************************
  * Utils and helpers
  ************************/
-function makeRect(index, x, y, w, h, fill, stroke) {
-  const svgNS = 'http://www.w3.org/2000/svg';
-
-  const rect = document.createElementNS(svgNS, 'rect');
-  rect.setAttribute('data-index', index);
-  rect.setAttribute('x', x);
-  rect.setAttribute('y', y);
-  rect.setAttribute('width', w);
-  rect.setAttribute('height', h);
-  rect.setAttribute('fill', fill);
-  if (stroke) {
-    rect.setAttribute('stroke', stroke);
-    rect.setAttribute('stroke-width', '3px');
-  }
-  svg.appendChild(rect);
-  return rect;
-}
-
 const keyToButtonMap = [65,83,68,70,74,75,76,186];
 function getButtonFromKeyCode(keyCode) {
   let button = keyCode - 49;
