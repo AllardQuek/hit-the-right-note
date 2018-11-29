@@ -1,14 +1,8 @@
 /*************************
  * Consts for everyone!
  ************************/
-const COLORS = ['#EE2B29','#ff9800','#ffff00','#c6ff00','#00e5ff','#2979ff','#651fff','#d500f9'];
-const NUM_BUTTONS = 8;
-const NOTES_PER_OCTAVE = 12;
-const WHITE_NOTES_PER_OCTAVE = 7;
 let OCTAVES = 7;
 let keyWhitelist;
-const LOWEST_PIANO_KEY_MIDI_NOTE = 21;
-const GENIE_CHECKPOINT = 'https://storage.googleapis.com/magentadata/js/checkpoints/piano_genie/model/epiano/stp_iq_auto_contour_dt_166006';
 let TEMPERATURE = getTemperature();
 
 const config = {
@@ -21,13 +15,13 @@ const config = {
 const heldButtonToVisualData = new Map();
 const context = canvas.getContext('2d');
 let contextHeight;
-let floatyNotesToPaint = [];  // the notes floating on the screen.
+
 let sustaining = false
 let sustainingNotes = [];
 
 const player = new Player();
-const genie = new mm.PianoGenie(GENIE_CHECKPOINT);
-
+const genie = new mm.PianoGenie(CONSTANTS.GENIE_CHECKPOINT);
+const painter = new FloatyNotes();
 
 initEverything();
 
@@ -41,16 +35,16 @@ function initEverything() {
     playBtn.removeAttribute('disabled');
     playBtn.classList.remove('loading');
   });
-  
+
   // Start the drawing loop.
   onWindowResize();
-  window.requestAnimationFrame(paintNotes);
-  
+  window.requestAnimationFrame(painter.drawLoop);
+
   // Event listeners.
   window.addEventListener('resize', onWindowResize);
   window.addEventListener('orientationchange', onWindowResize);
   window.addEventListener('hashchange', () => TEMPERATURE = getTemperature());
-  
+
   // Figure out if WebMidi works.
   if (navigator.requestMIDIAccess) {
     midiNotSupported.hidden = true;
@@ -68,7 +62,7 @@ function initEverything() {
 function showMainScreen() {
   document.querySelector('.splash').hidden = true;
   document.querySelector('.loaded').hidden = false;
-  
+
   document.addEventListener('keydown',onKeyDown);
   controls.addEventListener('touchstart', () => buttonDown(event.target.dataset.id, true), {passive: true});
   controls.addEventListener('touchend', () => buttonUp(event.target.dataset.id), {passive: true});
@@ -82,9 +76,9 @@ function showMainScreen() {
     usingMidiOut = false;
     midiOutBox.hidden = true;
   });
-  
+
   document.addEventListener('keyup', onKeyUp);
-  
+
   // Slow to start up, so do a fake prediction to warm up the model.
   const note = genie.nextFromKeyWhitelist(0, keyWhitelist, TEMPERATURE);
   genie.resetState();
@@ -100,13 +94,13 @@ function buttonDown(button, fromKeyDown) {
   const el = document.getElementById(`btn${button}`);
   if (!el)
     return;
-  
+
   el.setAttribute('active', true);
   const note = genie.nextFromKeyWhitelist(button, keyWhitelist, TEMPERATURE);
-  const pitch = LOWEST_PIANO_KEY_MIDI_NOTE + note;
-  
+  const pitch = CONSTANTS.LOWEST_PIANO_KEY_MIDI_NOTE + note;
+
   player.playNoteDown(pitch);
-  
+
   // Show the note on the piano roll.
   const rect = svg.querySelector(`rect[data-index="${note}"]`);
   if (!rect) {
@@ -115,18 +109,18 @@ function buttonDown(button, fromKeyDown) {
   }
   rect.setAttribute('active', true);
   rect.setAttribute('class', `color-${button}`);
-  
+
   const noteToPaint = {
-      x: parseFloat(rect.getAttribute('x')), 
+      x: parseFloat(rect.getAttribute('x')),
       y: 0,
       width: parseFloat(rect.getAttribute('width')),
       height: 0,
-      color: COLORS[button],
+      color: CONSTANTS.COLORS[button],
       on: true
   };
-  floatyNotesToPaint.push(noteToPaint);
+  painter.addNote(noteToPaint);
   heldButtonToVisualData.set(button, {rect:rect, note:note, noteToPaint:noteToPaint});
-  
+
   if (!fromKeyDown) {
     setTimeout(() => buttonUp(button), 300);
   }
@@ -136,21 +130,21 @@ function buttonUp(button) {
   const el = document.getElementById(`btn${button}`);
   if (!el)
     return;
-  
+
   el.removeAttribute('active');
   const thing = heldButtonToVisualData.get(button);
   if (thing) {
     // Piano roll.
     thing.rect.removeAttribute('active');
     thing.rect.removeAttribute('class');
-    
+
     // Floaty notes.
-    thing.noteToPaint.on = false; 
-    const pitch = LOWEST_PIANO_KEY_MIDI_NOTE + thing.note;
+    thing.noteToPaint.on = false;
+    const pitch = CONSTANTS.LOWEST_PIANO_KEY_MIDI_NOTE + thing.note;
     if (!sustaining) {
       player.playNoteUp(pitch);
     } else {
-      sustainingNotes.push(LOWEST_PIANO_KEY_MIDI_NOTE + thing.note);
+      sustainingNotes.push(CONSTANTS.LOWEST_PIANO_KEY_MIDI_NOTE + thing.note);
     }
   }
   heldButtonToVisualData.delete(button);
@@ -166,11 +160,11 @@ function onKeyDown(event) {
   }
   if (event.keyCode === 32) {  // sustain pedal
     sustaining = true;
-  } else { 
+  } else {
     const button = getButtonFromKeyCode(event.keyCode);
     if (button != null) {
       buttonDown(button, true);
-    } 
+    }
   }
 }
 
@@ -178,7 +172,7 @@ function onKeyUp(event) {
   if (event.keyCode === 32) {  // sustain pedal
     sustaining = false;
     // Release everything.
-    
+
     sustainingNotes.forEach((note) => {
       player.playNoteUp(note);
     });
@@ -187,26 +181,26 @@ function onKeyUp(event) {
     const button = getButtonFromKeyCode(event.keyCode);
     if (button != null) {
       buttonUp(button);
-    } 
+    }
   }
 }
 
 function onWindowResize() {
   OCTAVES = window.innerWidth > 700 ? 7 : 3;
-  const totalNotes = NOTES_PER_OCTAVE * OCTAVES + 3 + 1; // starts on an A, ends on a C.
-  const totalWhiteNotes = 2 + WHITE_NOTES_PER_OCTAVE * OCTAVES + 1; // starts on an A, ends on a C.
+  const totalNotes = CONSTANTS.NOTES_PER_OCTAVE * OCTAVES + 3 + 1; // starts on an A, ends on a C.
+  const totalWhiteNotes = 2 + CONSTANTS.WHITE_NOTES_PER_OCTAVE * OCTAVES + 1; // starts on an A, ends on a C.
   keyWhitelist = Array(totalNotes).fill().map((x,i) => i);
   config.whiteNoteWidth = window.innerWidth / totalWhiteNotes;
   config.blackNoteWidth = config.whiteNoteWidth * 2 / 3;
   svg.setAttribute('width', window.innerWidth);
   svg.setAttribute('height', config.whiteNoteHeight);
-  
+
   // Do the canvas dance.
   canvas.width = window.innerWidth;
   canvas.height = contextHeight = window.innerHeight - config.whiteNoteHeight - 20;
   context.lineWidth = 4;
   context.lineCap = 'round';
-  
+
   drawPiano();
 }
 
@@ -218,9 +212,9 @@ function drawPiano() {
   let x = 0;
   let y = 0;
   let index = 0;
-  
+
   const blackNoteIndexes = [1, 3, 6, 8, 10];
-  
+
   // First draw all the white notes.
   // Pianos start on an A:
   makeRect(0, x, y, config.whiteNoteWidth, config.whiteNoteHeight, 'white', '#141E30');
@@ -228,7 +222,7 @@ function drawPiano() {
   index = 3;
   x = 2 * config.whiteNoteWidth;
   for (let o = 0; o < OCTAVES; o++) {
-    for (let i = 0; i < NOTES_PER_OCTAVE; i++) {
+    for (let i = 0; i < CONSTANTS.NOTES_PER_OCTAVE; i++) {
       if (blackNoteIndexes.indexOf(i) === -1) {
         makeRect(index, x, y, config.whiteNoteWidth, config.whiteNoteHeight, 'white', '#141E30');
         x += config.whiteNoteWidth;
@@ -238,15 +232,15 @@ function drawPiano() {
   }
   // And an extra C at the end
   makeRect(index, x, y, config.whiteNoteWidth, config.whiteNoteHeight, 'white', '#141E30');
-  
+
   // Now draw all the black notes, so that they sit on top.
   // Pianos start on an A:
   makeRect(1, config.whiteNoteWidth - halfABlackNote, y, config.blackNoteWidth, config.blackNoteHeight, 'black');
   index = 3;
   x = config.whiteNoteWidth;
-  
+
   for (let o = 0; o < OCTAVES; o++) {
-    for (let i = 0; i < NOTES_PER_OCTAVE; i++) {
+    for (let i = 0; i < CONSTANTS.NOTES_PER_OCTAVE; i++) {
       if (blackNoteIndexes.indexOf(i) !== -1) {
         makeRect(index, x + config.whiteNoteWidth - halfABlackNote, y, config.blackNoteWidth, config.blackNoteHeight, 'black');
       } else {
@@ -260,38 +254,14 @@ function drawPiano() {
 /*************************
  * Floaty notes
  ************************/
-function paintNotes() {
-  const dy = 3;
-  context.clearRect(0, 0, window.innerWidth, window.innerHeight);
-  
-  // Remove all the notes that will be off the page;
-  floatyNotesToPaint = floatyNotesToPaint.filter((note) => note.on || note.y < (contextHeight - 100));
- 
-  // Advance all the notes.
-  for (let i = 0; i < floatyNotesToPaint.length; i++) {
-    const note = floatyNotesToPaint[i];
-    
-    // If the note is still on, then its height goes up but it 
-    // doesn't start sliding down yet.
-    if (note.on) {
-      note.height += dy;
-    } else {
-      note.y += dy;
-    }
-    
-    context.globalAlpha = 1 - note.y / contextHeight;
-    context.fillStyle = note.color;
-    context.fillRect(note.x, note.y, note.width, note.height);
-  }
-  window.requestAnimationFrame(paintNotes);
-};
+
 
 /*************************
  * Utils and helpers
  ************************/
 function makeRect(index, x, y, w, h, fill, stroke) {
   const svgNS = 'http://www.w3.org/2000/svg';
-  
+
   const rect = document.createElementNS(svgNS, 'rect');
   rect.setAttribute('data-index', index);
   rect.setAttribute('x', x);
@@ -310,11 +280,11 @@ function makeRect(index, x, y, w, h, fill, stroke) {
 const keyToButtonMap = [65,83,68,70,74,75,76,186];
 function getButtonFromKeyCode(keyCode) {
   let button = keyCode - 49;
-  if (button >= 0 && button < NUM_BUTTONS) {
+  if (button >= 0 && button < CONSTANTS.NUM_BUTTONS) {
     return button;
   } else {
     button = keyToButtonMap.indexOf(keyCode);
-    if (button >= 0 && button < NUM_BUTTONS) {
+    if (button >= 0 && button < CONSTANTS.NUM_BUTTONS) {
       return button;
     }
   }
@@ -329,79 +299,9 @@ function getTemperature() {
 function parseHashParameters() {
   const hash = window.location.hash.substring(1);
   const params = {}
-  hash.split('&').map(hk => { 
-    let temp = hk.split('='); 
-    params[temp[0]] = temp[1] 
+  hash.split('&').map(hk => {
+    let temp = hk.split('=');
+    params[temp[0]] = temp[1]
   });
   return params;
-}
-
-
-let Player = class {
-  constructor() {
-    this.player = new mm.SoundFontPlayer('https://storage.googleapis.com/magentadata/js/soundfonts/sgm_plus');
-    this.midiOut = [];
-    this.usingMidiOut = false;
-    this.selectElement = document.getElementById('selectOut');
-    this.loadAllSamples();
-  }
-  
-  loadAllSamples() {
-    const seq = {notes:[]};
-    for (let i = 0; i < NOTES_PER_OCTAVE * OCTAVES; i++) {
-      seq.notes.push({pitch: LOWEST_PIANO_KEY_MIDI_NOTE + i});
-    }
-    this.player.loadSamples(seq);
-  }
-  
-  playNoteDown(pitch) {
-    // Send to MIDI out or play with the Magenta player.
-    if (this.usingMidiOut) {
-      this.sendMidiNoteOn(pitch);
-    } else {
-      mm.Player.tone.context.resume();
-      this.player.playNoteDown({pitch:pitch});
-    }
-  }
-  
-  playNoteUp(pitch) {
-    // Send to MIDI out or play with the Magenta player.
-    if (this.usingMidiOut) {
-      this.sendMidiNoteOff(pitch);
-    } else {
-      this.player.playNoteUp({pitch:pitch});
-    }
-  }
-  
-  // MIDI bits.
-  midiReady(midi) {
-    // Also react to device changes.
-    midi.addEventListener('statechange', (event) => this.initDevices(event.target));
-    this.initDevices(midi);
-
-    const outputs = midi.outputs.values();
-    for (let output = outputs.next(); output && !output.done; output = outputs.next()) {
-      this.midiOut.push(output.value);
-    }
-  }
-
-  initDevices(midi) {
-    this.midiOut = [];
-
-    const outputs = midi.outputs.values();
-    for (let output = outputs.next(); output && !output.done; output = outputs.next()) {
-      midiOut.push(output.value);
-    }
-    this.selectElement.innerHTML = midiOut.map(device => `<option>${device.name}</option>`).join('');
-  }
-
-  sendMidiNoteOn(pitch) {
-    const msg = [0x90, pitch, 0x7f];    // note on, full velocity.
-    this.midiOut[this.selectElement.selectedIndex].send(msg);
-  }
-
-  sendMidiNoteOff(pitch) {
-    const msg = [0x80, pitch, 0x7f];    // note on, middle C, full velocity.
-    this.midiOut[this.selectElement.selectedIndex].send(msg);
-  }
 }
