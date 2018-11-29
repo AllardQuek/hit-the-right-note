@@ -55,6 +55,19 @@ function showMainScreen() {
     usingMidiOut = false;
     midiOutBox.hidden = true;
   });
+  
+  // Figure out if WebMidi works.
+  if (navigator.requestMIDIAccess) {
+    midiNotSupported.hidden = true;
+    midiSupported.hidden = false;
+    navigator.requestMIDIAccess()
+      .then(
+          (midi) => player.midiReady(midi),
+          (err) => console.log('Something went wrong', err));
+  } else {
+    midiNotSupported.hidden = false;
+    midiSupported.hidden = true;
+  }
 
   document.addEventListener('keyup', onKeyUp);
 
