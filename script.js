@@ -27,7 +27,8 @@ let sustainingNotes = [];
 let using_midi_out = false;
 const player = new mm.SoundFontPlayer('https://storage.googleapis.com/magentadata/js/soundfonts/sgm_plus');
 const genie = new mm.PianoGenie(GENIE_CHECKPOINT);
-const midiOut = [];
+let midiOut = [];
+let usingMidiOut = false;
 
 initEverything();
 
@@ -60,12 +61,15 @@ function initEverything() {
   
   // Figure out if WebMidi works.
   if (navigator.requestMIDIAccess) {
+    midiNotSupported.hidden = true;
+    midiSupported.hidden = false;
     navigator.requestMIDIAccess()
       .then(
           (midi) => midiReady(midi),
           (err) => console.log('Something went wrong', err));
   } else {
-  
+    midiNotSupported.hidden = false;
+    midiSupported.hidden = true;
   }
 }
 
@@ -79,10 +83,11 @@ function showMainScreen() {
   controls.addEventListener('mousedown', () => buttonDown(event.target.dataset.id, true));
   controls.addEventListener('mouseup', () => buttonUp(event.target.dataset.id));
   radioMidiYes.addEventListener('click', () => {
+    usingMidiOut = true;
     midiOutBox.hidden = false;
   });
-  
   radioMidiNo.addEventListener('click', () => {
+    usingMidiOut = false;
     midiOutBox.hidden = true;
   });
   
@@ -109,7 +114,7 @@ function buttonDown(button, fromKeyDown) {
   const pitch = LOWEST_PIANO_KEY_MIDI_NOTE + note;
   
   // Send to MIDI out or play with the Magenta player.
-  if (midiOut.length > 0) {
+  if (usingMidiOut) {
     sendMidiNoteOn(pitch);
   } else {
     mm.Player.tone.context.resume();
@@ -158,7 +163,7 @@ function buttonUp(button) {
     const pitch = LOWEST_PIANO_KEY_MIDI_NOTE + thing.note;
     if (!sustaining) {
       // Send to MIDI out or play with the Magenta player.
-      if (midiOut.length > 0) {
+      if (usingMidiOut) {
         sendMidiNoteOff(pitch);
       } else {
         player.playNoteUp({pitch:pitch});
@@ -195,7 +200,7 @@ function onKeyUp(event) {
     
     sustainingNotes.forEach((note) => {
       // Send to MIDI out or play with the Magenta player.
-      if (midiOut.length > 0) {
+      if (usingMidiOut) {
         sendMidiNoteOff(note);
       } else {
         player.playNoteUp({pitch:note});
@@ -233,26 +238,35 @@ function onWindowResize() {
  * Handle MIDI out
  ************************/
 function midiReady(midi) {
+  // Also react to device changes.
+  midi.addEventListener('statechange', (event) => initDevices(event.target));
+  initDevices(midi);
+  
   const outputs = midi.outputs.values();
   for (let output = outputs.next(); output && !output.done; output = outputs.next()) {
     midiOut.push(output.value);
   }
 }
 
-function sendMidiNoteOn(pitch) {
-  const msg = [0x90, pitch, 0x7f];    // note on, middle C, full velocity.
+function initDevices(midi) {
+  midiOut = [];
   
-  for (let i = 0; i < midiOut.length; i++) {
-    midiOut[i].send(msg);  // Omitting the timestamp means send immediately.
+  const outputs = midi.outputs.values();
+  for (let output = outputs.next(); output && !output.done; output = outputs.next()) {
+    midiOut.push(output.value);
   }
+  selectOut.innerHTML = midiOut.map(device => `<option>${device.name}</option>`).join('');
+}
+
+
+function sendMidiNoteOn(pitch) {
+  const msg = [0x90, pitch, 0x7f];    // note on, full velocity.
+  midiOut[selectOut.selectedIndex].send(msg);
 }
 
 function sendMidiNoteOff(pitch) {
   const msg = [0x80, pitch, 0x7f];    // note on, middle C, full velocity.
-  
-  for (let i = 0; i < midiOut.length; i++) {
-    midiOut[i].send(msg);  // Omitting the timestamp means send immediately.
-  }
+  midiOut[selectOut.selectedIndex].send(msg);
 }
 
 /*************************
