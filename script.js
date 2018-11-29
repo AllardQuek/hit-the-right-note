@@ -24,11 +24,10 @@ let contextHeight;
 let floatyNotesToPaint = [];  // the notes floating on the screen.
 let sustaining = false
 let sustainingNotes = [];
-let using_midi_out = false;
-const player = new mm.SoundFontPlayer('https://storage.googleapis.com/magentadata/js/soundfonts/sgm_plus');
+
+const player = new Player();
 const genie = new mm.PianoGenie(GENIE_CHECKPOINT);
-let midiOut = [];
-let usingMidiOut = false;
+
 
 initEverything();
 
@@ -42,13 +41,6 @@ function initEverything() {
     playBtn.removeAttribute('disabled');
     playBtn.classList.remove('loading');
   });
-  
-  // Before we resize, generate all the possible notes so we can load the samples.
-  const seq = {notes:[]};
-  for (let i = 0; i < NOTES_PER_OCTAVE * OCTAVES; i++) {
-    seq.notes.push({pitch: LOWEST_PIANO_KEY_MIDI_NOTE + i});
-  }
-  player.loadSamples(seq);
   
   // Start the drawing loop.
   onWindowResize();
@@ -65,7 +57,7 @@ function initEverything() {
     midiSupported.hidden = false;
     navigator.requestMIDIAccess()
       .then(
-          (midi) => midiReady(midi),
+          (midi) => player.midiReady(midi),
           (err) => console.log('Something went wrong', err));
   } else {
     midiNotSupported.hidden = false;
@@ -113,13 +105,7 @@ function buttonDown(button, fromKeyDown) {
   const note = genie.nextFromKeyWhitelist(button, keyWhitelist, TEMPERATURE);
   const pitch = LOWEST_PIANO_KEY_MIDI_NOTE + note;
   
-  // Send to MIDI out or play with the Magenta player.
-  if (usingMidiOut) {
-    sendMidiNoteOn(pitch);
-  } else {
-    mm.Player.tone.context.resume();
-    player.playNoteDown({pitch:pitch});
-  }
+  player.playNoteDown(pitch);
   
   // Show the note on the piano roll.
   const rect = svg.querySelector(`rect[data-index="${note}"]`);
@@ -162,12 +148,7 @@ function buttonUp(button) {
     thing.noteToPaint.on = false; 
     const pitch = LOWEST_PIANO_KEY_MIDI_NOTE + thing.note;
     if (!sustaining) {
-      // Send to MIDI out or play with the Magenta player.
-      if (usingMidiOut) {
-        sendMidiNoteOff(pitch);
-      } else {
-        player.playNoteUp({pitch:pitch});
-      }
+      player.playNoteUp(pitch);
     } else {
       sustainingNotes.push(LOWEST_PIANO_KEY_MIDI_NOTE + thing.note);
     }
@@ -199,12 +180,7 @@ function onKeyUp(event) {
     // Release everything.
     
     sustainingNotes.forEach((note) => {
-      // Send to MIDI out or play with the Magenta player.
-      if (usingMidiOut) {
-        sendMidiNoteOff(note);
-      } else {
-        player.playNoteUp({pitch:note});
-      } 
+      player.playNoteUp(note);
     });
     sustainingNotes = [];
   } else {
@@ -232,41 +208,6 @@ function onWindowResize() {
   context.lineCap = 'round';
   
   drawPiano();
-}
-
-/*************************
- * Handle MIDI out
- ************************/
-function midiReady(midi) {
-  // Also react to device changes.
-  midi.addEventListener('statechange', (event) => initDevices(event.target));
-  initDevices(midi);
-  
-  const outputs = midi.outputs.values();
-  for (let output = outputs.next(); output && !output.done; output = outputs.next()) {
-    midiOut.push(output.value);
-  }
-}
-
-function initDevices(midi) {
-  midiOut = [];
-  
-  const outputs = midi.outputs.values();
-  for (let output = outputs.next(); output && !output.done; output = outputs.next()) {
-    midiOut.push(output.value);
-  }
-  selectOut.innerHTML = midiOut.map(device => `<option>${device.name}</option>`).join('');
-}
-
-
-function sendMidiNoteOn(pitch) {
-  const msg = [0x90, pitch, 0x7f];    // note on, full velocity.
-  midiOut[selectOut.selectedIndex].send(msg);
-}
-
-function sendMidiNoteOff(pitch) {
-  const msg = [0x80, pitch, 0x7f];    // note on, middle C, full velocity.
-  midiOut[selectOut.selectedIndex].send(msg);
 }
 
 /*************************
@@ -393,4 +334,74 @@ function parseHashParameters() {
     params[temp[0]] = temp[1] 
   });
   return params;
+}
+
+
+let Player = class {
+  constructor() {
+    this.player = new mm.SoundFontPlayer('https://storage.googleapis.com/magentadata/js/soundfonts/sgm_plus');
+    this.midiOut = [];
+    this.usingMidiOut = false;
+    this.selectElement = document.getElementById('selectOut');
+    this.loadAllSamples();
+  }
+  
+  loadAllSamples() {
+    const seq = {notes:[]};
+    for (let i = 0; i < NOTES_PER_OCTAVE * OCTAVES; i++) {
+      seq.notes.push({pitch: LOWEST_PIANO_KEY_MIDI_NOTE + i});
+    }
+    this.player.loadSamples(seq);
+  }
+  
+  playNoteDown(pitch) {
+    // Send to MIDI out or play with the Magenta player.
+    if (this.usingMidiOut) {
+      this.sendMidiNoteOn(pitch);
+    } else {
+      mm.Player.tone.context.resume();
+      this.player.playNoteDown({pitch:pitch});
+    }
+  }
+  
+  playNoteUp(pitch) {
+    // Send to MIDI out or play with the Magenta player.
+    if (this.usingMidiOut) {
+      this.sendMidiNoteOff(pitch);
+    } else {
+      this.player.playNoteUp({pitch:pitch});
+    }
+  }
+  
+  // MIDI bits.
+  midiReady(midi) {
+    // Also react to device changes.
+    midi.addEventListener('statechange', (event) => this.initDevices(event.target));
+    this.initDevices(midi);
+
+    const outputs = midi.outputs.values();
+    for (let output = outputs.next(); output && !output.done; output = outputs.next()) {
+      this.midiOut.push(output.value);
+    }
+  }
+
+  initDevices(midi) {
+    this.midiOut = [];
+
+    const outputs = midi.outputs.values();
+    for (let output = outputs.next(); output && !output.done; output = outputs.next()) {
+      midiOut.push(output.value);
+    }
+    this.selectElement.innerHTML = midiOut.map(device => `<option>${device.name}</option>`).join('');
+  }
+
+  sendMidiNoteOn(pitch) {
+    const msg = [0x90, pitch, 0x7f];    // note on, full velocity.
+    this.midiOut[this.selectElement.selectedIndex].send(msg);
+  }
+
+  sendMidiNoteOff(pitch) {
+    const msg = [0x80, pitch, 0x7f];    // note on, middle C, full velocity.
+    this.midiOut[this.selectElement.selectedIndex].send(msg);
+  }
 }
