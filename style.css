@@ -200,7 +200,7 @@ button.splash-button.small {
   position: fixed;
   top: 100px;
   left: 50%;
-  width: 100%;
+  width: 80%;
   max-width: 500px;
   transform: translateX(-50%);
   border: 2px solid #CDF352;
