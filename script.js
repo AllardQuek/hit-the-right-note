@@ -48,24 +48,15 @@ function showMainScreen() {
   document.querySelector('.loaded').hidden = false;
 
   document.addEventListener('keydown',onKeyDown);
-  controls.addEventListener('touchstart', (event) => {
-    mouseDownButton = event.target; 
-    buttonDown(event.target.dataset.id, true), {passive: true}
-  });
-  controls.addEventListener('touchend', (event) => {
-    buttonUp(event.target.dataset.id), {passive: true}
-  });
-  controls.addEventListener('mousedown', (event) => {
-    mouseDownButton = event.target; 
-    buttonDown(event.target.dataset.id, true)
-  });
-  controls.addEventListener('mouseup', (event) => {
-    if (mouseDownButton !== event.target) {
-      buttonUp(mouseDownButton.dataset.id);
-      mouseDownButton = null;
-    }
-    buttonUp(event.target.dataset.id)
-  });
+  
+  controls.addEventListener('touchstart', (event) => doTouchStart(event), {passive: true});
+  controls.addEventListener('touchend', (event) => doTouchEnd(event), {passive: true});
+  controls.addEventListener('mousedown', (event) => doTouchStart(event));
+   controls.addEventListener('mouseup', (event) => doTouchEnd(event));
+  
+  controls.addEventListener('mouseover', (event) => doTouchMove(event, true));
+  controls.addEventListener('mouseout', (event) => doTouchMove(event, false));
+ 
   radioMidiYes.addEventListener('click', () => {
     player.usingMidiOut = true;
     midiOutBox.hidden = false;
@@ -95,6 +86,29 @@ function showMainScreen() {
   genie.resetState();
 }
 
+// Here touch means either touch or mouse.
+function doTouchStart(event) {
+  mouseDownButton = event.target; 
+  buttonDown(event.target.dataset.id, true);
+}
+function doTouchEnd(event) {
+  if (mouseDownButton !== event.target) {
+    buttonUp(mouseDownButton.dataset.id);
+    mouseDownButton = null;
+  }
+  buttonUp(event.target.dataset.id);
+}
+function doTouchMove(event, down) {
+  // If we're already holding a button down, start holding this one too.
+  if (!mouseDownButton)
+    return;
+  
+  if (down)
+    buttonDown(event.target.dataset.id, true);
+  else 
+    buttonUp(event.target.dataset.id, true);
+}
+
 /*************************
  * Button actions
  ************************/
@@ -122,13 +136,12 @@ function buttonDown(button, fromKeyDown) {
   const noteToPaint = painter.addNote(button, rect.getAttribute('x'), rect.getAttribute('width'));
   heldButtonToVisualData.set(button, {rect:rect, note:note, noteToPaint:noteToPaint});
 
-  if (!fromKeyDown) {
-    setTimeout(() => buttonUp(button), 300);
-  }
+  // if (!fromKeyDown) {
+  //   setTimeout(() => buttonUp(button), 300);
+  // }
 }
 
 function buttonUp(button) {
-  debugger
   const el = document.getElementById(`btn${button}`);
   if (!el)
     return;
