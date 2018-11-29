@@ -216,6 +216,7 @@ class Piano {
     }
     rect.setAttribute('active', true);
     rect.setAttribute('class', `color-${button}`);
+    return rect;
   }
   
   clearNote(rect) {

@@ -103,12 +103,13 @@ function buttonUp(button) {
   
   const thing = heldButtonToVisualData.get(button);
   if (thing) {
-    // Don't hear it.
-    
     // Don't see it.
     piano.clearNote(thing.rect);
-
+    
+    // Stop holding it down.
     painter.stopNote(thing.noteToPaint);
+    
+    // Maybe stop hearing it.
     const pitch = CONSTANTS.LOWEST_PIANO_KEY_MIDI_NOTE + thing.note;
     if (!sustaining) {
       player.playNoteUp(pitch);
@@ -142,9 +143,7 @@ function onKeyUp(event) {
     sustaining = false;
     // Release everything.
 
-    sustainingNotes.forEach((note) => {
-      player.playNoteUp(note);
-    });
+    sustainingNotes.forEach((note) => player.playNoteUp(note));
     sustainingNotes = [];
   } else {
     const button = getButtonFromKeyCode(event.keyCode);
@@ -165,7 +164,6 @@ function onWindowResize() {
   piano.draw();
 }
 
-
 /*************************
  * Utils and helpers
  ************************/
@@ -182,6 +180,7 @@ function getButtonFromKeyCode(keyCode) {
   }
   return null;
 }
+
 function getTemperature() {
   const hash = parseFloat(parseHashParameters()['temperature']) || 0;
   const newTemp = Math.min(1, hash);
