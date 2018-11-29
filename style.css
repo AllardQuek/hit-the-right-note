@@ -108,6 +108,10 @@ h1 {
   fill: #CDF352;
 }
 
+.controls button span {
+  pointer-events: none;
+}
+
 .rotate-phone { display: none; }
 .phone-icon {
   position: relative;

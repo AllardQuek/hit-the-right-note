@@ -92,13 +92,19 @@ function doTouchStart(event) {
   buttonDown(event.target.dataset.id, true);
 }
 function doTouchEnd(event) {
-  if (mouseDownButton !== event.target) {
+  if (mouseDownButton && mouseDownButton !== event.target) {
     buttonUp(mouseDownButton.dataset.id);
-    mouseDownButton = null;
   }
+  mouseDownButton = null;
   buttonUp(event.target.dataset.id);
 }
 function doTouchMove(event, down) {
+  // If we've moved outside of the buttons, reset this.
+  // if (down === false && event.target.id === 'controls') {
+  //   mouseDownButton = null;
+  //   return;                            
+  // }
+  
   // If we're already holding a button down, start holding this one too.
   if (!mouseDownButton)
     return;
