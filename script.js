@@ -7,8 +7,13 @@ let TEMPERATURE = getTemperature();
 
 const heldButtonToVisualData = new Map();
 
+// Which notes the pedal is sustaining.
 let sustaining = false
 let sustainingNotes = [];
+
+// Mousedown/up events are weird because you can mouse down in one element and mouse up
+// in another, so you're going to lose that original element and never mouse it up.
+let mouseDownButton = null;
 
 const player = new Player();
 const genie = new mm.PianoGenie(CONSTANTS.GENIE_CHECKPOINT);
@@ -43,16 +48,30 @@ function showMainScreen() {
   document.querySelector('.loaded').hidden = false;
 
   document.addEventListener('keydown',onKeyDown);
-  controls.addEventListener('touchstart', () => buttonDown(event.target.dataset.id, true), {passive: true});
-  controls.addEventListener('touchend', () => buttonUp(event.target.dataset.id), {passive: true});
-  controls.addEventListener('mousedown', () => buttonDown(event.target.dataset.id, true));
-  controls.addEventListener('mouseup', () => buttonUp(event.target.dataset.id));
+  controls.addEventListener('touchstart', (event) => {
+    mouseDownButton = event.target; 
+    buttonDown(event.target.dataset.id, true), {passive: true}
+  });
+  controls.addEventListener('touchend', (event) => {
+    buttonUp(event.target.dataset.id), {passive: true}
+  });
+  controls.addEventListener('mousedown', (event) => {
+    mouseDownButton = event.target; 
+    buttonDown(event.target.dataset.id, true)
+  });
+  controls.addEventListener('mouseup', (event) => {
+    if (mouseDownButton !== event.target) {
+      buttonUp(mouseDownButton.dataset.id);
+      mouseDownButton = null;
+    }
+    buttonUp(event.target.dataset.id)
+  });
   radioMidiYes.addEventListener('click', () => {
-    usingMidiOut = true;
+    player.usingMidiOut = true;
     midiOutBox.hidden = false;
   });
   radioMidiNo.addEventListener('click', () => {
-    usingMidiOut = false;
+    player.usingMidiOut = false;
     midiOutBox.hidden = true;
   });
   
@@ -109,6 +128,7 @@ function buttonDown(button, fromKeyDown) {
 }
 
 function buttonUp(button) {
+  debugger
   const el = document.getElementById(`btn${button}`);
   if (!el)
     return;
