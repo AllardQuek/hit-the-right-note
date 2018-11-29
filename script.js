@@ -56,7 +56,10 @@ function showMainScreen() {
   
   controls.addEventListener('mouseover', (event) => doTouchMove(event, true));
   controls.addEventListener('mouseout', (event) => doTouchMove(event, false));
- 
+  controls.addEventListener('touchenter', (event) => doTouchMove(event, true));
+  controls.addEventListener('touchleave', (event) => doTouchMove(event, false));
+  canvas.addEventListener('mouseenter', () => mouseDownButton = null);
+  
   radioMidiYes.addEventListener('click', () => {
     player.usingMidiOut = true;
     midiOutBox.hidden = false;
@@ -99,13 +102,7 @@ function doTouchEnd(event) {
   buttonUp(event.target.dataset.id);
 }
 function doTouchMove(event, down) {
-  // If we've moved outside of the buttons, reset this.
-  // if (down === false && event.target.id === 'controls') {
-  //   mouseDownButton = null;
-  //   return;                            
-  // }
-  
-  // If we're already holding a button down, start holding this one too.
+   // If we're already holding a button down, start holding this one too.
   if (!mouseDownButton)
     return;
   
