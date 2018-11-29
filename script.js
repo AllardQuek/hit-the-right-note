@@ -7,7 +7,6 @@ let TEMPERATURE = getTemperature();
 
 const heldButtonToVisualData = new Map();
 
-
 let sustaining = false
 let sustainingNotes = [];
 
@@ -68,28 +67,26 @@ function showMainScreen() {
  * Button actions
  ************************/
 function buttonDown(button, fromKeyDown) {
+  // If we're already holding this button down, nothing new to do.
   if (heldButtonToVisualData.has(button)) {
     return;
   }
+  
   const el = document.getElementById(`btn${button}`);
   if (!el)
     return;
-
   el.setAttribute('active', true);
+  
   const note = genie.nextFromKeyWhitelist(button, keyWhitelist, TEMPERATURE);
   const pitch = CONSTANTS.LOWEST_PIANO_KEY_MIDI_NOTE + note;
 
+  // Hear it.
   player.playNoteDown(pitch);
   
-  // Show the note on the piano roll.
-  const rect = svg.querySelector(`rect[data-index="${note}"]`);
-  if (!rect) {
-    console.log('couldnt find a rect for note', note);
-    return;
-  }
-  rect.setAttribute('active', true);
-  rect.setAttribute('class', `color-${button}`);
-
+  // See it.
+  const rect = piano.highlightNote(note, button);
+  
+  // Float it.
   const noteToPaint = painter.addNote(button, rect.getAttribute('x'), rect.getAttribute('width'));
   heldButtonToVisualData.set(button, {rect:rect, note:note, noteToPaint:noteToPaint});
 
@@ -102,13 +99,14 @@ function buttonUp(button) {
   const el = document.getElementById(`btn${button}`);
   if (!el)
     return;
-
   el.removeAttribute('active');
+  
   const thing = heldButtonToVisualData.get(button);
   if (thing) {
-    // Piano roll.
-    thing.rect.removeAttribute('active');
-    thing.rect.removeAttribute('class');
+    // Don't hear it.
+    
+    // Don't see it.
+    piano.clearNote(thing.rect);
 
     painter.stopNote(thing.noteToPaint);
     const pitch = CONSTANTS.LOWEST_PIANO_KEY_MIDI_NOTE + thing.note;
@@ -161,17 +159,9 @@ function onWindowResize() {
   const totalNotes = CONSTANTS.NOTES_PER_OCTAVE * OCTAVES + 3 + 1; // starts on an A, ends on a C.
   const totalWhiteNotes = 2 + CONSTANTS.WHITE_NOTES_PER_OCTAVE * OCTAVES + 1; // starts on an A, ends on a C.
   keyWhitelist = Array(totalNotes).fill().map((x,i) => i);
-  config.whiteNoteWidth = window.innerWidth / totalWhiteNotes;
-  config.blackNoteWidth = config.whiteNoteWidth * 2 / 3;
-  svg.setAttribute('width', window.innerWidth);
-  svg.setAttribute('height', config.whiteNoteHeight);
-
-  // Do the canvas dance.
-  canvas.width = window.innerWidth;
-  canvas.height = contextHeight = window.innerHeight - config.whiteNoteHeight - 20;
-  context.lineWidth = 4;
-  context.lineCap = 'round';
-
+  
+  piano.resize(totalWhiteNotes);
+  painter.resize(piano.config.whiteNoteHeight);
   piano.draw();
 }
 

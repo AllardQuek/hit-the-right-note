@@ -85,6 +85,18 @@ class Player {
 class FloatyNotes {
   constructor() {
     this.notes = [];  // the notes floating on the screen.
+    
+    this.canvas = document.getElementById('canvas')
+    this.context = this.canvas.getContext('2d');
+    this.context.lineWidth = 4;
+    this.context.lineCap = 'round';
+    
+    this.contextHeight = 0;
+  }
+  
+  resize(whiteNoteHeight) {
+    this.canvas.width = window.innerWidth;
+    this.canvas.height = this.contextHeight = window.innerHeight - whiteNoteHeight - 20;
   }
   
   addNote(button, x, width) {
@@ -106,10 +118,10 @@ class FloatyNotes {
   
   drawLoop() {
     const dy = 3;
-    context.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    this.context.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
     // Remove all the notes that will be off the page;
-    this.notes = this.notes.filter((note) => note.on || note.y < (contextHeight - 100));
+    this.notes = this.notes.filter((note) => note.on || note.y < (this.contextHeight - 100));
 
     // Advance all the notes.
     for (let i = 0; i < this.notes.length; i++) {
@@ -122,10 +134,10 @@ class FloatyNotes {
       } else {
         note.y += dy;
       }
-
-      context.globalAlpha = 1 - note.y / contextHeight;
-      context.fillStyle = note.color;
-      context.fillRect(note.x, note.y, note.width, note.height);
+      
+      this.context.globalAlpha = 1 - note.y / this.contextHeight;
+      this.context.fillStyle = note.color;
+      this.context.fillRect(note.x, note.y, note.width, note.height);
     }
     window.requestAnimationFrame(() => this.drawLoop());
   }
@@ -139,12 +151,20 @@ class Piano {
       whiteNoteHeight: 70,
       blackNoteHeight: 2 * 70 / 3
     }
-    this.context = document.getElementById('canvas').getContext('2d');
-    this.contextHeight = 0;;
+    
+    this.svg = document.getElementById('svg');
+    this.svgNS = 'http://www.w3.org/2000/svg';
   }
   
-  drawPiano() {
-    const halfABlackNote = this.this.config.blackNoteWidth / 2;
+  resize(totalWhiteNotes) {
+    this.config.whiteNoteWidth = window.innerWidth / totalWhiteNotes;
+    this.config.blackNoteWidth = this.config.whiteNoteWidth * 2 / 3;
+    this.svg.setAttribute('width', window.innerWidth);
+    this.svg.setAttribute('height', this.config.whiteNoteHeight);
+  }
+  
+  draw() {
+    const halfABlackNote = this.config.blackNoteWidth / 2;
     let x = 0;
     let y = 0;
     let index = 0;
@@ -185,5 +205,37 @@ class Piano {
         index++;
       }
     }
+  }
+  
+  highlightNote(note, button) {
+    // Show the note on the piano roll.
+    const rect = this.svg.querySelector(`rect[data-index="${note}"]`);
+    if (!rect) {
+      console.log('couldnt find a rect for note', note);
+      return;
+    }
+    rect.setAttribute('active', true);
+    rect.setAttribute('class', `color-${button}`);
+  }
+  
+  clearNote(rect) {
+    rect.removeAttribute('active');
+    rect.removeAttribute('class');
+  }
+  
+  makeRect(index, x, y, w, h, fill, stroke) {
+    const rect = document.createElementNS(this.svgNS, 'rect');
+    rect.setAttribute('data-index', index);
+    rect.setAttribute('x', x);
+    rect.setAttribute('y', y);
+    rect.setAttribute('width', w);
+    rect.setAttribute('height', h);
+    rect.setAttribute('fill', fill);
+    if (stroke) {
+      rect.setAttribute('stroke', stroke);
+      rect.setAttribute('stroke-width', '3px');
+    }
+    this.svg.appendChild(rect);
+    return rect;
   }
 }
