@@ -160,7 +160,7 @@ class Piano {
   }
   
   resize(totalWhiteNotes) {
-    this.config.whiteNoteWidth = Math.floor(window.innerWidth / totalWhiteNotes);
+    this.config.whiteNoteWidth = OCTAVES > 6 ? window.innerWidth / totalWhiteNotes : Math.floor(window.innerWidth / totalWhiteNotes);
     this.config.blackNoteWidth = this.config.whiteNoteWidth * 2 / 3;
     this.svg.setAttribute('width', window.innerWidth);
     this.svg.setAttribute('height', this.config.whiteNoteHeight);
