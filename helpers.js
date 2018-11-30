@@ -160,7 +160,9 @@ class Piano {
   }
   
   resize(totalWhiteNotes) {
-    this.config.whiteNoteWidth = OCTAVES > 6 ? window.innerWidth / totalWhiteNotes : Math.floor(window.innerWidth / totalWhiteNotes);
+    // i honestly don't know why some flooring is good and some is bad sigh.
+    const ratio = window.innerWidth / totalWhiteNotes;
+    this.config.whiteNoteWidth = OCTAVES > 6 ? ratio: Math.floor(ratio);
     this.config.blackNoteWidth = this.config.whiteNoteWidth * 2 / 3;
     this.svg.setAttribute('width', window.innerWidth);
     this.svg.setAttribute('height', this.config.whiteNoteHeight);
