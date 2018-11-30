@@ -184,7 +184,11 @@ class Piano {
       this.makeRect(2, this.config.whiteNoteWidth, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
       index = 3;
       x = 2 * this.config.whiteNoteWidth;
+    } else {
+      // Starting 2 semitones up.
+      index = 3;
     }
+    
     
     // Draw the white notes.
     for (let o = 0; o < OCTAVES; o++) {
