@@ -5,7 +5,6 @@ body {
   text-align: center;
   overflow: hidden;
   width: 100vw;
-  height: 100vh; 
   background: #141E30;
   background: linear-gradient(to bottom, #243B55, #141E30);
   color: white;
@@ -16,6 +15,9 @@ body {
   justify-content: center;
   touch-action: manipulation; /* disable double-tap zoom */
 }
+
+html, body { height: 100%; }
+
 
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
@@ -138,7 +140,7 @@ h1 {
 @media screen and (max-width: 700px) {
   .controls {
     height: 70px;
-    width: 95vw;
+    width: 100vw;
   } 
   
   canvas {
