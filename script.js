@@ -27,7 +27,7 @@ initEverything();
  ************************/
 function initEverything() {
   genie.initialize().then(() => {
-    console.log('🧞‍♀️ready!');
+    console.log('🧞‍♀️ ready!');
     playBtn.textContent = 'Play';
     playBtn.removeAttribute('disabled');
     playBtn.classList.remove('loading');
@@ -185,8 +185,9 @@ function onKeyDown(event) {
   }
   if (event.keyCode === 32) {  // sustain pedal
     sustaining = true;
-  } else if (event.keyCode === 8) {
+  } else if (event.keyCode === 48) { // 0
     console.log('🧞‍♀️ resetting!');
+    genie.resetState();
   } else {
     const button = getButtonFromKeyCode(event.keyCode);
     if (button != null) {
