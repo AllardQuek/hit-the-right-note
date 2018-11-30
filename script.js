@@ -218,7 +218,7 @@ function onWindowResize() {
   keyWhitelist = Array(totalNotes).fill().map((x,i) => {
     if (OCTAVES > 6) return i;
     // Starting 3 semitones up on small screens (on a C), and a whole octave up.
-    return i + 3 + 7;
+    return i + 3 + CONSTANTS.NOTES_PER_OCTAVE;
   });
   
   piano.resize(totalWhiteNotes);

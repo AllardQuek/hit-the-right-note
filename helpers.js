@@ -186,7 +186,7 @@ class Piano {
       x = 2 * this.config.whiteNoteWidth;
     } else {
       // Starting 3 semitones up on small screens (on a C), and a whole octave up.
-      index = 3 + 7;
+      index = 3 + CONSTANTS.NOTES_PER_OCTAVE;
     }
     
     // Draw the white notes.
@@ -211,7 +211,7 @@ class Piano {
       x = this.config.whiteNoteWidth;
     } else {
       // Starting 3 semitones up on small screens (on a C), and a whole octave up.
-      index = 3 + 7;
+      index = 3 + CONSTANTS.NOTES_PER_OCTAVE;
       x = -this.config.whiteNoteWidth;
     }
     
