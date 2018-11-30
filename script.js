@@ -210,9 +210,9 @@ function onKeyUp(event) {
 
 function onWindowResize() {
   OCTAVES = window.innerWidth > 700 ? 7 : 3;
-  const bonusNotes = O
-  const totalNotes = CONSTANTS.NOTES_PER_OCTAVE * OCTAVES + 3 + 1; // starts on an A, ends on a C.
-  const totalWhiteNotes = 2 + CONSTANTS.WHITE_NOTES_PER_OCTAVE * OCTAVES + 1; // starts on an A, ends on a C.
+  const bonusNotes = OCTAVES > 6 ? 4 : 0;  // starts on an A, ends on a C.
+  const totalNotes = CONSTANTS.NOTES_PER_OCTAVE * OCTAVES + bonusNotes; 
+  const totalWhiteNotes = CONSTANTS.WHITE_NOTES_PER_OCTAVE * OCTAVES + (bonusNotes - 1); 
   keyWhitelist = Array(totalNotes).fill().map((x,i) => i);
   
   piano.resize(totalWhiteNotes);

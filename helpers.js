@@ -185,15 +185,15 @@ class Piano {
     }
     
     // Draw the white notes.
-      for (let o = 0; o < OCTAVES; o++) {
-        for (let i = 0; i < CONSTANTS.NOTES_PER_OCTAVE; i++) {
-          if (blackNoteIndexes.indexOf(i) === -1) {
-            this.makeRect(index, x, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
-            x += this.config.whiteNoteWidth;
-          }
-          index++;
+    for (let o = 0; o < OCTAVES; o++) {
+      for (let i = 0; i < CONSTANTS.NOTES_PER_OCTAVE; i++) {
+        if (blackNoteIndexes.indexOf(i) === -1) {
+          this.makeRect(index, x, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
+          x += this.config.whiteNoteWidth;
         }
+        index++;
       }
+    }
     
     if (OCTAVES > 6) {
       // And an extra C at the end (if we're using all the octaves);
@@ -204,6 +204,9 @@ class Piano {
       this.makeRect(1, this.config.whiteNoteWidth - halfABlackNote, y, this.config.blackNoteWidth, this.config.blackNoteHeight, 'black');
       index = 3;
       x = this.config.whiteNoteWidth;
+    } else {
+      index = 0;
+      x = -this.config.whiteNoteWidth;;
     }
     
     // Draw the black notes.
