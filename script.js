@@ -228,6 +228,9 @@ function getButtonFromKeyCode(keyCode) {
   let button = keyCode - 49;
   if (button >= 0 && button < CONSTANTS.NUM_BUTTONS) {
     return button;
+  } else if (keyCode === 59) {
+    // In Firefox ; has a different keycode. No, I'm not kidding.
+    return 7;
   } else {
     button = keyToButtonMap.indexOf(keyCode);
     if (button >= 0 && button < CONSTANTS.NUM_BUTTONS) {
