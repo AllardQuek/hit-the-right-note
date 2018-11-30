@@ -185,6 +185,8 @@ function onKeyDown(event) {
   }
   if (event.keyCode === 32) {  // sustain pedal
     sustaining = true;
+  } else if (event.keyCode === 8) {
+    console.log('🧞‍♀️ resetting!');
   } else {
     const button = getButtonFromKeyCode(event.keyCode);
     if (button != null) {
@@ -241,9 +243,10 @@ function getButtonFromKeyCode(keyCode) {
 }
 
 function getTemperature() {
-  const hash = parseFloat(parseHashParameters()['temperature']) || 0;
+  const hash = parseFloat(parseHashParameters()['temperature']) || 0.25;
   const newTemp = Math.min(1, hash);
-  console.log('🧞‍♀️ teperature = ', newTemp);
+  console.log('🧞‍♀️ temperature = ', newTemp);
+  return newTemp;
 }
 
 function parseHashParameters() {
