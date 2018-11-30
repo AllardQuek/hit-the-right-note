@@ -174,31 +174,39 @@ class Piano {
     let index = 0;
 
     const blackNoteIndexes = [1, 3, 6, 8, 10];
-
+    
     // First draw all the white notes.
-    // Pianos start on an A:
-    this.makeRect(0, x, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
-    this.makeRect(2, this.config.whiteNoteWidth, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
-    index = 3;
-    x = 2 * this.config.whiteNoteWidth;
-    for (let o = 0; o < OCTAVES; o++) {
-      for (let i = 0; i < CONSTANTS.NOTES_PER_OCTAVE; i++) {
-        if (blackNoteIndexes.indexOf(i) === -1) {
-          this.makeRect(index, x, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
-          x += this.config.whiteNoteWidth;
-        }
-        index++;
-      }
+    // Pianos start on an A (if we're using all the octaves);
+    if (OCTAVES > 6) {
+      this.makeRect(0, x, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
+      this.makeRect(2, this.config.whiteNoteWidth, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
+      index = 3;
+      x = 2 * this.config.whiteNoteWidth;
     }
-    // And an extra C at the end
-    this.makeRect(index, x, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
+    
+    // Draw the white notes.
+      for (let o = 0; o < OCTAVES; o++) {
+        for (let i = 0; i < CONSTANTS.NOTES_PER_OCTAVE; i++) {
+          if (blackNoteIndexes.indexOf(i) === -1) {
+            this.makeRect(index, x, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
+            x += this.config.whiteNoteWidth;
+          }
+          index++;
+        }
+      }
+    
+    if (OCTAVES > 6) {
+      // And an extra C at the end (if we're using all the octaves);
+      this.makeRect(index, x, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
 
-    // Now draw all the black notes, so that they sit on top.
-    // Pianos start on an A:
-    this.makeRect(1, this.config.whiteNoteWidth - halfABlackNote, y, this.config.blackNoteWidth, this.config.blackNoteHeight, 'black');
-    index = 3;
-    x = this.config.whiteNoteWidth;
-
+      // Now draw all the black notes, so that they sit on top.
+      // Pianos start on an A:
+      this.makeRect(1, this.config.whiteNoteWidth - halfABlackNote, y, this.config.blackNoteWidth, this.config.blackNoteHeight, 'black');
+      index = 3;
+      x = this.config.whiteNoteWidth;
+    }
+    
+    // Draw the black notes.
     for (let o = 0; o < OCTAVES; o++) {
       for (let i = 0; i < CONSTANTS.NOTES_PER_OCTAVE; i++) {
         if (blackNoteIndexes.indexOf(i) !== -1) {

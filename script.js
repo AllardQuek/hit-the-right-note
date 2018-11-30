@@ -51,8 +51,12 @@ function showMainScreen() {
   
   controls.addEventListener('touchstart', (event) => doTouchStart(event), {passive: true});
   controls.addEventListener('touchend', (event) => doTouchEnd(event), {passive: true});
-  controls.addEventListener('mousedown', (event) => doTouchStart(event));
-   controls.addEventListener('mouseup', (event) => doTouchEnd(event));
+  
+  const hasTouchEvents = ('ontouchstart' in window);
+  if (!hasTouchEvents) {
+    controls.addEventListener('mousedown', (event) => doTouchStart(event));
+    controls.addEventListener('mouseup', (event) => doTouchEnd(event));
+  }
   
   controls.addEventListener('mouseover', (event) => doTouchMove(event, true));
   controls.addEventListener('mouseout', (event) => doTouchMove(event, false));
@@ -91,10 +95,12 @@ function showMainScreen() {
 
 // Here touch means either touch or mouse.
 function doTouchStart(event) {
+  event.preventDefault();
   mouseDownButton = event.target; 
   buttonDown(event.target.dataset.id, true);
 }
 function doTouchEnd(event) {
+  event.preventDefault();
   if (mouseDownButton && mouseDownButton !== event.target) {
     buttonUp(mouseDownButton.dataset.id);
   }
@@ -204,6 +210,7 @@ function onKeyUp(event) {
 
 function onWindowResize() {
   OCTAVES = window.innerWidth > 700 ? 7 : 3;
+  const bonusNotes = O
   const totalNotes = CONSTANTS.NOTES_PER_OCTAVE * OCTAVES + 3 + 1; // starts on an A, ends on a C.
   const totalWhiteNotes = 2 + CONSTANTS.WHITE_NOTES_PER_OCTAVE * OCTAVES + 1; // starts on an A, ends on a C.
   keyWhitelist = Array(totalNotes).fill().map((x,i) => i);
