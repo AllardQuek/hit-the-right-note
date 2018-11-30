@@ -141,13 +141,12 @@ function buttonDown(button, fromKeyDown) {
   // See it.
   const rect = piano.highlightNote(note, button);
   
+  if (!rect) {
+    debugger;
+  }
   // Float it.
   const noteToPaint = painter.addNote(button, rect.getAttribute('x'), rect.getAttribute('width'));
   heldButtonToVisualData.set(button, {rect:rect, note:note, noteToPaint:noteToPaint});
-
-  // if (!fromKeyDown) {
-  //   setTimeout(() => buttonUp(button), 300);
-  // }
 }
 
 function buttonUp(button) {
@@ -216,7 +215,11 @@ function onWindowResize() {
   const bonusNotes = OCTAVES > 6 ? 4 : 0;  // starts on an A, ends on a C.
   const totalNotes = CONSTANTS.NOTES_PER_OCTAVE * OCTAVES + bonusNotes; 
   const totalWhiteNotes = CONSTANTS.WHITE_NOTES_PER_OCTAVE * OCTAVES + (bonusNotes - 1); 
-  keyWhitelist = Array(totalNotes).fill().map((x,i) => i);
+  keyWhitelist = Array(totalNotes).fill().map((x,i) => {
+    if (OCTAVES > 6) return i;
+    // Starting 3 semitones up on small screens (on a C), and a whole octave up.
+    return i + 3 + 7;
+  });
   
   piano.resize(totalWhiteNotes);
   painter.resize(piano.config.whiteNoteHeight);
