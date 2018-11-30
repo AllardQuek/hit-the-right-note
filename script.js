@@ -233,7 +233,7 @@ function getButtonFromKeyCode(keyCode) {
 function getTemperature() {
   const hash = parseFloat(parseHashParameters()['temperature']) || 0;
   const newTemp = Math.min(1, hash);
-  console.log('🧞‍♀️ changed to ', newTemp);
+  console.log('🧞‍♀️ teperature = ', newTemp);
 }
 
 function parseHashParameters() {

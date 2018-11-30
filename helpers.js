@@ -167,6 +167,7 @@ class Piano {
   }
   
   draw() {
+    this.svg.innerHTML = '';
     const halfABlackNote = this.config.blackNoteWidth / 2;
     let x = 0;
     let y = 0;
