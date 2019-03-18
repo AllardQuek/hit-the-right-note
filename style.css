@@ -14,10 +14,16 @@ body {
   align-items: center;
   justify-content: center;
   touch-action: manipulation; /* disable double-tap zoom */
+  overscroll-behavior-y: contain;
 }
 
 html, body { height: 100%; }
-
+html,
+body {
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+}
 
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
