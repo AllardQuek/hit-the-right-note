@@ -73,17 +73,15 @@ class Player {
 
   sendMidiNoteOn(pitch, button) {  
     // -1 is sent when releasing the sustain pedal.
-    if (button === -1)
-      button = 0;
-    const msg = [0x90, pitch, 0x7f];    // note on, full velocity.
+    if (button === -1) button = 0;
+    const msg = [0x90 + button, pitch, 0x7f];    // note on, full velocity.
     this.midiOut[this.selectElement.selectedIndex].send(msg);
   }
 
   sendMidiNoteOff(pitch, button) {
     // -1 is sent when releasing the sustain pedal.
-    if (button === -1)
-      button = 0;
-    const msg = [0x80, pitch, 0x7f];    // note on, middle C, full velocity.
+    if (button === -1) button = 0;
+    const msg = [0x80 + button, pitch, 0x7f];    // note on, middle C, full velocity.
     this.midiOut[this.selectElement.selectedIndex].send(msg);
   }
 }
