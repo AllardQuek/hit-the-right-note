@@ -136,7 +136,7 @@ function buttonDown(button, fromKeyDown) {
   const pitch = CONSTANTS.LOWEST_PIANO_KEY_MIDI_NOTE + note;
 
   // Hear it.
-  player.playNoteDown(pitch);
+  player.playNoteDown(pitch, button);
   
   // See it.
   const rect = piano.highlightNote(note, button);
@@ -166,7 +166,7 @@ function buttonUp(button) {
     // Maybe stop hearing it.
     const pitch = CONSTANTS.LOWEST_PIANO_KEY_MIDI_NOTE + thing.note;
     if (!sustaining) {
-      player.playNoteUp(pitch);
+      player.playNoteUp(pitch, button);
     } else {
       sustainingNotes.push(CONSTANTS.LOWEST_PIANO_KEY_MIDI_NOTE + thing.note);
     }
@@ -200,7 +200,7 @@ function onKeyUp(event) {
     sustaining = false;
     // Release everything.
 
-    sustainingNotes.forEach((note) => player.playNoteUp(note));
+    sustainingNotes.forEach((note) => player.playNoteUp(note, -1));
     sustainingNotes = [];
   } else {
     const button = getButtonFromKeyCode(event.keyCode);

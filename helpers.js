@@ -27,20 +27,20 @@ class Player {
     this.player.loadSamples(seq);
   }
   
-  playNoteDown(pitch) {
+  playNoteDown(pitch, button) {
     // Send to MIDI out or play with the Magenta player.
     if (this.usingMidiOut) {
-      this.sendMidiNoteOn(pitch);
+      this.sendMidiNoteOn(pitch, button);
     } else {
       mm.Player.tone.context.resume();
       this.player.playNoteDown({pitch:pitch});
     }
   }
   
-  playNoteUp(pitch) {
+  playNoteUp(pitch, button) {
     // Send to MIDI out or play with the Magenta player.
     if (this.usingMidiOut) {
-      this.sendMidiNoteOff(pitch);
+      this.sendMidiNoteOff(pitch, button);
     } else {
       this.player.playNoteUp({pitch:pitch});
     }
@@ -71,12 +71,18 @@ class Player {
     this.selectElement.innerHTML = this.midiOut.map(device => `<option>${device.name}</option>`).join('');
   }
 
-  sendMidiNoteOn(pitch) {
+  sendMidiNoteOn(pitch, button) {  
+    // -1 is sent when releasing the sustain pedal.
+    if (button === -1)
+      button = 0;
     const msg = [0x90, pitch, 0x7f];    // note on, full velocity.
     this.midiOut[this.selectElement.selectedIndex].send(msg);
   }
 
-  sendMidiNoteOff(pitch) {
+  sendMidiNoteOff(pitch, button) {
+    // -1 is sent when releasing the sustain pedal.
+    if (button === -1)
+      button = 0;
     const msg = [0x80, pitch, 0x7f];    // note on, middle C, full velocity.
     this.midiOut[this.selectElement.selectedIndex].send(msg);
   }
