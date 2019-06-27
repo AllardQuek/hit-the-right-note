@@ -14,8 +14,11 @@ class Player {
   constructor() {
     this.player = new mm.SoundFontPlayer('https://storage.googleapis.com/magentadata/js/soundfonts/sgm_plus');
     this.midiOut = [];
+    this.midiIn = []
     this.usingMidiOut = false;
-    this.selectElement = document.getElementById('selectOut');
+    this.usingMidiIn = false;
+    this.selectOutElement = document.getElementById('selectOut');
+    this.selectInElement = document.getElementById('selectIn');
     this.loadAllSamples();
   }
   
@@ -51,24 +54,29 @@ class Player {
     // Also react to device changes.
     midi.addEventListener('statechange', (event) => this.initDevices(event.target));
     this.initDevices(midi);
-
-    const outputs = midi.outputs.values();
-    for (let output = outputs.next(); output && !output.done; output = outputs.next()) {
-      this.midiOut.push(output.value);
-    }
   }
 
   initDevices(midi) {
     this.midiOut = [];
+    this.midiIn = [];
 
+    
     const outputs = midi.outputs.values();
     for (let output = outputs.next(); output && !output.done; output = outputs.next()) {
       this.midiOut.push(output.value);
     }
     
+    const inputs = midi.inputs.values();
+    for (let input = inputs.next(); input && !input.done; input = inputs.next()) {
+      input.onmidimessage = this.getMIDIMessage;
+      this.midiIn.push(input.value);
+      
+    }
+    
     // No MIDI, no settings.
-    btnSettings.hidden = this.midiOut.length === 0;
-    this.selectElement.innerHTML = this.midiOut.map(device => `<option>${device.name}</option>`).join('');
+    btnSettings.hidden = (this.midiOut.length === 0 && this.midiIn.length === 0);
+    this.selectInElement.innerHTML = this.midiIn.map(device => `<option>${device.name}</option>`).join('');
+    this.selectOutElement.innerHTML = this.midiOut.map(device => `<option>${device.name}</option>`).join('');
   }
 
   sendMidiNoteOn(pitch, button) {  
@@ -76,7 +84,7 @@ class Player {
     if (button === -1) button = 0;
     //const msg = [0x90 + button, pitch, 0x7f];    // note on, full velocity.
     const msg = [0x90, pitch, 0x7f];    // note on, full velocity.
-    this.midiOut[this.selectElement.selectedIndex].send(msg);
+    this.midiOut[this.selectOutElement.selectedIndex].send(msg);
   }
 
   sendMidiNoteOff(pitch, button) {
@@ -84,7 +92,11 @@ class Player {
     if (button === -1) button = 0;
     //const msg = [0x80 + button, pitch, 0x7f];    // note on, middle C, full velocity.
     const msg = [0x80, pitch, 0x7f];    // note on, middle C, full velocity.
-    this.midiOut[this.selectElement.selectedIndex].send(msg);
+    this.midiOut[this.selectOutElement.selectedIndex].send(msg);
+  }
+  
+  getMIDIMessage(midiMessage) {
+    console.log(midiMessage);
   }
 }
 
