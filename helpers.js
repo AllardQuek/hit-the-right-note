@@ -97,13 +97,22 @@ class Player {
     this.midiOut[this.selectOutElement.selectedIndex].send(msg);
   }
   
-  getMIDIMessage(midiMessage) {
-    var command = message.data[0];
-    var note = message.data[1];
-    var velocity = (message.data.length > 2) ? message.data[2] : 0; // a velocity value might not be included with a noteOff command
+  getMIDIMessage(msg) {
+    if (!this.usingMidiIn) {
+      return;
+    }
+    const command = msg.data[0];
+    const button = msg.data[1];
+    const velocity = (msg.data.length > 2) ? msg.data[2] : 0; // a velocity value might not be included with a noteOff command
 
-    
-    console.log(midiMessage);
+    switch (command) {
+      case 0x90: // note on
+        window.buttonDown(button, false);
+        break;
+      case 0x80: // note off
+         window.buttonUp(button);
+        break;
+    }
   }
 }
 
