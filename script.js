@@ -64,13 +64,21 @@ function showMainScreen() {
   controls.addEventListener('touchleave', (event) => doTouchMove(event, false));
   canvas.addEventListener('mouseenter', () => mouseDownButton = null);
   
-  radioMidiYes.addEventListener('click', () => {
+  radioMidiOutYes.addEventListener('click', () => {
     player.usingMidiOut = true;
     midiOutBox.hidden = false;
   });
-  radioMidiNo.addEventListener('click', () => {
+  radioMidiOutNo.addEventListener('click', () => {
     player.usingMidiOut = false;
     midiOutBox.hidden = true;
+  });
+  radioMidiInYes.addEventListener('click', () => {
+    player.usingMidiIn = true;
+    midiInBox.hidden = false;
+  });
+  radioMidiInNo.addEventListener('click', () => {
+    player.usingMidiIn = false;
+    midiInBox.hidden = true;
   });
   
   // Figure out if WebMidi works.

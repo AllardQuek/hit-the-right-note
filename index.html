@@ -67,21 +67,35 @@
       <p id="midiSupported">
         Use MIDI Output: 
         <label class="radio">
-          <input name="midi" type="radio" id="radioMidiYes">
+          <input name="midiout" type="radio" id="radioMidiOutYes">
           <span class="control-indicator"></span>
           Yes
         </label>
         <label class="radio">
-          <input name="midi" type="radio" id="radioMidiNo" checked>
+          <input name="midiout" type="radio" id="radioMidiOutNo" checked>
           <span class="control-indicator"></span>
           No
         </label>
-
         <div id="midiOutBox" hidden>
-          <label>MIDI Instruments: 
-            <select id="selectOut"></select>
-          </label>
+          <select id="selectOut"></select>
         </div>
+      
+        <br>
+        Use MIDI Input: 
+        <label class="radio">
+          <input name="midiin" type="radio" id="radioMidiInYes">
+          <span class="control-indicator"></span>
+          Yes
+        </label>
+        <label class="radio">
+          <input name="midiin" type="radio" id="radioMidiInNo" checked>
+          <span class="control-indicator"></span>
+          No
+        </label>
+        <div id="midiInBox" hidden>
+          <select id="selectIns"></select>
+        </div>
+        
       </p>
       <button class="splash-button small" onclick="settingsBox.hidden = !settingsBox.hidden">Close</button>
     </div>
