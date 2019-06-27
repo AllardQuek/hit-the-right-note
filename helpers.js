@@ -68,8 +68,10 @@ class Player {
     
     const inputs = midi.inputs.values();
     for (let input = inputs.next(); input && !input.done; input = inputs.next()) {
-      input.onmidimessage = this.getMIDIMessage;
       this.midiIn.push(input.value);
+      // TODO: should probably use the selected index from this.selectInElement for correctness
+      // but i'm hacking this together for a demo so...
+      input.value.onmidimessage = this.getMIDIMessage;
       
     }
     
@@ -96,6 +98,11 @@ class Player {
   }
   
   getMIDIMessage(midiMessage) {
+    var command = message.data[0];
+    var note = message.data[1];
+    var velocity = (message.data.length > 2) ? message.data[2] : 0; // a velocity value might not be included with a noteOff command
+
+    
     console.log(midiMessage);
   }
 }
