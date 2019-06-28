@@ -73,6 +73,7 @@ function showMainScreen() {
     midiOutBox.hidden = true;
   });
   radioMidiInYes.addEventListener('click', () => {
+    debugger
     player.usingMidiIn = true;
     midiInBox.hidden = false;
   });

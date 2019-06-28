@@ -71,7 +71,7 @@ class Player {
       this.midiIn.push(input.value);
       // TODO: should probably use the selected index from this.selectInElement for correctness
       // but i'm hacking this together for a demo so...
-      input.value.onmidimessage = this.getMIDIMessage;
+      input.value.onmidimessage = (msg) => this.getMIDIMessage(msg);
       
     }
     
