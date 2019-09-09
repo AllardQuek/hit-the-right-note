@@ -45,6 +45,9 @@ function initEverything() {
   window.requestAnimationFrame(() => painter.drawLoop());
 
   // Event listeners.
+  document.getElementById('numButtons4').addEventListener('change', (event) => event.target.checked && updateNumButtons(4));
+  document.getElementById('numButtons8').addEventListener('change', (event) => event.target.checked && updateNumButtons(8));
+  
   window.addEventListener('resize', onWindowResize);
   window.addEventListener('orientationchange', onWindowResize);
   window.addEventListener('hashchange', () => TEMPERATURE = getTemperature());
@@ -91,7 +94,6 @@ function showMainScreen() {
     midiOutBox.hidden = true;
   });
   radioMidiInYes.addEventListener('click', () => {
-    debugger
     player.usingMidiIn = true;
     midiInBox.hidden = false;
   });
