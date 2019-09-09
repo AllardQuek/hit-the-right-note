@@ -76,7 +76,7 @@ class Player {
     }
     
     // No MIDI, no settings.
-    btnSettings.hidden = (this.midiOut.length === 0 && this.midiIn.length === 0);
+    //btnSettings.hidden = (this.midiOut.length === 0 && this.midiIn.length === 0);
     this.selectInElement.innerHTML = this.midiIn.map(device => `<option>${device.name}</option>`).join('');
     this.selectOutElement.innerHTML = this.midiOut.map(device => `<option>${device.name}</option>`).join('');
   }

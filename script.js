@@ -41,6 +41,15 @@ function initEverything() {
   window.addEventListener('resize', onWindowResize);
   window.addEventListener('orientationchange', onWindowResize);
   window.addEventListener('hashchange', () => TEMPERATURE = getTemperature());
+  inputNumButtons.addEventListener('change', () => {
+    CONSTANTS.NUM_BUTTONS = inputNumButtons.value;
+    
+    // Hide the extra buttons.
+    const buttons = document.querySelectorAll('.controls > button');
+    for (let i = 0; i < buttons.length; i++) {
+      buttons[i].hidden = i >= CONSTANTS.NUM_BUTTONS;
+    }
+  });
 }
 
 function showMainScreen() {

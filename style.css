@@ -275,3 +275,4 @@ label.radio > .control-indicator {
   -ms-user-select: none;
   user-select: none;
 }
+#inputNumButtons { vertical-align: middle; }
