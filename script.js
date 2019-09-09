@@ -1,7 +1,14 @@
 /*************************
  * Consts for everyone!
  ************************/
+// button mappings.
+const MAPPING_8 = {0:0, 1:1, 2:2, 3:3, 4:4, 5:5, 6:6, 7:7};
+const MAPPING_4 = {0:0, 1:2, 2:5, 3:7};
+
 let OCTAVES = 7;
+let NUM_BUTTONS = 8;
+let BUTTON_MAPPING = MAPPING_8;
+
 let keyWhitelist;
 let TEMPERATURE = getTemperature();
 
@@ -41,15 +48,17 @@ function initEverything() {
   window.addEventListener('resize', onWindowResize);
   window.addEventListener('orientationchange', onWindowResize);
   window.addEventListener('hashchange', () => TEMPERATURE = getTemperature());
-  inputNumButtons.addEventListener('change', () => {
-    CONSTANTS.NUM_BUTTONS = inputNumButtons.value;
-    
-    // Hide the extra buttons.
-    const buttons = document.querySelectorAll('.controls > button.color');
-    for (let i = 0; i < buttons.length; i++) {
-      buttons[i].hidden = i >= CONSTANTS.NUM_BUTTONS;
-    }
-  });
+}
+
+function updateNumButtons(num) {
+  NUM_BUTTONS = num;
+  const buttons = document.querySelectorAll('.controls > button.color');
+  BUTTON_MAPPING = (num === 4) ? MAPPING_4 : MAPPING_8;
+  
+  // Hide the extra buttons.
+  for (let i = 0; i < buttons.length; i++) {
+    buttons[i].hidden = i >= num;
+  }
 }
 
 function showMainScreen() {
@@ -150,7 +159,7 @@ function buttonDown(button, fromKeyDown) {
     return;
   el.setAttribute('active', true);
   
-  const note = genie.nextFromKeyWhitelist(button, keyWhitelist, TEMPERATURE);
+  const note = genie.nextFromKeyWhitelist(BUTTON_MAPPING[button], keyWhitelist, TEMPERATURE);
   const pitch = CONSTANTS.LOWEST_PIANO_KEY_MIDI_NOTE + note;
 
   // Hear it.
@@ -250,14 +259,14 @@ function onWindowResize() {
 const keyToButtonMap = [65,83,68,70,74,75,76,186];
 function getButtonFromKeyCode(keyCode) {
   let button = keyCode - 49;
-  if (button >= 0 && button < CONSTANTS.NUM_BUTTONS) {
+  if (button >= 0 && button < NUM_BUTTONS) {
     return button;
   } else if (keyCode === 59) {
     // In Firefox ; has a different keycode. No, I'm not kidding.
     return 7;
   } else {
     button = keyToButtonMap.indexOf(keyCode);
-    if (button >= 0 && button < CONSTANTS.NUM_BUTTONS) {
+    if (button >= 0 && button < NUM_BUTTONS) {
       return button;
     }
   }
