@@ -211,9 +211,12 @@ function onKeyDown(event) {
   if (event.repeat) {
     return;
   }
-  if (event.keyCode === 32) {  // sustain pedal
+  if (event.key === ' ') {  // sustain pedal
     sustaining = true;
-  } else if (event.keyCode === 48) { // 0
+  } else if (event.key === '0') { // 0
+    console.log('🧞‍♀️ resetting!');
+    genie.resetState();
+  } else if (event.key === 'r') { // r
     console.log('🧞‍♀️ resetting!');
     genie.resetState();
   } else {
