@@ -45,7 +45,7 @@ function initEverything() {
     CONSTANTS.NUM_BUTTONS = inputNumButtons.value;
     
     // Hide the extra buttons.
-    const buttons = document.querySelectorAll('.controls > button');
+    const buttons = document.querySelectorAll('.controls > button.color');
     for (let i = 0; i < buttons.length; i++) {
       buttons[i].hidden = i >= CONSTANTS.NUM_BUTTONS;
     }
