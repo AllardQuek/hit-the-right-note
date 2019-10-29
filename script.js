@@ -6,6 +6,7 @@ const MAPPING_8 = {0:0, 1:1, 2:2, 3:3, 4:4, 5:5, 6:6, 7:7};
 const MAPPING_4 = {0:0, 1:2, 2:5, 3:7};
 const BUTTONS_DEVICE = ['a','s','d','f','j','k','l',';'];
 const BUTTONS_MAKEY = ['ArrowUp','ArrowLeft','ArrowDown','ArrowRight','w','a','s','d'];
+const BUTTONS_MAKEY_DISPLAY = ['↑','←','↓','→','w','a','s','d'];
 
 let OCTAVES = 7;
 let NUM_BUTTONS = 8;
@@ -44,6 +45,7 @@ function initEverything() {
 
   // Start the drawing loop.
   onWindowResize();
+  updateButtonText();
   window.requestAnimationFrame(() => painter.drawLoop());
 
   // Event listeners.
@@ -87,6 +89,7 @@ function showMainScreen() {
   controls.addEventListener('touchleave', (event) => doTouchMove(event, false));
   canvas.addEventListener('mouseenter', () => mouseDownButton = null);
   
+  // Output.
   radioMidiOutYes.addEventListener('click', () => {
     player.usingMidiOut = true;
     midiOutBox.hidden = false;
@@ -95,20 +98,24 @@ function showMainScreen() {
     player.usingMidiOut = false;
     midiOutBox.hidden = true;
   });
+  // Input.
   radioMidiInYes.addEventListener('click', () => {
     player.usingMidiIn = true;
     midiInBox.hidden = false;
     isUsingMakey = false;
+    updateButtonText();
   });
   radioDeviceYes.addEventListener('click', () => {
     player.usingMidiIn = false;
     midiInBox.hidden = true;
     isUsingMakey = false;
+    updateButtonText();
   });
   radioMakeyYes.addEventListener('click', () => {
     player.usingMidiIn = false;
     midiInBox.hidden = true;
     isUsingMakey = true;
+    updateButtonText();
   });
   
   // Figure out if WebMidi works.
@@ -267,7 +274,6 @@ function onWindowResize() {
 /*************************
  * Utils and helpers
  ************************/
-
 function getButtonFromKeyCode(key) {
   // 1 - 8
   if (key >= '1' && key <= String(NUM_BUTTONS)) {
@@ -293,4 +299,13 @@ function parseHashParameters() {
     params[temp[0]] = temp[1]
   });
   return params;
+}
+
+function updateButtonText() {
+  const btns = document.querySelectorAll('.controls button.color');
+  for (let i = 0; i < btns.length; i++) {
+    btns[i].innerHTML = isUsingMakey ? 
+        `<span>${BUTTONS_MAKEY_DISPLAY[i]}</span>` : 
+        `<span>${i + 1}</span><br><span>${BUTTONS_DEVICE[i]}</span>`;
+  }
 }
