@@ -89,7 +89,7 @@ function showMainScreen() {
     player.usingMidiOut = true;
     midiOutBox.hidden = false;
   });
-  radioMidiOutNo.addEventListener('click', () => {
+  radioAudioYes.addEventListener('click', () => {
     player.usingMidiOut = false;
     midiOutBox.hidden = true;
   });
@@ -97,7 +97,11 @@ function showMainScreen() {
     player.usingMidiIn = true;
     midiInBox.hidden = false;
   });
-  radioMidiInNo.addEventListener('click', () => {
+  radioDeviceYes.addEventListener('click', () => {
+    player.usingMidiIn = false;
+    midiInBox.hidden = true;
+  });
+  radioMakeyYes.addEventListener('click', () => {
     player.usingMidiIn = false;
     midiInBox.hidden = true;
   });

@@ -72,44 +72,52 @@
           8
         </label>
       </p>
-      <h2>MIDI Settings</h2>
+      <h2>Input Settings</h2>
+      
+      <label class="radio">
+        Web clicks/device keyboard
+        <input name="input" type="radio" id="radioDeviceYes" checked>
+        <span class="control-indicator"></span>
+      </label>
+      <br>
+      <label class="radio">
+        Makey Makey
+        <input name="input" type="radio" id="radioMakeyYes">
+        <span class="control-indicator"></span>
+      </label>
+      <br>
+      <label class="radio">
+        MIDI Input 
+        <input name="input" type="radio" id="radioMidiInYes">
+        <span class="control-indicator"></span>
+      </label>
+      <div id="midiInBox" hidden>
+        <select id="selectIn"></select>
+      </div>
+      
+      <h2>Output Settings</h2>
+      
+      <label class="radio">
+        Device audio
+        <input name="output" type="radio" id="radioAudioYes" checked>
+        <span class="control-indicator"></span>
+      </label>
+      <br>
+      <label class="radio">
+        MIDI Output
+        <input name="output" type="radio" id="radioMidiOutYes">
+        <span class="control-indicator"></span>
+      </label>
+      <div id="midiOutBox" hidden>
+          <select id="selectOut"></select>
+        </div>
+      
       <p id="midiNotSupported">
         Unfortunately, this browser does not support WebMIDI, which is only
         supported in Chrome and Opera.
       </p>
-      <p id="midiSupported">
-        Use MIDI Output: 
-        <label class="radio">
-          <input name="midiout" type="radio" id="radioMidiOutYes">
-          <span class="control-indicator"></span>
-          Yes
-        </label>
-        <label class="radio">
-          <input name="midiout" type="radio" id="radioMidiOutNo" checked>
-          <span class="control-indicator"></span>
-          No
-        </label>
-        <div id="midiOutBox" hidden>
-          <select id="selectOut"></select>
-        </div>
+      <p id="midiSupported"></p>
       
-        <br>
-        Use MIDI Input: 
-        <label class="radio">
-          <input name="midiin" type="radio" id="radioMidiInYes">
-          <span class="control-indicator"></span>
-          Yes
-        </label>
-        <label class="radio">
-          <input name="midiin" type="radio" id="radioMidiInNo" checked>
-          <span class="control-indicator"></span>
-          No
-        </label>
-        <div id="midiInBox" hidden>
-          <select id="selectIn"></select>
-        </div>
-        
-      </p>
       <button class="splash-button small" onclick="settingsBox.hidden = !settingsBox.hidden">Close</button>
     </div>
   </body>
