@@ -4,6 +4,8 @@
 // button mappings.
 const MAPPING_8 = {0:0, 1:1, 2:2, 3:3, 4:4, 5:5, 6:6, 7:7};
 const MAPPING_4 = {0:0, 1:2, 2:5, 3:7};
+const BUTTONS_DEVICE = ['a','s','d','f','j','k','l',';'];
+const BUTTONS_MAKEY = ['ArrowUp','ArrowLeft','ArrowDown','ArrowRight','w','a','s','d'];
 
 let OCTAVES = 7;
 let NUM_BUTTONS = 8;
@@ -26,7 +28,7 @@ const player = new Player();
 const genie = new mm.PianoGenie(CONSTANTS.GENIE_CHECKPOINT);
 const painter = new FloatyNotes();
 const piano = new Piano();
-
+let isUsingMakey = false;
 initEverything();
 
 /*************************
@@ -96,14 +98,17 @@ function showMainScreen() {
   radioMidiInYes.addEventListener('click', () => {
     player.usingMidiIn = true;
     midiInBox.hidden = false;
+    isUsingMakey = false;
   });
   radioDeviceYes.addEventListener('click', () => {
     player.usingMidiIn = false;
     midiInBox.hidden = true;
+    isUsingMakey = false;
   });
   radioMakeyYes.addEventListener('click', () => {
     player.usingMidiIn = false;
     midiInBox.hidden = true;
+    isUsingMakey = true;
   });
   
   // Figure out if WebMidi works.
@@ -217,14 +222,11 @@ function onKeyDown(event) {
   }
   if (event.key === ' ') {  // sustain pedal
     sustaining = true;
-  } else if (event.key === '0') { // 0
-    console.log('🧞‍♀️ resetting!');
-    genie.resetState();
-  } else if (event.key === 'r') { // r
+  } else if (event.key === '0' || event.key === 'r') {
     console.log('🧞‍♀️ resetting!');
     genie.resetState();
   } else {
-    const button = getButtonFromKeyCode(event.keyCode);
+    const button = getButtonFromKeyCode(event.key);
     if (button != null) {
       buttonDown(button, true);
     }
@@ -232,14 +234,14 @@ function onKeyDown(event) {
 }
 
 function onKeyUp(event) {
-  if (event.keyCode === 32) {  // sustain pedal
+  if (event.key === ' ') {  // sustain pedal
     sustaining = false;
+    
     // Release everything.
-
     sustainingNotes.forEach((note) => player.playNoteUp(note, -1));
     sustainingNotes = [];
   } else {
-    const button = getButtonFromKeyCode(event.keyCode);
+    const button = getButtonFromKeyCode(event.key);
     if (button != null) {
       buttonUp(button);
     }
@@ -265,21 +267,15 @@ function onWindowResize() {
 /*************************
  * Utils and helpers
  ************************/
-const keyToButtonMap = [65,83,68,70,74,75,76,186];
-function getButtonFromKeyCode(keyCode) {
-  let button = keyCode - 49;
-  if (button >= 0 && button < NUM_BUTTONS) {
-    return button;
-  } else if (keyCode === 59) {
-    // In Firefox ; has a different keycode. No, I'm not kidding.
-    return 7;
-  } else {
-    button = keyToButtonMap.indexOf(keyCode);
-    if (button >= 0 && button < NUM_BUTTONS) {
-      return button;
-    }
-  }
-  return null;
+
+function getButtonFromKeyCode(key) {
+  // 1 - 8
+  if (key >= '1' && key <= String(NUM_BUTTONS)) {
+    return parseInt(key) - 1;
+  } 
+  
+  const index = isUsingMakey ? BUTTONS_MAKEY.indexOf(key) : BUTTONS_DEVICE.indexOf(key);
+  return index !== -1 ? index : null;
 }
 
 function getTemperature() {
