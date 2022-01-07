@@ -47,7 +47,7 @@ function initEverything() {
   onWindowResize();
   updateButtonText();
   window.requestAnimationFrame(() => painter.drawLoop());
-
+  
   // Event listeners.
   document.getElementById('numButtons4').addEventListener('change', (event) => event.target.checked && updateNumButtons(4));
   document.getElementById('numButtons8').addEventListener('change', (event) => event.target.checked && updateNumButtons(8));
