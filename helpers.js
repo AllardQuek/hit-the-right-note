@@ -143,31 +143,31 @@ class FloatyNotes {
     noteToPaint.on = false;
   }
   
-  drawLoop() {
-    const dy = 3;
-    this.context.clearRect(0, 0, window.innerWidth, window.innerHeight);
+//   drawLoop() {
+//     const dy = 3;
+//     this.context.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
-    // Remove all the notes that will be off the page;
-    this.notes = this.notes.filter((note) => note.on || note.y < (this.contextHeight - 100));
+//     // Remove all the notes that will be off the page;
+//     this.notes = this.notes.filter((note) => note.on || note.y < (this.contextHeight - 100));
 
-    // Advance all the notes.
-    for (let i = 0; i < this.notes.length; i++) {
-      const note = this.notes[i];
+//     // Advance all the notes.
+//     for (let i = 0; i < this.notes.length; i++) {
+//       const note = this.notes[i];
 
-      // If the note is still on, then its height goes up but it
-      // doesn't start sliding down yet.
-      if (note.on) {
-        note.height += dy;
-      } else {
-        note.y += dy;
-      }
+//       // If the note is still on, then its height goes up but it
+//       // doesn't start sliding down yet.
+//       if (note.on) {
+//         note.height += dy;
+//       } else {
+//         note.y += dy;
+//       }
       
-      this.context.globalAlpha = 1 - note.y / this.contextHeight;
-      this.context.fillStyle = note.color;
-      this.context.fillRect(note.x, note.y, note.width, note.height);
-    }
-    window.requestAnimationFrame(() => this.drawLoop());
-  }
+//       this.context.globalAlpha = 1 - note.y / this.contextHeight;
+//       this.context.fillStyle = note.color;
+//       this.context.fillRect(note.x, note.y, note.width, note.height);
+//     }
+//     window.requestAnimationFrame(() => this.drawLoop());
+//   }
 }
 
 class Piano {
@@ -184,7 +184,6 @@ class Piano {
   }
   
   resize(totalWhiteNotes) {
-    // i honestly don't know why some flooring is good and some is bad sigh.
     const ratio = window.innerWidth / totalWhiteNotes;
     this.config.whiteNoteWidth = OCTAVES > 6 ? ratio: Math.floor(ratio);
     this.config.blackNoteWidth = this.config.whiteNoteWidth * 2 / 3;

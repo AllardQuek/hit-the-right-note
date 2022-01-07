@@ -42,7 +42,7 @@ function initEverything() {
 
   // Start the drawing loop.
   onWindowResize();
-  updateButtonText();
+  // updateButtonText();
   window.requestAnimationFrame(() => painter.drawLoop());
   
   window.addEventListener('resize', onWindowResize);
@@ -61,9 +61,6 @@ function showMainScreen() {
   controls.addEventListener('touchenter', (event) => doTouchMove(event, true));
   controls.addEventListener('touchleave', (event) => doTouchMove(event, false));
   canvas.addEventListener('mouseenter', () => mouseDownButton = null);
-  
-//   }
-
   document.addEventListener('keyup', onKeyUp);
 
   // Slow to start up, so do a fake prediction to warm up the model.
@@ -183,12 +180,7 @@ function onWindowResize() {
  * Utils and helpers
  ************************/
 function getButtonFromKeyCode(key) {
-  // 1 - 8
-  if (key >= '1' && key <= String(NUM_BUTTONS)) {
-    return parseInt(key) - 1;
-  } 
-  
-  const index = isUsingMakey ? BUTTONS_MAKEY.indexOf(key) : BUTTONS_DEVICE.indexOf(key);
+  const index = BUTTONS_DEVICE.indexOf(key);
   return index !== -1 ? index : null;
 }
 
@@ -207,13 +199,4 @@ function parseHashParameters() {
     params[temp[0]] = temp[1]
   });
   return params;
-}
-
-function updateButtonText() {
-  const btns = document.querySelectorAll('.controls button.color');
-  for (let i = 0; i < btns.length; i++) {
-    btns[i].innerHTML = isUsingMakey ? 
-        `<span>${BUTTONS_MAKEY_DISPLAY[i]}</span>` : 
-        `<span>${i + 1}</span><br><span>${BUTTONS_DEVICE[i]}</span>`;
-  }
 }
