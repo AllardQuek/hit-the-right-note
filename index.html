@@ -1,17 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Piano Genie</title>
+    <title>HTRN</title>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
-<!--     <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet"> -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/style.css">
-    <link id="favicon" rel="icon" href="https://cdn.glitch.com/69295b46-7d64-4ff6-8223-94cba13ee115%2Ffavicon-32x32.png?1542832173836" type="image/x-icon">
-    <script src="https://cdn.jsdelivr.net/npm/@magenta/music@1.3.1"></script>
+    <link id="favicon" rel="icon" href="https://cdn.glitch.com/69295b46-7d64-4ff6-8223-94cba13ee115%2Ffavicon-32x32.png?1542832173836" type="image/x-icon" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100;300;400&display=swap" rel="stylesheet">    <script src="https://cdn.jsdelivr.net/npm/@magenta/music@1.3.1"></script>
     <script src="/helpers.js" defer></script>
     <script src="/script.js" defer></script>
   </head>  
@@ -19,17 +16,20 @@
     <div class="splash">
       <h1>Hit The Right Notes</h1>
       <div class="splash-main">        
-        <p>Have some fun pretending you're a piano virtuoso using machine learning!</p>
-        <p>Use the <b>1-8</b> numbered keys on your keyboard (or the home row <b>a-f</b> and <b>j-;</b>) or <b>touch</b> the 
-          coloured blocks to play the piano. Use the <b>space bar</b> to control the sustain pedal. The more
-          you pretend you're a real player, the better the melody (and you!) will sound.
+        <p>Always wanted to play the piano but never know what notes to hit? It's simple.</p>
+        <p>1. Use the <b>a-f</b> and <b>j-;</b>) keys on your keyboard or <b>touch</b> the 
+          coloured blocks to play the piano.</p>
+        <p>
+          2. Use the <b>space bar</b> to control the sustain pedal.</p>
+        <p>
+          3. The more you pretend you're a real player, the better the melody (and you!) will sound.
         </p>
 
         <button class="splash-button loading" id="playBtn" disabled onclick="showMainScreen()" autofocus><span>Loading...</span></button>
       </div>
       <p class="built-with">
         Built with <a target="_blank" href="https://magenta.tensorflow.org">magenta.js</a>. Learn more about <a target="_blank" href="https://magenta.tensorflow.org/pianogenie">how it works</a>,
-        or see the code on <a target="_blank" href="https://glitch.com/edit/#!/piano-genie">Glitch</a>.
+        or see the code on <a target="_blank" href="https://glitch.com/edit/#!/hit-the-right-note?">Glitch</a>.
       </p>
     </div>
     
