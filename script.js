@@ -90,9 +90,6 @@ function buttonDown(button, fromKeyDown) {
   // See it.
   const rect = piano.highlightNote(note, button);
   
-  if (!rect) {
-    debugger;
-  }
   // Float it.
   const noteToPaint = painter.addNote(button, rect.getAttribute('x'), rect.getAttribute('width'));
   heldButtonToVisualData.set(button, {rect:rect, note:note, noteToPaint:noteToPaint});
