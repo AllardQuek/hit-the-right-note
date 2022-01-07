@@ -4,8 +4,7 @@ const CONSTANTS = {
   NOTES_PER_OCTAVE : 12,
   WHITE_NOTES_PER_OCTAVE : 7,
   LOWEST_PIANO_KEY_MIDI_NOTE : 21,
-  GENIE_CHECKPOINT : 'https://storage.googleapis.com/magentadata/js/checkpoints/piano_genie/model/epiano/stp_iq_auto_contour_dt_166006',  
-
+  HTRN_CHECKPOINT : 'https://storage.googleapis.com/magentadata/js/checkpoints/piano_genie/model/epiano/stp_iq_auto_contour_dt_166006',  
 }
 
 /*************************
@@ -143,31 +142,32 @@ class FloatyNotes {
     noteToPaint.on = false;
   }
   
-//   drawLoop() {
-//     const dy = 3;
-//     this.context.clearRect(0, 0, window.innerWidth, window.innerHeight);
+  // * Draws the duration of the note being played
+  drawLoop() {
+    const dy = 3;
+    this.context.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
-//     // Remove all the notes that will be off the page;
-//     this.notes = this.notes.filter((note) => note.on || note.y < (this.contextHeight - 100));
+    // Remove all the notes that will be off the page;
+    this.notes = this.notes.filter((note) => note.on || note.y < (this.contextHeight - 100));
 
-//     // Advance all the notes.
-//     for (let i = 0; i < this.notes.length; i++) {
-//       const note = this.notes[i];
+    // Advance all the notes.
+    for (let i = 0; i < this.notes.length; i++) {
+      const note = this.notes[i];
 
-//       // If the note is still on, then its height goes up but it
-//       // doesn't start sliding down yet.
-//       if (note.on) {
-//         note.height += dy;
-//       } else {
-//         note.y += dy;
-//       }
+      // If the note is still on, then its height goes up but it
+      // doesn't start sliding down yet.
+      if (note.on) {
+        note.height += dy;
+      } else {
+        note.y += dy;
+      }
       
-//       this.context.globalAlpha = 1 - note.y / this.contextHeight;
-//       this.context.fillStyle = note.color;
-//       this.context.fillRect(note.x, note.y, note.width, note.height);
-//     }
-//     window.requestAnimationFrame(() => this.drawLoop());
-//   }
+      this.context.globalAlpha = 1 - note.y / this.contextHeight;
+      this.context.fillStyle = note.color;
+      this.context.fillRect(note.x, note.y, note.width, note.height);
+    }
+    window.requestAnimationFrame(() => this.drawLoop());
+  }
 }
 
 class Piano {

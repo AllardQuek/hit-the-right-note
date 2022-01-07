@@ -23,17 +23,16 @@ let sustainingNotes = [];
 let mouseDownButton = null;
 
 const player = new Player();
-const genie = new mm.PianoGenie(CONSTANTS.GENIE_CHECKPOINT);
+const htrn = new mm.PianoGenie(CONSTANTS.HTRN_CHECKPOINT);
 const painter = new FloatyNotes();
 const piano = new Piano();
-let isUsingMakey = false;
 initEverything();
 
 /*************************
  * Basic UI bits
  ************************/
 function initEverything() {
-  genie.initialize().then(() => {
+  htrn.initialize().then(() => {
     console.log('🧞‍♀️ ready!');
     playBtn.textContent = 'Play';
     playBtn.removeAttribute('disabled');
@@ -64,8 +63,8 @@ function showMainScreen() {
   document.addEventListener('keyup', onKeyUp);
 
   // Slow to start up, so do a fake prediction to warm up the model.
-  const note = genie.nextFromKeyWhitelist(0, keyWhitelist, TEMPERATURE);
-  genie.resetState();
+  const note = htrn.nextFromKeyWhitelist(0, keyWhitelist, TEMPERATURE);
+  htrn.resetState();
 }
 
 /*************************
@@ -82,7 +81,7 @@ function buttonDown(button, fromKeyDown) {
     return;
   el.setAttribute('active', true);
   
-  const note = genie.nextFromKeyWhitelist(BUTTON_MAPPING[button], keyWhitelist, TEMPERATURE);
+  const note = htrn.nextFromKeyWhitelist(BUTTON_MAPPING[button], keyWhitelist, TEMPERATURE);
   const pitch = CONSTANTS.LOWEST_PIANO_KEY_MIDI_NOTE + note;
 
   // Hear it.
@@ -136,7 +135,7 @@ function onKeyDown(event) {
     sustaining = true;
   } else if (event.key === '0' || event.key === 'r') {
     console.log('🧞‍♀️ resetting!');
-    genie.resetState();
+    htrn.resetState();
   } else {
     const button = getButtonFromKeyCode(event.key);
     if (button != null) {
