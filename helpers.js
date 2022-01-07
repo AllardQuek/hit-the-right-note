@@ -14,12 +14,6 @@ const CONSTANTS = {
 class Player {
   constructor() {
     this.player = new mm.SoundFontPlayer('https://storage.googleapis.com/magentadata/js/soundfonts/sgm_plus');
-    this.midiOut = [];
-    this.midiIn = []
-    this.usingMidiOut = false;
-    this.usingMidiIn = false;
-    this.selectOutElement = document.getElementById('selectOut');
-    this.selectInElement = document.getElementById('selectIn');
     this.loadAllSamples();
   }
   
@@ -75,11 +69,6 @@ class Player {
       input.value.onmidimessage = (msg) => this.getMIDIMessage(msg);
       
     }
-    
-    // No MIDI, no settings.
-    //btnSettings.hidden = (this.midiOut.length === 0 && this.midiIn.length === 0);
-    this.selectInElement.innerHTML = this.midiIn.map(device => `<option>${device.name}</option>`).join('');
-    this.selectOutElement.innerHTML = this.midiOut.map(device => `<option>${device.name}</option>`).join('');
   }
 
   sendMidiNoteOn(pitch, button) {  

@@ -3,10 +3,7 @@
  ************************/
 // button mappings.
 const MAPPING_8 = {0:0, 1:1, 2:2, 3:3, 4:4, 5:5, 6:6, 7:7};
-const MAPPING_4 = {0:0, 1:2, 2:5, 3:7};
 const BUTTONS_DEVICE = ['a','s','d','f','j','k','l',';'];
-const BUTTONS_MAKEY = ['ArrowUp','ArrowLeft','ArrowDown','ArrowRight','w','a','s','d'];
-const BUTTONS_MAKEY_DISPLAY = ['↑','←','↓','→','w','a','s','d'];
 
 let OCTAVES = 7;
 let NUM_BUTTONS = 8;
@@ -47,25 +44,10 @@ function initEverything() {
   onWindowResize();
   updateButtonText();
   window.requestAnimationFrame(() => painter.drawLoop());
-
-  // Event listeners.
-  document.getElementById('numButtons4').addEventListener('change', (event) => event.target.checked && updateNumButtons(4));
-  document.getElementById('numButtons8').addEventListener('change', (event) => event.target.checked && updateNumButtons(8));
   
   window.addEventListener('resize', onWindowResize);
   window.addEventListener('orientationchange', onWindowResize);
   window.addEventListener('hashchange', () => TEMPERATURE = getTemperature());
-}
-
-function updateNumButtons(num) {
-  NUM_BUTTONS = num;
-  const buttons = document.querySelectorAll('.controls > button.color');
-  BUTTON_MAPPING = (num === 4) ? MAPPING_4 : MAPPING_8;
-  
-  // Hide the extra buttons.
-  for (let i = 0; i < buttons.length; i++) {
-    buttons[i].hidden = i >= num;
-  }
 }
 
 function showMainScreen() {
@@ -74,63 +56,12 @@ function showMainScreen() {
 
   document.addEventListener('keydown',onKeyDown);
   
-  controls.addEventListener('touchstart', (event) => doTouchStart(event), {passive: true});
-  controls.addEventListener('touchend', (event) => doTouchEnd(event), {passive: true});
-  
-  const hasTouchEvents = ('ontouchstart' in window);
-  if (!hasTouchEvents) {
-    controls.addEventListener('mousedown', (event) => doTouchStart(event));
-    controls.addEventListener('mouseup', (event) => doTouchEnd(event));
-  }
-  
   controls.addEventListener('mouseover', (event) => doTouchMove(event, true));
   controls.addEventListener('mouseout', (event) => doTouchMove(event, false));
   controls.addEventListener('touchenter', (event) => doTouchMove(event, true));
   controls.addEventListener('touchleave', (event) => doTouchMove(event, false));
   canvas.addEventListener('mouseenter', () => mouseDownButton = null);
   
-//   // Output.
-//   radioMidiOutYes.addEventListener('click', () => {
-//     player.usingMidiOut = true;
-//     midiOutBox.hidden = false;
-//   });
-//   radioAudioYes.addEventListener('click', () => {
-//     player.usingMidiOut = false;
-//     midiOutBox.hidden = true;
-//   });
-//   // Input.
-//   radioMidiInYes.addEventListener('click', () => {
-//     player.usingMidiIn = true;
-//     midiInBox.hidden = false;
-//     isUsingMakey = false;
-//     updateButtonText();
-//   });
-//   radioDeviceYes.addEventListener('click', () => {
-//     player.usingMidiIn = false;
-//     midiInBox.hidden = true;
-//     isUsingMakey = false;
-//     updateButtonText();
-//   });
-//   radioMakeyYes.addEventListener('click', () => {
-//     player.usingMidiIn = false;
-//     midiInBox.hidden = true;
-//     isUsingMakey = true;
-//     updateButtonText();
-//   });
-  
-//   // Figure out if WebMidi works.
-//   if (navigator.requestMIDIAccess) {
-//     midiNotSupported.hidden = true;
-//     radioMidiInYes.parentElement.removeAttribute('disabled');
-//     radioMidiOutYes.parentElement.removeAttribute('disabled');
-//     navigator.requestMIDIAccess()
-//       .then(
-//           (midi) => player.midiReady(midi),
-//           (err) => console.log('Something went wrong', err));
-//   } else {
-//     midiNotSupported.hidden = false;
-//     radioMidiInYes.parentElement.setAttribute('disabled', true);
-//     radioMidiOutYes.parentElement.setAttribute('disabled', true);
 //   }
 
   document.addEventListener('keyup', onKeyUp);
@@ -138,31 +69,6 @@ function showMainScreen() {
   // Slow to start up, so do a fake prediction to warm up the model.
   const note = genie.nextFromKeyWhitelist(0, keyWhitelist, TEMPERATURE);
   genie.resetState();
-}
-
-// Here touch means either touch or mouse.
-function doTouchStart(event) {
-  event.preventDefault();
-  mouseDownButton = event.target; 
-  buttonDown(event.target.dataset.id, true);
-}
-function doTouchEnd(event) {
-  event.preventDefault();
-  if (mouseDownButton && mouseDownButton !== event.target) {
-    buttonUp(mouseDownButton.dataset.id);
-  }
-  mouseDownButton = null;
-  buttonUp(event.target.dataset.id);
-}
-function doTouchMove(event, down) {
-   // If we're already holding a button down, start holding this one too.
-  if (!mouseDownButton)
-    return;
-  
-  if (down)
-    buttonDown(event.target.dataset.id, true);
-  else 
-    buttonUp(event.target.dataset.id, true);
 }
 
 /*************************
