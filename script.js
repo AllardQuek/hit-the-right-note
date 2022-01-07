@@ -89,49 +89,49 @@ function showMainScreen() {
   controls.addEventListener('touchleave', (event) => doTouchMove(event, false));
   canvas.addEventListener('mouseenter', () => mouseDownButton = null);
   
-  // Output.
-  radioMidiOutYes.addEventListener('click', () => {
-    player.usingMidiOut = true;
-    midiOutBox.hidden = false;
-  });
-  radioAudioYes.addEventListener('click', () => {
-    player.usingMidiOut = false;
-    midiOutBox.hidden = true;
-  });
-  // Input.
-  radioMidiInYes.addEventListener('click', () => {
-    player.usingMidiIn = true;
-    midiInBox.hidden = false;
-    isUsingMakey = false;
-    updateButtonText();
-  });
-  radioDeviceYes.addEventListener('click', () => {
-    player.usingMidiIn = false;
-    midiInBox.hidden = true;
-    isUsingMakey = false;
-    updateButtonText();
-  });
-  radioMakeyYes.addEventListener('click', () => {
-    player.usingMidiIn = false;
-    midiInBox.hidden = true;
-    isUsingMakey = true;
-    updateButtonText();
-  });
+//   // Output.
+//   radioMidiOutYes.addEventListener('click', () => {
+//     player.usingMidiOut = true;
+//     midiOutBox.hidden = false;
+//   });
+//   radioAudioYes.addEventListener('click', () => {
+//     player.usingMidiOut = false;
+//     midiOutBox.hidden = true;
+//   });
+//   // Input.
+//   radioMidiInYes.addEventListener('click', () => {
+//     player.usingMidiIn = true;
+//     midiInBox.hidden = false;
+//     isUsingMakey = false;
+//     updateButtonText();
+//   });
+//   radioDeviceYes.addEventListener('click', () => {
+//     player.usingMidiIn = false;
+//     midiInBox.hidden = true;
+//     isUsingMakey = false;
+//     updateButtonText();
+//   });
+//   radioMakeyYes.addEventListener('click', () => {
+//     player.usingMidiIn = false;
+//     midiInBox.hidden = true;
+//     isUsingMakey = true;
+//     updateButtonText();
+//   });
   
-  // Figure out if WebMidi works.
-  if (navigator.requestMIDIAccess) {
-    midiNotSupported.hidden = true;
-    radioMidiInYes.parentElement.removeAttribute('disabled');
-    radioMidiOutYes.parentElement.removeAttribute('disabled');
-    navigator.requestMIDIAccess()
-      .then(
-          (midi) => player.midiReady(midi),
-          (err) => console.log('Something went wrong', err));
-  } else {
-    midiNotSupported.hidden = false;
-    radioMidiInYes.parentElement.setAttribute('disabled', true);
-    radioMidiOutYes.parentElement.setAttribute('disabled', true);
-  }
+//   // Figure out if WebMidi works.
+//   if (navigator.requestMIDIAccess) {
+//     midiNotSupported.hidden = true;
+//     radioMidiInYes.parentElement.removeAttribute('disabled');
+//     radioMidiOutYes.parentElement.removeAttribute('disabled');
+//     navigator.requestMIDIAccess()
+//       .then(
+//           (midi) => player.midiReady(midi),
+//           (err) => console.log('Something went wrong', err));
+//   } else {
+//     midiNotSupported.hidden = false;
+//     radioMidiInYes.parentElement.setAttribute('disabled', true);
+//     radioMidiOutYes.parentElement.setAttribute('disabled', true);
+//   }
 
   document.addEventListener('keyup', onKeyUp);
 

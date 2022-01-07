@@ -8,7 +8,7 @@ body {
   background-color: #D887D8;
   background-image: linear-gradient(0deg, #D887D8 0%, #62CEDB 100%);
   color: white;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Roboto Mono', 'Poppins', sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -17,9 +17,7 @@ body {
   overscroll-behavior-y: contain;
 }
 
-html, body { height: 100%; }
-html,
-body {
+html,body {
   height: 100%;
   width: 100%;
   overflow: auto;
