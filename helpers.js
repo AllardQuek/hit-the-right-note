@@ -1,7 +1,7 @@
 const CONSTANTS = {
   COLORS : ['#000000', '#FF0018','#FFA52C','#ffff00','#008018','#0000F9','#86007D', '#ffffff'],
   NUM_BUTTONS : 8,
-  NOTES_PER_OCTAVE : 12,
+  NOTES_PER_OCTAVE : 8,
   WHITE_NOTES_PER_OCTAVE : 7,
   LOWEST_PIANO_KEY_MIDI_NOTE : 21,
   HTRN_CHECKPOINT : 'https://storage.googleapis.com/magentadata/js/checkpoints/piano_genie/model/epiano/stp_iq_auto_contour_dt_166006',  
