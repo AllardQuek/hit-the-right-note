@@ -34,14 +34,14 @@ html,body {
   background-image: linear-gradient(0deg, #D887D8 0%, #62CEDB 100%);
 }
 
-.color-0 { background: #000000; color: #ffffff; } 
+.color-0 { background: #ffffff; } 
 .color-1 { background: #FF0018; } 
 .color-2 { background: #FFA52C; } 
 .color-3 { background: #ffff00; } 
-.color-4 { background: #008018; } 
-.color-5 { background: #0000F9; } 
-.color-6 { background: #86007D; } 
-.color-7 { background: #ffffff; }
+.color-4 { background: #008018; color: #ffffff; } 
+.color-5 { background: #0000F9; color: #ffffff; } 
+.color-6 { background: #86007D; color: #ffffff; } 
+.color-7 { background: #000000; color: #ffffff; }
 
 canvas {
   position: absolute;
@@ -51,21 +51,10 @@ canvas {
   bottom: 0;
 }
 
-#svg {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-#svg rect {
-  transition: all 0.2s linear;
-}
-
 h1 {
   text-transform: uppercase;
   font-size: 40px;
 }
-
 
 .splash-main b {
   background: #CDF352;
@@ -114,14 +103,14 @@ h1 {
   transform: scale(0.9, 0.9)
 }
 
-.controls button.settings {
+.controls button.help {
   position: relative;
   background: transparent;
   fill: white;
   cursor: pointer;
 }
 
-.controls button.settings:hover {
+.controls button.help:hover {
   fill: #CDF352;
 }
 
@@ -179,14 +168,16 @@ button.splash-button {
   font-family: inherit;
   font-size: 22px;
   display: block;
-  border: 2px solid #CDF352;
   background-color: transparent;
   text-transform: uppercase;
   letter-spacing: 1px;
   color: #CDF352;
   text-align: center;
-  transition: background-color 0.2s linear;
   width: 200px;
+  border: 2px solid #CDF352;
+  border-radius: 35px;
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out 0s;
 }
 
 button.splash-button:hover {

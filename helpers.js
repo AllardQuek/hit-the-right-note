@@ -1,5 +1,5 @@
 const CONSTANTS = {
-  COLORS : ['#000000', '#FF0018','#FFA52C','#ffff00','#008018','#0000F9','#86007D', '#ffffff'],
+  COLORS : ['#FFFFFF', '#FF0018','#FFA52C','#ffff00','#008018','#0000F9','#86007D', '#000000'],
   NUM_BUTTONS : 8,
   NOTES_PER_OCTAVE : 12,
   WHITE_NOTES_PER_OCTAVE : 7,
