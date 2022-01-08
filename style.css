@@ -5,8 +5,8 @@ body {
   text-align: center;
   overflow: hidden;
   width: 100vw;
-  background-color: #D887D8;
-  background-image: linear-gradient(0deg, #D887D8 0%, #62CEDB 100%);
+  background-color: #62CEDB;
+  background-image: linear-gradient(0deg, #62CEDB 0%, #D887D8 100%);
   color: white;
   font-family: 'Roboto Mono', 'Poppins', sans-serif;
   display: flex;
@@ -30,18 +30,18 @@ html,body {
 .background {
   width: 100vw;
   height: 100vh; 
-  background: #141E30;
-  background: linear-gradient(to bottom, #243B55, #141E30);
+  background-color: #D887D8;
+  background-image: linear-gradient(0deg, #D887D8 0%, #62CEDB 100%);
 }
 
-.color-0 { background: #EE2B29; fill: #EE2B29; } 
-.color-1 { background: #ff9800; fill: #ff9800; } 
-.color-2 { background: #ffff00; fill: #ffff00; } 
-.color-3 { background: #c6ff00; fill: #c6ff00; } 
-.color-4 { background: #00e5ff; fill: #00e5ff; } 
-.color-5 { background: #2979ff; fill: #2979ff; } 
-.color-6 { background: #651fff; fill: #651fff; } 
-.color-7 { background: #d500f9; fill: #d500f9; }
+.color-0 { background: #000000; color: #ffffff; } 
+.color-1 { background: #FF0018; } 
+.color-2 { background: #FFA52C; } 
+.color-3 { background: #ffff00; } 
+.color-4 { background: #008018; } 
+.color-5 { background: #0000F9; } 
+.color-6 { background: #86007D; } 
+.color-7 { background: #ffffff; }
 
 canvas {
   position: absolute;
