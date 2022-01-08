@@ -110,7 +110,7 @@ class Piano {
       blackNoteHeight: 2 * 70 / 3
     }
     
-    this.svg = document.getElementById('unicorns');
+    this.svg = document.getElementById('svg');
     this.svgNS = 'http://www.w3.org/2000/svg';
   }
   
@@ -132,13 +132,14 @@ class Piano {
     // const blackNoteIndexes = [1, 3, 6, 8, 10];
     let unicorns = document.getElementsByClassName("unicorn");
     // let index = 3 + CONSTANTS.NOTES_PER_OCTAVE;
-    this.makeRect(0, x, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
-    this.makeRect(2, this.config.whiteNoteWidth, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
+    this.makeRect(0, x, y, 10, this.config.whiteNoteHeight, 'white', '#141E30');
+    this.makeRect(2, 10, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
+    // this.makeRect(0, x, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
+    // this.makeRect(2, this.config.whiteNoteWidth, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
     index = 3;
     x = 2 * this.config.whiteNoteWidth;
 
     for (var i = 0; i < unicorns.length; i++) { 
-      console.log(unicorns[i]); 
       this.makeRect(index, x, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
       index++;
     }
@@ -198,7 +199,8 @@ class Piano {
   
   highlightNote(note, button) {
     // Show the note on the piano roll.
-    const rect = this.svg.querySelector(`rect[data-index="${note}"]`);
+    // const rect = this.svg.querySelector(`rect[data-index="${note}"]`);
+    const rect = document.getElementById(`unicorn-${button}`);
     if (!rect) {
       console.log('couldnt find a rect for note', note);
       return;
