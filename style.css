@@ -85,6 +85,7 @@ h1 {
   height: 100px;
   transform: translateX(-50%);
   bottom: 20px;
+  padding-top: 10%;
   z-index: 2;
 }
 
@@ -157,13 +158,6 @@ h1 {
 }
 
 @media screen and (max-width: 500px) {
-/*   .splash {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 100vh;
-  } */
-  
   .rotate-phone {
     display: block;
   }

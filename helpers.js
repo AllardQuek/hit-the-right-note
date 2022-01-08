@@ -103,9 +103,10 @@ class FloatyNotes {
 
 class Piano {
   constructor() {
+
     this.config = {
-      whiteNoteWidth: document.width * 0.1,
-      blackNoteWidth: document.height * 0.1,
+      whiteNoteWidth: window.innerWidth * 0.05,
+      blackNoteWidth: window.innerHeight * 0.1,
       whiteNoteHeight: 70,
       blackNoteHeight: 2 * 70 / 3
     }
@@ -124,7 +125,7 @@ class Piano {
 
     for (var i = 0; i < unicorns.length; i++) { 
       console.log(`AM I EVENMAKING ${x}`);
-      this.makeRect(i, (i + 1) * 2 * this.config.whiteNoteWidth, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
+      this.makeRect(i, (i + 1) * 2.1 * this.config.whiteNoteWidth, y, this.config.whiteNoteWidth * 0.8, this.config.whiteNoteHeight, 'white', '#141E30');
       index++;
       // x = 2 * this.config.whiteNoteWidth;
     }
