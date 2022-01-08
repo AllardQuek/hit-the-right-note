@@ -81,7 +81,7 @@ h1 {
   position: absolute;
   text-align: center;
   /* center hack */
-  left: 55%;
+  left: 50%;
   width: 95vw;
   height: 100px;
   transform: translateX(-50%);
@@ -117,15 +117,15 @@ h1 {
   transform: scale(0.9, 0.9)
 }
 
-.controls button.help {
-  position: relative;
+button.help {
+/*   position: relative;
   background: transparent;
   fill: white;
   cursor: pointer;
-  margin-right: 1.5rem;
+  margin-right: 1.5rem; */
 }
 
-.controls button.help:hover {
+button.help:hover {
   fill: #CDF352;
 }
 
@@ -233,4 +233,14 @@ button.splash-button.small {
   width: 10%;
   height: 10%;
   margin-top: 2%;
+}
+
+#btnHelp {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  background: transparent;
+  fill: white;
+  cursor: pointer;
+  margin-right: 1.5rem;
 }
