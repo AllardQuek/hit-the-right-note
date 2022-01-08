@@ -111,25 +111,31 @@ class Piano {
     }
     
     this.svg = document.getElementById('svg');
+    let unicorns = document.getElementsByClassName("unicorn");
+    for (var i = 0; i < unicorns.length; i++) { 
+      console.log(unicorns[i]); 
+    }
+
+
     this.svgNS = 'http://www.w3.org/2000/svg';
   }
   
-  resize(totalWhiteNotes) {
-    const ratio = window.innerWidth / totalWhiteNotes;
-    this.config.whiteNoteWidth = OCTAVES > 6 ? ratio: Math.floor(ratio);
-    this.config.blackNoteWidth = this.config.whiteNoteWidth * 2 / 3;
-    this.svg.setAttribute('width', window.innerWidth);
-    this.svg.setAttribute('height', this.config.whiteNoteHeight);
-  }
+  // resize(totalWhiteNotes) {
+  //   const ratio = window.innerWidth / totalWhiteNotes;
+  //   this.config.whiteNoteWidth = OCTAVES > 6 ? ratio: Math.floor(ratio);
+  //   this.config.blackNoteWidth = this.config.whiteNoteWidth * 2 / 3;
+  //   this.svg.setAttribute('width', window.innerWidth);
+  //   this.svg.setAttribute('height', this.config.whiteNoteHeight);
+  // }
   
-  draw() {
-    this.svg.innerHTML = '';
-    const halfABlackNote = this.config.blackNoteWidth / 2;
-    let x = 0;
-    let y = 0;
-    let index = 0;
+//   draw() {
+//     this.svg.innerHTML = '';
+//     const halfABlackNote = this.config.blackNoteWidth / 2;
+//     let x = 0;
+//     let y = 0;
+//     let index = 0;
 
-    const blackNoteIndexes = [1, 3, 6, 8, 10];
+//     const blackNoteIndexes = [1, 3, 6, 8, 10];
     
     // First draw all the white notes.
     // Pianos start on an A (if we're using all the octaves);
@@ -180,7 +186,7 @@ class Piano {
 //         index++;
 //       }
 //     }
-  }
+  // }
   
   highlightNote(note, button) {
     // Show the note on the piano roll.
