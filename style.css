@@ -56,10 +56,6 @@ h1 {
   font-size: 40px;
 }
 
-.splash a:link, a:visited {
-  color: #CDF352;
-}
-
 .splash-main b {
   background: #CDF352;
   color: black;
