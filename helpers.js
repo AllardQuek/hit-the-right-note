@@ -104,8 +104,8 @@ class FloatyNotes {
 class Piano {
   constructor() {
     this.config = {
-      whiteNoteWidth: 75,
-      blackNoteWidth: 75,
+      whiteNoteWidth: document.width * 0.1,
+      blackNoteWidth: document.height * 0.1,
       whiteNoteHeight: 70,
       blackNoteHeight: 2 * 70 / 3
     }
