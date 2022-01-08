@@ -276,3 +276,8 @@ label.radio > .control-indicator {
   user-select: none;
 }
 #inputNumButtons { vertical-align: middle; }
+
+.unicorn {
+  width: 10%;
+  height: 10%;
+}
