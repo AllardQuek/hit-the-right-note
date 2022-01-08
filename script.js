@@ -1,9 +1,6 @@
-/*************************
- * Consts for everyone!
- ************************/
-// button mappings.
+// Declare constants
 const MAPPING_8 = {0:0, 1:1, 2:2, 3:3, 4:4, 5:5, 6:6, 7:7};
-const BUTTONS_DEVICE = ['a','s','d','f','j','k','l',';'];
+const BUTTONS_DEVICE = ['s','d','f','g','h','j','k','l'];
 
 let OCTAVES = 7;
 let NUM_BUTTONS = 8;
@@ -53,12 +50,6 @@ function showMainScreen() {
   document.querySelector('.loaded').hidden = false;
 
   document.addEventListener('keydown',onKeyDown);
-  
-  controls.addEventListener('mouseover', (event) => doTouchMove(event, true));
-  controls.addEventListener('mouseout', (event) => doTouchMove(event, false));
-  controls.addEventListener('touchenter', (event) => doTouchMove(event, true));
-  controls.addEventListener('touchleave', (event) => doTouchMove(event, false));
-  canvas.addEventListener('mouseenter', () => mouseDownButton = null);
   document.addEventListener('keyup', onKeyUp);
 
   // Slow to start up, so do a fake prediction to warm up the model.
@@ -90,8 +81,6 @@ function buttonDown(button, fromKeyDown) {
   const rect = piano.highlightNote(note, button);
   
   // Float it.
-  console.log("HERE");
-  console.log(rect.getAttribute('x'));
   const noteToPaint = painter.addNote(button, rect.getAttribute('x'), rect.getAttribute('width'));
   heldButtonToVisualData.set(button, {rect:rect, note:note, noteToPaint:noteToPaint});
 }
