@@ -104,8 +104,8 @@ class FloatyNotes {
 class Piano {
   constructor() {
     this.config = {
-      whiteNoteWidth: 20,
-      blackNoteWidth: 20,
+      whiteNoteWidth: 75,
+      blackNoteWidth: 75,
       whiteNoteHeight: 70,
       blackNoteHeight: 2 * 70 / 3
     }
@@ -114,29 +114,19 @@ class Piano {
     this.svgNS = 'http://www.w3.org/2000/svg';
   }
   
-  resize(totalWhiteNotes) {
-    const ratio = window.innerWidth / totalWhiteNotes;
-    this.config.whiteNoteWidth = OCTAVES > 6 ? ratio: Math.floor(ratio);
-    this.config.blackNoteWidth = this.config.whiteNoteWidth * 2 / 3;
-    this.svg.setAttribute('width', window.innerWidth);
-    this.svg.setAttribute('height', this.config.whiteNoteHeight);
-  }
-  
   draw() {
-    // this.svg.innerHTML = '';
     const halfABlackNote = this.config.blackNoteWidth / 2;
     var x = 0;
     let y = 0;
     let index = 0;
 
-    // const blackNoteIndexes = [1, 3, 6, 8, 10];
     let unicorns = document.getElementsByClassName("unicorn");
 
     for (var i = 0; i < unicorns.length; i++) { 
       console.log(`AM I EVENMAKING ${x}`);
-      this.makeRect(i, x, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
+      this.makeRect(i, (i + 1) * 2 * this.config.whiteNoteWidth, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
       index++;
-      x = 2 * this.config.whiteNoteWidth;
+      // x = 2 * this.config.whiteNoteWidth;
     }
   }
   
@@ -160,7 +150,7 @@ class Piano {
   
   makeRect(index, x, y, w, h, fill, stroke) {
     const rect = document.createElementNS(this.svgNS, 'rect');
-    console.log("MAKING");
+    console.log(`MAKING: ${x}`);
     console.log(x);
     rect.setAttribute('data-index', index);
     rect.setAttribute('x', x);

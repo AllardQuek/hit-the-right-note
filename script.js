@@ -168,7 +168,6 @@ function onWindowResize() {
     return i + 3 + CONSTANTS.NOTES_PER_OCTAVE;
   });
   
-  piano.resize(totalWhiteNotes);
   painter.resize(piano.config.whiteNoteHeight);
   piano.draw();
 }
