@@ -1,7 +1,7 @@
 const CONSTANTS = {
   COLORS : ['#000000', '#FF0018','#FFA52C','#ffff00','#008018','#0000F9','#86007D', '#ffffff'],
   NUM_BUTTONS : 8,
-  NOTES_PER_OCTAVE : 8,
+  NOTES_PER_OCTAVE : 12,
   WHITE_NOTES_PER_OCTAVE : 7,
   LOWEST_PIANO_KEY_MIDI_NOTE : 21,
   HTRN_CHECKPOINT : 'https://storage.googleapis.com/magentadata/js/checkpoints/piano_genie/model/epiano/stp_iq_auto_contour_dt_166006',  
@@ -75,7 +75,7 @@ class FloatyNotes {
   
   // * Draws the duration of the note being played
   drawLoop() {
-    const speed = 6;
+    const dy = 3;
     this.context.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
     // Remove all the notes that will be off the page;
@@ -88,9 +88,9 @@ class FloatyNotes {
       // If the note is still on, then its height goes up but it
       // doesn't start sliding down yet.
       if (note.on) {
-        note.height += speed;
+        note.height += dy;
       } else {
-        note.y += speed;
+        note.y += dy;
       }
       
       this.context.globalAlpha = 1 - note.y / this.contextHeight;
