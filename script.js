@@ -7,7 +7,6 @@ const BUTTONS_DEVICE = ['a','s','d','f','j','k','l',';'];
 
 let OCTAVES = 7;
 let NUM_BUTTONS = 8;
-let BUTTON_MAPPING = MAPPING_8;
 
 let keyWhitelist;
 let TEMPERATURE = getTemperature();
@@ -81,7 +80,7 @@ function buttonDown(button, fromKeyDown) {
     return;
   el.setAttribute('active', true);
   
-  const note = htrn.nextFromKeyWhitelist(BUTTON_MAPPING[button], keyWhitelist, TEMPERATURE);
+  const note = htrn.nextFromKeyWhitelist(MAPPING_8[button], keyWhitelist, TEMPERATURE);
   const pitch = CONSTANTS.LOWEST_PIANO_KEY_MIDI_NOTE + note;
 
   // Hear it.

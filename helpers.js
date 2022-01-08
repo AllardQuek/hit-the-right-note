@@ -110,7 +110,7 @@ class Piano {
       blackNoteHeight: 2 * 70 / 3
     }
     
-    this.svg = document.getElementById('svg');
+    this.svg = document.getElementById('unicorns');
     this.svgNS = 'http://www.w3.org/2000/svg';
   }
   
@@ -129,7 +129,21 @@ class Piano {
     let y = 0;
     let index = 0;
 
-    const blackNoteIndexes = [1, 3, 6, 8, 10];
+    // const blackNoteIndexes = [1, 3, 6, 8, 10];
+    let unicorns = document.getElementsByClassName("unicorn");
+    // let index = 3 + CONSTANTS.NOTES_PER_OCTAVE;
+    this.makeRect(0, x, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
+    this.makeRect(2, this.config.whiteNoteWidth, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
+    index = 3;
+    x = 2 * this.config.whiteNoteWidth;
+
+    for (var i = 0; i < unicorns.length; i++) { 
+      console.log(unicorns[i]); 
+      this.makeRect(index, x, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
+      index++;
+    }
+
+
     
     // First draw all the white notes.
     // Pianos start on an A (if we're using all the octaves);
