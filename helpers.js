@@ -110,7 +110,7 @@ class Piano {
       blackNoteHeight: 2 * 70 / 3
     }
     
-    this.svg = document.getElementById('svg');
+    this.svg = document.getElementById('unicorns');
     this.svgNS = 'http://www.w3.org/2000/svg';
   }
   
@@ -123,84 +123,27 @@ class Piano {
   }
   
   draw() {
-    this.svg.innerHTML = '';
+    // this.svg.innerHTML = '';
     const halfABlackNote = this.config.blackNoteWidth / 2;
-    let x = 0;
+    var x = 0;
     let y = 0;
     let index = 0;
 
     // const blackNoteIndexes = [1, 3, 6, 8, 10];
     let unicorns = document.getElementsByClassName("unicorn");
-    // let index = 3 + CONSTANTS.NOTES_PER_OCTAVE;
-    this.makeRect(0, x, y, 10, this.config.whiteNoteHeight, 'white', '#141E30');
-    this.makeRect(2, 10, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
-    // this.makeRect(0, x, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
-    // this.makeRect(2, this.config.whiteNoteWidth, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
-    index = 3;
-    x = 2 * this.config.whiteNoteWidth;
 
     for (var i = 0; i < unicorns.length; i++) { 
-      this.makeRect(index, x, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
+      console.log(`AM I EVENMAKING ${x}`);
+      this.makeRect(i, x, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
       index++;
+      x = 2 * this.config.whiteNoteWidth;
     }
-
-
-    
-    // First draw all the white notes.
-    // Pianos start on an A (if we're using all the octaves);
-//     if (OCTAVES > 6) {
-//       this.makeRect(0, x, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
-//       this.makeRect(2, this.config.whiteNoteWidth, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
-//       index = 3;
-//       x = 2 * this.config.whiteNoteWidth;
-//     } else {
-//       // Starting 3 semitones up on small screens (on a C), and a whole octave up.
-//       index = 3 + CONSTANTS.NOTES_PER_OCTAVE;
-//     }
-    
-//     // Draw the white notes.
-//     for (let o = 0; o < OCTAVES; o++) {
-//       for (let i = 0; i < CONSTANTS.NOTES_PER_OCTAVE; i++) {
-//         if (blackNoteIndexes.indexOf(i) === -1) {
-//           this.makeRect(index, x, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
-//           x += this.config.whiteNoteWidth;
-//         }
-//         index++;
-//       }
-//     }
-    
-//     if (OCTAVES > 6) {
-//       // And an extra C at the end (if we're using all the octaves);
-//       this.makeRect(index, x, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
-
-//       // Now draw all the black notes, so that they sit on top.
-//       // Pianos start on an A:
-//       this.makeRect(1, this.config.whiteNoteWidth - halfABlackNote, y, this.config.blackNoteWidth, this.config.blackNoteHeight, 'black');
-//       index = 3;
-//       x = this.config.whiteNoteWidth;
-//     } else {
-//       // Starting 3 semitones up on small screens (on a C), and a whole octave up.
-//       index = 3 + CONSTANTS.NOTES_PER_OCTAVE;
-//       x = -this.config.whiteNoteWidth;
-//     }
-    
-//     // Draw the black notes.
-//     for (let o = 0; o < OCTAVES; o++) {
-//       for (let i = 0; i < CONSTANTS.NOTES_PER_OCTAVE; i++) {
-//         if (blackNoteIndexes.indexOf(i) !== -1) {
-//           this.makeRect(index, x + this.config.whiteNoteWidth - halfABlackNote, y, this.config.blackNoteWidth, this.config.blackNoteHeight, 'black');
-//         } else {
-//           x += this.config.whiteNoteWidth;
-//         }
-//         index++;
-//       }
-//     }
   }
   
   highlightNote(note, button) {
     // Show the note on the piano roll.
-    // const rect = this.svg.querySelector(`rect[data-index="${note}"]`);
-    const rect = document.getElementById(`unicorn-${button}`);
+    const rect = this.svg.querySelector(`rect[data-index="${button}"]`);
+    // const rect = document.getElementById(`unicorn-${button}`);
     if (!rect) {
       console.log('couldnt find a rect for note', note);
       return;
@@ -217,6 +160,8 @@ class Piano {
   
   makeRect(index, x, y, w, h, fill, stroke) {
     const rect = document.createElementNS(this.svgNS, 'rect');
+    console.log("MAKING");
+    console.log(x);
     rect.setAttribute('data-index', index);
     rect.setAttribute('x', x);
     rect.setAttribute('y', y);
