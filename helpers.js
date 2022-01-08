@@ -75,7 +75,7 @@ class FloatyNotes {
   
   // * Draws the duration of the note being played
   drawLoop() {
-    const speed = 4.5;
+    const dy = 3;
     this.context.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
     // Remove all the notes that will be off the page;
@@ -88,9 +88,9 @@ class FloatyNotes {
       // If the note is still on, then its height goes up but it
       // doesn't start sliding down yet.
       if (note.on) {
-        note.height += speed;
+        note.height += dy;
       } else {
-        note.y += speed;
+        note.y += dy;
       }
       
       this.context.globalAlpha = 1 - note.y / this.contextHeight;
@@ -111,82 +111,76 @@ class Piano {
     }
     
     this.svg = document.getElementById('svg');
-    let unicorns = document.getElementsByClassName("unicorn");
-    for (var i = 0; i < unicorns.length; i++) { 
-      console.log(unicorns[i]); 
-    }
-
-
     this.svgNS = 'http://www.w3.org/2000/svg';
   }
   
-  // resize(totalWhiteNotes) {
-  //   const ratio = window.innerWidth / totalWhiteNotes;
-  //   this.config.whiteNoteWidth = OCTAVES > 6 ? ratio: Math.floor(ratio);
-  //   this.config.blackNoteWidth = this.config.whiteNoteWidth * 2 / 3;
-  //   this.svg.setAttribute('width', window.innerWidth);
-  //   this.svg.setAttribute('height', this.config.whiteNoteHeight);
-  // }
+  resize(totalWhiteNotes) {
+    const ratio = window.innerWidth / totalWhiteNotes;
+    this.config.whiteNoteWidth = OCTAVES > 6 ? ratio: Math.floor(ratio);
+    this.config.blackNoteWidth = this.config.whiteNoteWidth * 2 / 3;
+    this.svg.setAttribute('width', window.innerWidth);
+    this.svg.setAttribute('height', this.config.whiteNoteHeight);
+  }
   
-//   draw() {
-//     this.svg.innerHTML = '';
-//     const halfABlackNote = this.config.blackNoteWidth / 2;
-//     let x = 0;
-//     let y = 0;
-//     let index = 0;
+  draw() {
+    this.svg.innerHTML = '';
+    const halfABlackNote = this.config.blackNoteWidth / 2;
+    let x = 0;
+    let y = 0;
+    let index = 0;
 
-//     const blackNoteIndexes = [1, 3, 6, 8, 10];
+    const blackNoteIndexes = [1, 3, 6, 8, 10];
     
     // First draw all the white notes.
     // Pianos start on an A (if we're using all the octaves);
-//     if (OCTAVES > 6) {
-//       this.makeRect(0, x, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
-//       this.makeRect(2, this.config.whiteNoteWidth, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
-//       index = 3;
-//       x = 2 * this.config.whiteNoteWidth;
-//     } else {
-//       // Starting 3 semitones up on small screens (on a C), and a whole octave up.
-//       index = 3 + CONSTANTS.NOTES_PER_OCTAVE;
-//     }
+    if (OCTAVES > 6) {
+      this.makeRect(0, x, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
+      this.makeRect(2, this.config.whiteNoteWidth, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
+      index = 3;
+      x = 2 * this.config.whiteNoteWidth;
+    } else {
+      // Starting 3 semitones up on small screens (on a C), and a whole octave up.
+      index = 3 + CONSTANTS.NOTES_PER_OCTAVE;
+    }
     
-//     // Draw the white notes.
-//     for (let o = 0; o < OCTAVES; o++) {
-//       for (let i = 0; i < CONSTANTS.NOTES_PER_OCTAVE; i++) {
-//         if (blackNoteIndexes.indexOf(i) === -1) {
-//           this.makeRect(index, x, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
-//           x += this.config.whiteNoteWidth;
-//         }
-//         index++;
-//       }
-//     }
+    // Draw the white notes.
+    for (let o = 0; o < OCTAVES; o++) {
+      for (let i = 0; i < CONSTANTS.NOTES_PER_OCTAVE; i++) {
+        if (blackNoteIndexes.indexOf(i) === -1) {
+          this.makeRect(index, x, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
+          x += this.config.whiteNoteWidth;
+        }
+        index++;
+      }
+    }
     
-//     if (OCTAVES > 6) {
-//       // And an extra C at the end (if we're using all the octaves);
-//       this.makeRect(index, x, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
+    if (OCTAVES > 6) {
+      // And an extra C at the end (if we're using all the octaves);
+      this.makeRect(index, x, y, this.config.whiteNoteWidth, this.config.whiteNoteHeight, 'white', '#141E30');
 
-//       // Now draw all the black notes, so that they sit on top.
-//       // Pianos start on an A:
-//       this.makeRect(1, this.config.whiteNoteWidth - halfABlackNote, y, this.config.blackNoteWidth, this.config.blackNoteHeight, 'black');
-//       index = 3;
-//       x = this.config.whiteNoteWidth;
-//     } else {
-//       // Starting 3 semitones up on small screens (on a C), and a whole octave up.
-//       index = 3 + CONSTANTS.NOTES_PER_OCTAVE;
-//       x = -this.config.whiteNoteWidth;
-//     }
+      // Now draw all the black notes, so that they sit on top.
+      // Pianos start on an A:
+      this.makeRect(1, this.config.whiteNoteWidth - halfABlackNote, y, this.config.blackNoteWidth, this.config.blackNoteHeight, 'black');
+      index = 3;
+      x = this.config.whiteNoteWidth;
+    } else {
+      // Starting 3 semitones up on small screens (on a C), and a whole octave up.
+      index = 3 + CONSTANTS.NOTES_PER_OCTAVE;
+      x = -this.config.whiteNoteWidth;
+    }
     
-//     // Draw the black notes.
-//     for (let o = 0; o < OCTAVES; o++) {
-//       for (let i = 0; i < CONSTANTS.NOTES_PER_OCTAVE; i++) {
-//         if (blackNoteIndexes.indexOf(i) !== -1) {
-//           this.makeRect(index, x + this.config.whiteNoteWidth - halfABlackNote, y, this.config.blackNoteWidth, this.config.blackNoteHeight, 'black');
-//         } else {
-//           x += this.config.whiteNoteWidth;
-//         }
-//         index++;
-//       }
-//     }
-  // }
+    // Draw the black notes.
+    for (let o = 0; o < OCTAVES; o++) {
+      for (let i = 0; i < CONSTANTS.NOTES_PER_OCTAVE; i++) {
+        if (blackNoteIndexes.indexOf(i) !== -1) {
+          this.makeRect(index, x + this.config.whiteNoteWidth - halfABlackNote, y, this.config.blackNoteWidth, this.config.blackNoteHeight, 'black');
+        } else {
+          x += this.config.whiteNoteWidth;
+        }
+        index++;
+      }
+    }
+  }
   
   highlightNote(note, button) {
     // Show the note on the piano roll.
