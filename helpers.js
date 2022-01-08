@@ -75,7 +75,7 @@ class FloatyNotes {
   
   // * Draws the duration of the note being played
   drawLoop() {
-    const dy = 3;
+    const speed = 6;
     this.context.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
     // Remove all the notes that will be off the page;
@@ -88,9 +88,9 @@ class FloatyNotes {
       // If the note is still on, then its height goes up but it
       // doesn't start sliding down yet.
       if (note.on) {
-        note.height += dy;
+        note.height += speed;
       } else {
-        note.y += dy;
+        note.y += speed;
       }
       
       this.context.globalAlpha = 1 - note.y / this.contextHeight;
