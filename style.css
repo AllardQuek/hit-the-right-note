@@ -34,14 +34,14 @@ html,body {
   background-image: linear-gradient(0deg, #D887D8 0%, #62CEDB 100%);
 }
 
-.color-0 { background: #ffffff; } 
+.color-0 { background: #000000; color: #ffffff; } 
 .color-1 { background: #FF0018; } 
 .color-2 { background: #FFA52C; } 
 .color-3 { background: #ffff00; } 
-.color-4 { background: #008018; color: #ffffff; } 
-.color-5 { background: #0000F9; color: #ffffff; } 
-.color-6 { background: #86007D; color: #ffffff; } 
-.color-7 { background: #000000; color: #ffffff; }
+.color-4 { background: #008018; } 
+.color-5 { background: #0000F9; } 
+.color-6 { background: #86007D; } 
+.color-7 { background: #ffffff; }
 
 canvas {
   position: absolute;
@@ -66,9 +66,6 @@ h1 {
   font-size: 40px;
 }
 
-.splash a:link, a:visited {
-  color: #CDF352;
-}
 
 .splash-main b {
   background: #CDF352;
@@ -81,7 +78,7 @@ h1 {
   position: absolute;
   text-align: center;
   /* center hack */
-  left: 50%;
+  left: 55%;
   width: 95vw;
   height: 100px;
   transform: translateX(-50%);
@@ -117,15 +114,14 @@ h1 {
   transform: scale(0.9, 0.9)
 }
 
-button.help {
-/*   position: relative;
+.controls button.settings {
+  position: relative;
   background: transparent;
   fill: white;
   cursor: pointer;
-  margin-right: 1.5rem; */
 }
 
-button.help:hover {
+.controls button.settings:hover {
   fill: #CDF352;
 }
 
@@ -183,16 +179,14 @@ button.splash-button {
   font-family: inherit;
   font-size: 22px;
   display: block;
+  border: 2px solid #CDF352;
   background-color: transparent;
   text-transform: uppercase;
   letter-spacing: 1px;
   color: #CDF352;
   text-align: center;
+  transition: background-color 0.2s linear;
   width: 200px;
-  border: 2px solid #CDF352;
-  border-radius: 35px;
-  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease-in-out 0s;
 }
 
 button.splash-button:hover {
@@ -233,14 +227,4 @@ button.splash-button.small {
   width: 10%;
   height: 10%;
   margin-top: 2%;
-}
-
-#btnHelp {
-  position: absolute;
-  top: 0px;
-  right: 0px;
-  background: transparent;
-  fill: white;
-  cursor: pointer;
-  margin-right: 1.5rem;
 }

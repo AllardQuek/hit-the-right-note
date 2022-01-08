@@ -21,10 +21,10 @@
           Always wanted to play the piano but never know what notes to hit? It's simple.
         </p>
         <p>
-          1. Use the 8 keys from <b>s to l</b> on your keyboard to play the piano. 
+          1. Use the <b>a-f</b> and <b>j-;</b> keys on your keyboard or <b>touch</b> the coloured blocks to play the piano. 
         </p>
         <p>
-          2. Use the <b>space bar</b> to hold a note (it's your sustain pedal!). 
+          2. Use the <b>space bar</b> to control the sustain pedal. 
         </p>
         <p>
           3. The more you pretend you're a real player, the better the melody (and you!) will sound.
@@ -53,6 +53,7 @@
       
       <canvas id="canvas">
       </canvas>
+<!--       <svg id="svg"></svg> -->
       
       <div class="controls" id="controls">
         <button class="color color-0" id="btn0" data-id="0"><span>a</span></button>
@@ -63,14 +64,11 @@
         <button class="color color-5" id="btn5" data-id="5"><span>k</span></button>
         <button class="color color-6" id="btn6" data-id="6"><span>l</span></button>
         <button class="color color-7" id="btn7" data-id="7"><span>;</span></button>
+        <button class="settings" onclick="helpBox.hidden = !helpBox.hidden" id="btnSettings">
+          <img src="https://cdn.glitch.global/8c46228f-b2bb-4f16-a938-d386476edc06/help.svg?v=1641576795128"/>
+        </button>
       </div>
-      
-      <button class="help" onclick="helpBox.hidden = !helpBox.hidden" id="btnHelp">
-        <img src="https://cdn.glitch.global/8c46228f-b2bb-4f16-a938-d386476edc06/help.svg?v=1641576795128"/>
-      </button>
     </div>
-    
-    
     
     <div class="dialog" id="helpBox" hidden>
       <h2>Always wanted to play the piano but never know what notes to hit?</h2>
